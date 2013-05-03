@@ -1,4 +1,3 @@
-
 /************************************************************************************/
 /*																					*/
 /*		Main player entity															*/
@@ -69,7 +68,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		me.input.bindKey(me.input.KEY.DOWN,	"down");
 		
 		// define a basic walking animatin
-		this.renderable.resize(2);
+		// this.renderable.resize(2);
 
 		this.renderable.addAnimation ("walk",  [0,1,2]); 
 		this.renderable.addAnimation ("crouch",  [3]);
