@@ -16,9 +16,9 @@
 // 		offsetY: -4,
 // 		addOffset: -30,
 // 		attackRect: [27, 23, 0, 32]
-// 	}
-// };
-
+// 	} 
+// };   
+ 
 // A weapon entity -- used to control, animate, do dmg, etc for weapons
 // Created when a player or enemy picks up / equips a weapon
 var weapon = me.ObjectEntity.extend({ 

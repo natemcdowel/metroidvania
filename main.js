@@ -61,7 +61,7 @@ var game = {
 		// disable interpolation when scaling
 		me.video.setImageSmoothing(false);
 
-        // me.debug.renderHitBox = true;
+        me.debug.renderHitBox = true;
 		
 		// install the debug panel plugin
 		//me.plugin.register(debugPanel, "debug");
@@ -97,25 +97,15 @@ var game = {
 		me.state.transition("fade","#FFFFFF", 250);
 
 		// add our enemy entity in the entity pool
-		
-		me.entityPool.add("FlyEntity", FlyEnemyEntity);
-		me.entityPool.add("SlimeEntity", SlimeEnemyEntity);
+		// me.entityPool.add("BatEntity", BatEnemyEntity);
+		// me.entityPool.add("SkeletonEntity", SkeletonEnemyEntity);
+		me.entityPool.add("CrowEntity", CrowEnemyEntity);
 		var coin2 = me.entityPool.add("CoinEntity", CoinEntity); 
 
 		// add our player entity in the entity pool
-
-		
 		me.entityPool.add("mainPlayer", PlayerEntity); 
 		me.entityPool.add("sword", weaponEntity);   
 		me.entityPool.add("secondPlayer", Player2Entity); 
-		
-		console.log(weapon); 
-
-		// me.AnimationSheet(0, 0, "simon", spritewidth, spriteheight)
-
-		// load the texture atlas file
-		// this will be used by object entities later
-		game.texture = new me.TextureAtlas(me.loader.getAtlas("texture"), me.loader.getImage("texture"));
 		
 		// switch to PLAY state
 		me.state.change(me.state.PLAY);
