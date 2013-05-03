@@ -80,7 +80,7 @@
     <property name="image" value="crow"/>
     <property name="spriteheight" value="100"/>
     <property name="spritewidth" value="100"/>
-    <property name="velX" value="2"/>
+    <property name="velX" value="4"/>
    </properties>
   </object>
  </objectgroup>

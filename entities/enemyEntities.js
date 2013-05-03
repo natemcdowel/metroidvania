@@ -108,7 +108,9 @@ var PathEnemyEntity = me.ObjectEntity.extend({
         yDir = (Math.abs(yDir) < 8) ? 0 : yDir.clamp(-1,1);
         
         this.vel.x = this.accel.x * xDir;
+
         this.vel.y = this.accel.y * yDir;
+   
 	},
 	/**
 	 * collision handle
@@ -118,7 +120,7 @@ var PathEnemyEntity = me.ObjectEntity.extend({
 		// which mean at top position for this one
 		// if (this.alive && (res.y > 0) && obj.falling) {
 
-		if (this.alive && res.x >= 4 ) {
+		if (this.alive && obj.type == 'weapon') {
 			// make it dead
 			this.alive = false; 
 			// and not collidable anymore
