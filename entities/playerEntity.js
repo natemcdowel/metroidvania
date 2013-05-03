@@ -1,5 +1,4 @@
 
-
 /************************************************************************************/
 /*																					*/
 /*		Main player entity															*/
@@ -70,6 +69,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 		me.input.bindKey(me.input.KEY.DOWN,	"down");
 		
 		// define a basic walking animatin
+		this.renderable.resize(2);
+
 		this.renderable.addAnimation ("walk",  [0,1,2]); 
 		this.renderable.addAnimation ("crouch",  [3]);
 		this.renderable.addAnimation ("jumpup",  [5]);
@@ -80,7 +81,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		// set the renderable position to bottom center
 		this.anchorPoint.set(0.5, 1.0); 
-
+	
 
 	},
 
