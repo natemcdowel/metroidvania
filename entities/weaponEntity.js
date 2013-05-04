@@ -24,19 +24,21 @@ var weaponEntity = me.ObjectEntity.extend({
 
 	attack : function () {
 
+
 		var self = this;
-		if (self.cooldown == true) {
+		// if (self.cooldown == true) {
+
 
 			self.cooldown = false;
 			setTimeout(function(){self.cooldown = true},700);
 			// Which side is the player attacking?	
 			if (clientData[0] == 'left') {
-				this.updateColRect(-0,60, 20,25);
+				this.updateColRect(-108,150, 20,25);
 			}
 			if (clientData[0] == 'right') {
-				this.updateColRect(80,60, 20,25);
+				this.updateColRect(103,150, 20,25);
 			} 	
-		}
+		// }
 	},
 
 	update : function () {

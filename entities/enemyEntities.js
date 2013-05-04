@@ -26,6 +26,8 @@ var PathEnemyEntity = me.ObjectEntity.extend({
 		
 		// make it collidable
 		this.collidable = true;
+		this.hitpoints = 10;
+
 		this.type = me.game.ENEMY_OBJECT;
 		this.timer = me.timer.getTime();
 
@@ -48,7 +50,12 @@ var PathEnemyEntity = me.ObjectEntity.extend({
 
 			// console.log(me.timer.getTime()+' --- '+self.timer)
 
-    		if (me.timer.getTime() > self.timer+2000) {
+			if (this.hurt) {
+
+				this.vel.x = 0;
+				this.vel.y = 0;
+			}
+    		else if (me.timer.getTime() > self.timer+2000) {
 
     			// console.log('player')
     			
@@ -110,7 +117,7 @@ var PathEnemyEntity = me.ObjectEntity.extend({
         this.vel.x = this.accel.x * xDir;
 
         this.vel.y = this.accel.y * yDir;
-   
+
 	},
 	/**
 	 * collision handle
@@ -120,23 +127,60 @@ var PathEnemyEntity = me.ObjectEntity.extend({
 		// which mean at top position for this one
 		// if (this.alive && (res.y > 0) && obj.falling) {
 
-		if (this.alive && obj.type == 'weapon') {
-			// make it dead
-			this.alive = false; 
-			// and not collidable anymore
-			this.collidable = false;
-			// set dead animation
-			this.renderable.setCurrentAnimation("dead");
-			// make it flicker and call destroy once timer finished
-			var self = this;
-			this.renderable.flicker(45, function(){me.game.remove(self)});
-			// dead sfx
-			me.audio.play("enemykill", false);
-			// give some score
-			me.game.HUD.updateItemValue("score", 150);
-		}
-	}
+		var self = this;
+		console.log(obj)
 
+		if (this.alive && obj.weapon == 'sword') {
+			// make it dead
+			
+			// and not collidable anymore
+			
+			// set dead animation
+			
+			// make it flicker and call destroy once timer finished
+
+			
+			
+
+
+			this.hurting();
+
+			
+
+			
+			
+		}
+	},
+
+	/**
+	 * ouch
+	 */
+	hurting : function () {
+
+		if (!this.renderable.flickering)
+		{	
+			var self = this;
+
+
+			this.hitpoints -= 1;
+			this.hurt = true;
+			setTimeout(function(){self.hurt = false;},1000);
+
+			// flash the screen
+			if (this.hitpoints <= 0) {
+				
+				this.alive = false; 
+				this.collidable = false;
+				this.renderable.flicker(45, function(){me.game.remove(self)});
+			}
+			else {
+
+				me.game.HUD.updateItemValue("score", 1);
+				me.audio.play("enemykill", false);
+				this.renderable.flicker(45);
+			}
+		}
+	},
 });
 
 

@@ -30,7 +30,7 @@ var game = {
 
 		// texturePacker
 		// {name: "texture",		type: "tps",	src: "data/gfx/goblin.json"},
-		{name: "simon",		type:"image",	src: "data/gfx/x-example-full4x.png"}, 
+		{name: "simon",		type:"image",	src: "data/gfx/player@4x.png"}, 
 		{name: "skeleton",		type:"image",	src: "data/gfx/Skeleton3@4x.png"},
 		{name: "crow",		type:"image",	src: "data/gfx/Crow@4x.png"}, 
 		{name: "bat",		type:"image",	src: "data/gfx/Bat.png"},
@@ -53,7 +53,8 @@ var game = {
 	onload: function()
 	{
 		// init the video
-
+		// me.sys.useNativeAnimFrame = true;
+		// me.sys.fps = 30;
 		if (!me.video.init('screen', 1280, 720, true, 'auto')) { 
 			alert("Sorry but your browser does not support html 5 canvas. Please try with another one!");
 			return;
@@ -100,7 +101,7 @@ var game = {
 		// me.entityPool.add("BatEntity", BatEnemyEntity);
 		// me.entityPool.add("SkeletonEntity", SkeletonEnemyEntity);
 		me.entityPool.add("CrowEntity", CrowEnemyEntity);
-		var coin2 = me.entityPool.add("CoinEntity", CoinEntity); 
+		// var coin2 = me.entityPool.add("CoinEntity", CoinEntity); 
 
 		// add our player entity in the entity pool
 		me.entityPool.add("mainPlayer", PlayerEntity); 
@@ -115,6 +116,7 @@ var game = {
 
 /* game initialization */
 var PlayScreen = me.ScreenObject.extend( {
+
 	// we just defined what to be done on reset
 	// no need to do somehting else
 	onResetEvent: function() {
