@@ -119,35 +119,13 @@ var ScoreObject = me.HUD_Item.extend( {
 		// create a font
 		this.font = new me.BitmapFont("atascii", {x:24});
 		this.font.set("right", 1.6);
+		this.value = 100;
 	},
 	/**
 	 * draw the score
 	 */
 	draw : function (context, x, y) {
-		this.font.draw (context, this.value, this.pos.x +x, this.pos.y+y);
-	}
-});
-
-
-/** 
- * a GUI object 
- * display score on screen
- */
-var InventoryObject = me.HUD_Item.extend( {	
-	/** 
-	 * constructor
-	 */
-	init: function(x, y) {
-		// call the parent constructor
-		this.parent(x, y);
-		// create a font
-		this.font = new me.BitmapFont("atascii", {x:24});
-		this.font.set("right", 1.6); 
-	},
-	/**
-	 * draw the score
-	 */
-	draw : function (context, x, y) {
+		
 		this.font.draw (context, this.value, this.pos.x +x, this.pos.y+y);
 	}
 });
