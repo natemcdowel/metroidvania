@@ -71,7 +71,37 @@
     <property name="velX" value="2"/>
    </properties>
   </object>
-  <object name="CrowEntity" x="1475" y="694" width="350" height="35">
+  <object name="CrowEntity" x="1446" y="801" width="350" height="35">
+   <properties>
+    <property name="animationspeed" value="5"/>
+    <property name="gravity" value="0"/>
+    <property name="image" value="crow"/>
+    <property name="spriteheight" value="100"/>
+    <property name="spritewidth" value="100"/>
+    <property name="velX" value="4"/>
+   </properties>
+  </object>
+  <object name="SkeletonEntity" x="538" y="1228" width="700" height="35">
+   <properties>
+    <property name="animationspeed" value="10"/>
+    <property name="gravity" value="0"/>
+    <property name="image" value="skeleton"/>
+    <property name="spriteheight" value="100"/>
+    <property name="spritewidth" value="100"/>
+    <property name="velX" value="3"/>
+   </properties>
+  </object>
+  <object name="SkeletonEntity" x="2237" y="1228" width="700" height="35">
+   <properties>
+    <property name="animationspeed" value="10"/>
+    <property name="gravity" value="0"/>
+    <property name="image" value="skeleton"/>
+    <property name="spriteheight" value="100"/>
+    <property name="spritewidth" value="100"/>
+    <property name="velX" value="3"/>
+   </properties>
+  </object>
+  <object name="CrowEntity" x="2513" y="774" width="350" height="35">
    <properties>
     <property name="animationspeed" value="5"/>
     <property name="gravity" value="0"/>
@@ -93,14 +123,14 @@
     <property name="velX" value="2"/>
    </properties>
   </object>
-  <object name="SkeletonEntity" x="1180" y="950" width="490" height="35">
+  <object name="SkeletonEntity" x="1351" y="1228" width="700" height="35">
    <properties>
     <property name="animationspeed" value="10"/>
     <property name="gravity" value="0"/>
     <property name="image" value="skeleton"/>
     <property name="spriteheight" value="100"/>
     <property name="spritewidth" value="100"/>
-    <property name="velX" value="1"/>
+    <property name="velX" value="3"/>
    </properties>
   </object>
  </objectgroup>
@@ -123,6 +153,11 @@
     <property name="spriteheight" value="100"/>
     <property name="spritewidth" value="100"/>
     <property name="velX" value="4"/>
+   </properties>
+  </object>
+  <object name="me.LevelEntity" x="4156" y="868" width="35" height="245">
+   <properties>
+    <property name="to" value="map2"/>
    </properties>
   </object>
  </objectgroup>

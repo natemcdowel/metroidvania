@@ -11,13 +11,14 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		y = nextScreenY;
 
-		y = 1232;
+		console.log(me.game.currentLevel.width)
+		// y = 1232;
 		// Check if player reached screen and set position accordingly to new screen
 		if (levelDirection == 'west') {
-			x = 1550;
+			x = me.game.currentLevel.width - 200;
 		}
 		if (levelDirection == 'east') {
-			x = 80;  
+			x = 100; 
 		}
 		if (levelDirection == 'south') {
 			y = 100;
@@ -105,23 +106,25 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		// this.renderable.setCurrentAnimation("walk");
 
-		if (me.input.isKeyPressed('down')) {
-
+		if (me.input.isKeyPressed('down')) { 
+ 
 			this.renderable.setCurrentAnimation("crouch");
 		}
 		else if (me.input.isKeyPressed('attack'))	{ 
 
-			this.attack = true;
+			this.attack = true;  
 			self.attackFinished = false;
 
 			// setTimeout(function(){self.attackFinished = true;},400);
 
 		} 
-				// Attacking
+		// Attacking
 		if (!self.attackFinished) {
 
+			this.updateColRect(25,75, -1,0); 
+
 			// Which direction movement
-			if (clientData[0] == 'left') self.vel.x = -1; 
+			if (clientData[0] == 'left') self.vel.x = -1;  
 			if (clientData[0] == 'right') self.vel.x = 1;
 			self.renderable.setCurrentAnimation("attack", function() {
 
@@ -191,7 +194,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 				// easy 'math' for double jump
 				this.vel.y -= (this.maxVel.y * this.mutipleJump++) * me.timer.tick;
-				me.audio.play("jump", false);
+				// me.audio.play("jump", false);
 			}
 		} 
 		// Jumping
@@ -222,7 +225,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 			levelDirection = 'south';
 		} 
 		if (this.vel.y > 0 && this.pos.y < 150 ) {
-			levelDirection = 'north';
+			levelDirection = 'north'; 
 		} 
 
 		// check for collision with environment
