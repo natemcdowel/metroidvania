@@ -15,7 +15,7 @@ var weaponEntity = me.ObjectEntity.extend({
 		this.parent(mainPlayer[0].pos.x+10, mainPlayer[0].pos.y, settings);
 		
 		// make it collidable
-		this.collidable = true;
+		this.collidable = false;
 		this.weapon = 'sword';
 		this.cooldown = true;
 		
@@ -25,19 +25,27 @@ var weaponEntity = me.ObjectEntity.extend({
 	attack : function () {
 
 
-		var self = this;
+			var self = this;
 		// if (self.cooldown == true) {
 
-
+			// self.collidable = true;
 			self.cooldown = false;
+
 			setTimeout(function(){self.cooldown = true},700);
 			// Which side is the player attacking?	
 			if (clientData[0] == 'left') {
 				this.updateColRect(-108,150, 20,25);
 			}
 			if (clientData[0] == 'right') {
-				this.updateColRect(103,150, 20,25);
-			} 	
+
+				if (mainPlayer[0].crouchAttack == true) {
+					console.log('worked')
+					this.updateColRect(10,150, 60,25);
+					mainPlayer[0].crouchAttack = false
+				} 	 	
+				else this.updateColRect(103,150, 20,25);
+			}
+			self.collidable = false;
 		// }
 	},
 

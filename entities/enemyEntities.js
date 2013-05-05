@@ -57,7 +57,7 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		// if (this.alive && (res.y > 0) && obj.falling) {
 
 		var self = this;
-
+		console.log(obj.name)
 		if (this.alive && obj.weapon == 'sword') {
 			this.hurting();
 		}
@@ -289,6 +289,9 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 
 
 var ShotEntity = AllEnemyEntity.extend({
+
+	newAngle: 0, 
+
     init: function(x, y, settings, direction) {
 
 		// call the constructor
@@ -299,7 +302,7 @@ var ShotEntity = AllEnemyEntity.extend({
 		this.hitpoints = 1;
 
 				// set the renderable position to bottom center
-		this.anchorPoint.set(0.5, 1.0);		
+		// this.anchorPoint.set(0.5, 1.0);		
 		
 		// set start/end position
 		// this.startX = x;
@@ -321,7 +324,13 @@ var ShotEntity = AllEnemyEntity.extend({
 
 	update : function () {
 
-		// check & update movement
+		        // Set the new angle increment - Big Numbers = More Fast Spin
+        this.newAngle += 20;
+        
+        if (this.newAngle > 360)
+         this.newAngle = 0;        
+
+        this.angle = Number.prototype.degToRad(this.newAngle);
 		this.updateMovement();
 
 		if (this.vel.x == 0) me.game.remove(this)

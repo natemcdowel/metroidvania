@@ -52,7 +52,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 		this.updateColRect(20,32, -1,0); 
 		this.dying = false;
 		this.hitpoints = 20;
-		this.mutipleJump = 1;
+		this.mutipleJump = 0;
+
 		
 		// set the display around our position 
 		me.game.viewport.follow(this, me.game.viewport.AXIS.BOTH);
@@ -82,7 +83,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// set the renderable position to bottom center
 		this.anchorPoint.set(0.5, 1.0); 
 		this.attackFinished = true;
-				console.log(this.renderable)
+
+		console.log(this)
 
 	},
 
@@ -104,117 +106,124 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// if (self.attackFinished == false) this.updateColRect(65,0, -1,0); 
 		this.attack = false;
 
-		// this.renderable.setCurrentAnimation("walk");
+		// Movement
+		if (this.renderable.flickerTimer < 70) {
+			if (me.input.isKeyPressed('down')) { 
 
-		if (me.input.isKeyPressed('down')) { 
- 
-			this.renderable.setCurrentAnimation("crouch");
-		}
-		else if (me.input.isKeyPressed('attack'))	{ 
+				this.renderable.setCurrentAnimation("crouch");
+				if (me.input.isKeyPressed('attack')) { 
 
-			this.attack = true;  
-			self.attackFinished = false;
-
-			// setTimeout(function(){self.attackFinished = true;},400);
-
-		} 
-		// Attacking
-		if (!self.attackFinished) {
-
-			this.updateColRect(25,75, -1,0); 
-
-			// Which direction movement
-			if (clientData[0] == 'left') self.vel.x = -.5;  
-			if (clientData[0] == 'right') self.vel.x = .5;
-			self.renderable.setCurrentAnimation("attack", function() {
-
-				self.renderable.setAnimationFrame();
-				self.attackFinished = true;
-			});
-		}
-		else if (me.input.isKeyPressed('left'))	{ 
-
-			this.renderable.setCurrentAnimation("walk");
-
-			// Loading next/previous level if at the end of the screen
-			if (this.pos.x < 200) {levelDirection = 'west';}
-			if (this.pos.x > 1100) {levelDirection = 'east';}
-			if (this.pos.y > 1232) {levelDirection = 'south';}
-			nextScreenX = this.pos.x
-			nextScreenY = this.pos.y
-
-			// Chopping up client data to be passed to server
-    		clientData[0] = 'left';
-    		clientData[1] = clientid; 
-    		clientData[2] = this.pos.x; 
-    		clientData[3] = this.pos.y;
-
-			this.vel.x -= this.accel.x * me.timer.tick;
-			this.flipX(true);
-
-		} else if (me.input.isKeyPressed('right')) {
-
-			this.renderable.setCurrentAnimation("walk");
-
-			// Loading next/previous level if at the end of the screen
-			if (this.pos.x < 200) {levelDirection = 'west';}
-			if (this.pos.x > 1100) {levelDirection = 'east';}
-			if (this.pos.y > 1232) {levelDirection = 'south';}
-			nextScreenX = this.pos.x
-			nextScreenY = this.pos.y
-
-    		clientData[0] = 'right';
-    		clientData[1] = clientid; 
-    		clientData[2] = this.pos.x; 
-    		clientData[3] = this.pos.y;
-
-			// socketResponse('keypress',clientData);  
-			this.vel.x += this.accel.x * me.timer.tick;
-			this.flipX(false);
-		}
-		
-		if (me.input.isKeyPressed('jump')) { 
-			
-			// Loading next/previous level if at the end of the screen
-			if (this.pos.x < 200) {levelDirection = 'west';}
-			if (this.pos.x > 1100) {levelDirection = 'east';}
-			if (this.pos.y > 1232) {levelDirection = 'south';}
-			nextScreenX = this.pos.x
-			nextScreenY = this.pos.y
-			
-    		clientData[0] = 'up';
-    		clientData[1] = clientid; 
-    		clientData[2] = this.pos.x;
-    		clientData[3] = this.pos.y;
-
-			// reset the dblJump flag if off the ground
-			this.mutipleJump = (this.vel.y === 0)?1:this.mutipleJump;
-			
-			if (this.mutipleJump<=1) {  // 2 for double jump
-
-				// easy 'math' for double jump
-				this.vel.y -= (this.maxVel.y * this.mutipleJump++) * me.timer.tick;
-				// me.audio.play("jump", false);
+					this.crouchAttack = true;
+					this.attack = true;
+					// console.log(clientData[0])
+				}
 			}
-		} 
-		// Jumping
-		else if (this.vel.y > 0) {
-			this.renderable.setCurrentAnimation("jumpdown"); 
-			if (me.input.isKeyPressed('attack'))	{ 
-				this.renderable.setCurrentAnimation("attack");
-				this.attack = true;
+			else if (me.input.isKeyPressed('attack'))	{ 
+
+				this.attack = true;  
+				self.attackFinished = false;
+
+				// setTimeout(function(){self.attackFinished = true;},400);
+
+			} 
+			// Attacking
+			if (!self.attackFinished) {
+
+				this.updateColRect(25,75, -1,0); 
+
+				// Which direction movement
+				if (clientData[0] == 'left') self.vel.x = -.5;  
+				if (clientData[0] == 'right') self.vel.x = .5;
+				self.renderable.setCurrentAnimation("attack", function() {
+
+					self.renderable.setAnimationFrame();
+					self.attackFinished = true;
+				});
 			}
+			else if (me.input.isKeyPressed('left'))	{ 
+
+				this.renderable.setCurrentAnimation("walk");
+
+				// Loading next/previous level if at the end of the screen
+				if (this.pos.x < 200) {levelDirection = 'west';}
+				if (this.pos.x > 1100) {levelDirection = 'east';}
+				if (this.pos.y > 1232) {levelDirection = 'south';}
+				nextScreenX = this.pos.x
+				nextScreenY = this.pos.y
+
+				// Chopping up client data to be passed to server
+	    		clientData[0] = 'left';
+	    		clientData[1] = clientid; 
+	    		clientData[2] = this.pos.x; 
+	    		clientData[3] = this.pos.y;
+
+				this.vel.x -= this.accel.x * me.timer.tick;
+				this.flipX(true);
+
+			} else if (me.input.isKeyPressed('right')) {
+
+				this.renderable.setCurrentAnimation("walk");
+
+				// Loading next/previous level if at the end of the screen
+				if (this.pos.x < 200) {levelDirection = 'west';}
+				if (this.pos.x > 1100) {levelDirection = 'east';}
+				if (this.pos.y > 1232) {levelDirection = 'south';}
+				nextScreenX = this.pos.x
+				nextScreenY = this.pos.y
+
+	    		clientData[0] = 'right';
+	    		clientData[1] = clientid; 
+	    		clientData[2] = this.pos.x; 
+	    		clientData[3] = this.pos.y;
+
+				// socketResponse('keypress',clientData);  
+				this.vel.x += this.accel.x * me.timer.tick;
+				this.flipX(false);
+			}
+			
+			if (me.input.isKeyPressed('jump')) { 
+				
+				// Loading next/previous level if at the end of the screen
+				if (this.pos.x < 200) {levelDirection = 'west';}
+				if (this.pos.x > 1100) {levelDirection = 'east';}
+				if (this.pos.y > 1232) {levelDirection = 'south';}
+				nextScreenX = this.pos.x
+				nextScreenY = this.pos.y
+				
+	    		clientData[0] = 'up';
+	    		clientData[1] = clientid; 
+	    		clientData[2] = this.pos.x;
+	    		clientData[3] = this.pos.y;
+
+				// reset the dblJump flag if off the ground
+				this.mutipleJump = (this.vel.y === 0)?1:this.mutipleJump;
+				
+				if (this.mutipleJump<=1) {  // 2 for double jump
+
+					// easy 'math' for double jump
+					this.vel.y -= (this.maxVel.y * this.mutipleJump++) * me.timer.tick;
+					// me.audio.play("jump", false);
+				}
+			} 
+			// Jumping
+			else if (this.vel.y > 0) {
+				this.renderable.setCurrentAnimation("jumpdown"); 
+				if (me.input.isKeyPressed('attack'))	{ 
+					this.renderable.setCurrentAnimation("attack");
+					this.attack = true;
+				}
+			}
+			else if (this.vel.y < 0) {
+				this.renderable.setCurrentAnimation("jumpup")
+				if (me.input.isKeyPressed('attack'))	{ 
+					this.renderable.setCurrentAnimation("attack");
+					this.attack = true;
+				}
+			}	
 		}
-		else if (this.vel.y < 0) {
-			this.renderable.setCurrentAnimation("jumpup")
-			if (me.input.isKeyPressed('attack'))	{ 
-				this.renderable.setCurrentAnimation("attack");
-				this.attack = true;
-			}
-		}	
+		//  End movement
 
 
-	    // clientData[0] = 'up';
 		clientData[1] = clientid; 
 		clientData[2] = this.pos.x;
 		clientData[3] = this.pos.y;
@@ -250,7 +259,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		if (res) {
 			switch (res.obj.type) {	
 				case me.game.ENEMY_OBJECT : {
-					if ((res.y>0) && this.falling) {
+					if ((res.y>0) && this.falling && !this.renderable.flickering) {
 						// jump
 						this.vel.y -= this.maxVel.y * me.timer.tick;
 					} else {
@@ -259,26 +268,18 @@ var PlayerEntity = me.ObjectEntity.extend({
 					}
 					break;
 				}
-				
-				// case "spikeObject" :{
-				// 	// jump & die
-				// 	this.vel.y -= this.maxVel.y * me.timer.tick;
-				// 	this.hurt();
-
-				// 	break;
-				// }
-
 				default : break;
 			}
 
 			
 		}
-		
+	
 		// check if we moved (a "stand" animation would definitely be cleaner)
 		if (this.vel.x!=0 || this.vel.y!=0 || (this.renderable&&this.renderable.isFlickering())) {
 			this.parent();
 			return true;
 		}
+
 
 		return false;
 	},
@@ -290,15 +291,27 @@ var PlayerEntity = me.ObjectEntity.extend({
 	hurt : function () {
 		if (!this.renderable.flickering)
 		{
-			this.renderable.flicker(45);
+			this.renderable.flicker(100);
+
+			if (this.vel.x >= 0) {
+				this.maxVel.x = 20;
+				this.vel.x = -80;
+				this.vel.y = -15;
+			}
+			else  {
+				this.maxVel.x = 20;
+				this.vel.x = 80;
+				this.vel.y = -15;
+			}
 			// flash the screen
 			// me.game.viewport.fadeIn("#FFFFFF", 75);
-			me.audio.play("die", false);
+			// me.audio.play("die", false);
 			me.game.HUD.updateItemValue("score", -1);
 			this.hitpoints -= 1;
 
-			// DEATH!
+			// DEATH!x
 			if (this.hitpoints <= 1) {me.levelDirector.reloadLevel();}
+			this.maxVel.x = 6;
 		}
 	},
 
