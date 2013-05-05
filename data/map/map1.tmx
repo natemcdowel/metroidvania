@@ -52,15 +52,15 @@
  </layer>
  <objectgroup color="#55ff00" name="secondplayer" width="120" height="40"/>
  <objectgroup color="#55ff00" name="player" width="120" height="40">
-  <object name="mainPlayer" x="175" y="1260" width="70" height="70">
+  <object name="mainPlayer" x="1540" y="875" width="70" height="70">
    <properties>
-    <property name="animationspeed" value="5"/>
+    <property name="animationspeed" value="1"/>
     <property name="image" value="simon"/>
-    <property name="spriteheight" value="100"/>
-    <property name="spritewidth" value="140"/>
+    <property name="spriteheight" value="160"/>
+    <property name="spritewidth" value="200"/>
    </properties>
   </object>
-  <object name="sword" x="245" y="1260" width="70" height="35"/>
+  <object name="sword" x="245" y="1260"/>
   <object name="BatEntity" x="48" y="975" width="350" height="35">
    <properties>
     <property name="animationspeed" value="3"/>

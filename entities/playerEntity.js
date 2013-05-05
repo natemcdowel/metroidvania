@@ -62,7 +62,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 			this.renderable.animationspeed = settings.animationspeed; 
 		}
 
-
+		this.renderable.animationspeed = 6;
 				
 		// enable keyboard
 		me.input.bindKey(me.input.KEY.LEFT,	 "left");
@@ -76,7 +76,11 @@ var PlayerEntity = me.ObjectEntity.extend({
 		this.renderable.addAnimation ("crouch",  [3]);
 		this.renderable.addAnimation ("jumpup",  [4]);
 		this.renderable.addAnimation ("jumpdown", [5]);
-		this.renderable.addAnimation ("attack",  [9,10,11]);
+		this.renderable.addAnimation ("attack",  [7,8,9,10]);
+		this.renderable.addAnimation ("crouchattack",  [11,12,13,14]);
+		this.renderable.addAnimation ("hurt",  [16,17,18]);
+
+
 		// set as default
 		this.renderable.setCurrentAnimation("walk"); 
 		// this.renderable.animationspeed = 1;
@@ -112,9 +116,15 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 				this.renderable.setCurrentAnimation("crouch");
 				if (me.input.isKeyPressed('attack')) { 
-
+					
+					if (self.vel.x != 0) {
+						if (clientData[0] == 'left') self.vel.x = -.5;  
+						if (clientData[0] == 'right') self.vel.x = .5;
+					}
+					this.renderable.setCurrentAnimation("crouchattack");
 					this.crouchAttack = true;
 					this.attack = true;
+
 					// console.log(clientData[0])
 				}
 			}
@@ -220,6 +230,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 					this.attack = true;
 				}
 			}	
+			if (this.vel.x == 0 && this.vel.y == 0) this.renderable.setCurrentAnimation("walk")
 		}
 		//  End movement
 
@@ -270,8 +281,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 				}
 				default : break;
 			}
-
-			
 		}
 	
 		// check if we moved (a "stand" animation would definitely be cleaner)
@@ -279,7 +288,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 			this.parent();
 			return true;
 		}
-
 
 		return false;
 	},
@@ -290,7 +298,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 	 */
 	hurt : function () {
 		if (!this.renderable.flickering)
-		{
+		{	
+			this.renderable.setCurrentAnimation("hurt", "walk");
 			this.renderable.flicker(100);
 
 			if (this.vel.x >= 0) {
@@ -303,13 +312,11 @@ var PlayerEntity = me.ObjectEntity.extend({
 				this.vel.x = 80;
 				this.vel.y = -15;
 			}
-			// flash the screen
-			// me.game.viewport.fadeIn("#FFFFFF", 75);
-			// me.audio.play("die", false);
+
 			me.game.HUD.updateItemValue("score", -1);
 			this.hitpoints -= 1;
 
-			// DEATH!x
+			// DEATH!
 			if (this.hitpoints <= 1) {me.levelDirector.reloadLevel();}
 			this.maxVel.x = 6;
 		}
