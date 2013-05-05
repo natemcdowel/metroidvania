@@ -124,8 +124,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 			this.updateColRect(25,75, -1,0); 
 
 			// Which direction movement
-			if (clientData[0] == 'left') self.vel.x = -1;  
-			if (clientData[0] == 'right') self.vel.x = 1;
+			if (clientData[0] == 'left') self.vel.x = -.5;  
+			if (clientData[0] == 'right') self.vel.x = .5;
 			self.renderable.setCurrentAnimation("attack", function() {
 
 				self.renderable.setAnimationFrame();
