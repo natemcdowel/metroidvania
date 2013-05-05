@@ -81,17 +81,7 @@
     <property name="velX" value="4"/>
    </properties>
   </object>
-  <object name="SkeletonEntity" x="538" y="1228" width="700" height="35">
-   <properties>
-    <property name="animationspeed" value="10"/>
-    <property name="gravity" value="0"/>
-    <property name="image" value="skeleton"/>
-    <property name="spriteheight" value="100"/>
-    <property name="spritewidth" value="100"/>
-    <property name="velX" value="3"/>
-   </properties>
-  </object>
-  <object name="SkeletonEntity" x="2237" y="1228" width="700" height="35">
+  <object name="SkeletonEntity" x="2513" y="1228" width="700" height="35">
    <properties>
     <property name="animationspeed" value="10"/>
     <property name="gravity" value="0"/>
