@@ -13,7 +13,7 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		
 		// make it collidable
 		this.collidable = true;
-		this.hitpoints = 100;
+		this.hitpoints = 8;
 		this.strength = 5;
 		this.xp = 10;
 
@@ -73,16 +73,16 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		{	
 			var player = me.game.getEntityByName("mainPlayer")[0];
 			var self = this;
-			this.hitpoints -= Math.ceil(player.strength * 1);
+			this.hitpoints -= Math.ceil(me.game.strength * 1);
 			this.hurt = true;
 			setTimeout(function(){self.hurt = false;},1000);
 
-			me.game.HUD.addItem("hit", new ScoreObject((this.pos.x+25) - me.game.viewport.pos.x,(this.pos.y-30) - me.game.viewport.pos.y,Math.ceil(player.strength * 1), 1));
+			me.game.HUD.addItem("hit", new ScoreObject((this.pos.x+25) - me.game.viewport.pos.x,(this.pos.y-30) - me.game.viewport.pos.y,Math.ceil(me.game.strength * 1), 1));
 			// flash the screen
 			if (this.hitpoints <= 0) {
 
 				
-				player.xp += this.xp;
+				me.game.xp += this.xp;
 				this.alive = false; 
 				this.collidable = false;
 				me.game.HUD.updateItemValue("experience", this.xp);
@@ -168,6 +168,11 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
     		}
 		} else {
 			this.vel.x = 0;
+		}
+
+		// Removes BORDERLANDS style hit point 
+		if (this.renderable.flickerTimer < 10) {
+			me.game.HUD.removeItem("hit");
 		}
 		
 		// check & update movement

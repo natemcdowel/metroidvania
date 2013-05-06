@@ -39,8 +39,8 @@ var weaponEntity = me.ObjectEntity.extend({
 			if (clientData[0] == 'right') {
 
 				if (mainPlayer[0].crouchAttack == true) {
-					console.log('worked')
-					this.updateColRect(10,150, 65,25);
+					// console.log('worked')
+					this.updateColRect(10,150, 85,25);
 					mainPlayer[0].crouchAttack = false
 				} 	 	
 				else this.updateColRect(103,150, 65,25);
@@ -78,13 +78,13 @@ var weaponEntity = me.ObjectEntity.extend({
 					// alert('test')
 				}
 				
-				case "spikeObject" :{
-					// jump & die
-					this.vel.y -= this.maxVel.y * me.timer.tick;
-					// this.hurt();
+				// case "spikeObject" :{
+				// 	// jump & die
+				// 	this.vel.y -= this.maxVel.y * me.timer.tick;
+				// 	// this.hurt();
 
-					break;
-				}
+				// 	break;
+				// }
 
 				default : break;
 			}

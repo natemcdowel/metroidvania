@@ -103,7 +103,7 @@ var game = {
 		// add our enemy entity in the entity pool
 		// me.entityPool.add("BatEntity", BatEnemyEntity);
 		me.entityPool.add("SkeletonEntity", SkeletonEnemyEntity);
-		// me.entityPool.add("CrowEntity", CrowEnemyEntity);
+		me.entityPool.add("CrowEntity", CrowEnemyEntity);
 		// var coin2 = me.entityPool.add("CoinEntity", CoinEntity); 
 
 		// add our player entity in the entity pool

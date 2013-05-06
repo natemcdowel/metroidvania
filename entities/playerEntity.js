@@ -52,9 +52,13 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// this.updateColRect(20,32, -1,0); 
 		this.dying = false;
 		this.hitpoints = 50;
-		this.xp = 0;
-		this.lvl = 1;
-		this.strength = 1;
+		// this.xp = 0;
+		// this.lvl = 1;
+		// this.strength = 1;
+
+		me.game.xp = 0;
+		me.game.lvl = 1;
+		me.game.strength = 1;
 
 
 
@@ -68,7 +72,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// 	this.renderable.animationspeed = settings.animationspeed; 
 		// }
 
-		this.renderable.animationspeed = 6;
+		this.renderable.animationspeed = 5;
 				
 		// enable keyboard
 		me.input.bindKey(me.input.KEY.LEFT,	 "left");
@@ -123,7 +127,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 				this.renderable.setCurrentAnimation("crouch");
 				if (me.input.isKeyPressed('attack')) { 
 					
-					if (self.vel.x != 0) {
+					if (self.vel.x == 0) {
 						if (clientData[0] == 'left') self.vel.x = -.5;  
 						if (clientData[0] == 'right') self.vel.x = .5;
 					}
@@ -224,21 +228,28 @@ var PlayerEntity = me.ObjectEntity.extend({
 					// me.audio.play("jump", false);
 				}
 			} 
-			// Jumping
-			else if (this.vel.y > 0) {
-				this.renderable.setCurrentAnimation("jumpdown"); 
-				if (me.input.isKeyPressed('attack'))	{ 
-					this.renderable.setCurrentAnimation("attack");
-					this.attack = true;
+			if (this.vel.y > 0 || this.vel.y < 0) {
+				// Jumping
+				if (this.vel.y > 0) {
+					if (this.vel.x < 0) this.vel.x -= this.accel.x * me.timer.tick;
+					if (this.vel.x > 0) this.vel.x += this.accel.x * me.timer.tick;
+					this.renderable.setCurrentAnimation("jumpdown"); 
+					if (me.input.isKeyPressed('attack'))	{ 
+						this.renderable.setCurrentAnimation("attack","jumpdown");
+						this.attack = true;
+					}
 				}
+				if (this.vel.y < 0) {
+					if (this.vel.x < 0) this.vel.x -= this.accel.x * me.timer.tick;
+					if (this.vel.x > 0) this.vel.x += this.accel.x * me.timer.tick;
+					this.renderable.setCurrentAnimation("jumpup")
+					if (me.input.isKeyPressed('attack'))	{ 
+						this.renderable.setCurrentAnimation("attack","jumpup");
+						this.attack = true;
+					}
+				}	
 			}
-			else if (this.vel.y < 0) {
-				this.renderable.setCurrentAnimation("jumpup")
-				if (me.input.isKeyPressed('attack'))	{ 
-					this.renderable.setCurrentAnimation("attack");
-					this.attack = true;
-				}
-			}	
+			if ((this.vel.y > 0 || this.vel.y < 0) && this.vel.x == 0) this.vel.x = .1;
 			if (this.vel.x == 0 && this.vel.y == 0) this.renderable.setCurrentAnimation("walk")
 		}
 		//  End movement
@@ -293,10 +304,10 @@ var PlayerEntity = me.ObjectEntity.extend({
 		}
 		
 		// Check for LEVEL UP!
-		if (this.xp > lvlcap[this.lvl]) {
+		if (me.game.xp > lvlcap[me.game.lvl]) {
 			this.level();
 		}
-		console.log(this.xp)
+		console.log(me.game.xp)
 		// check if we moved (a "stand" animation would definitely be cleaner)
 		if (this.vel.x!=0 || this.vel.y!=0 || (this.renderable&&this.renderable.isFlickering())) {
 			this.parent();
@@ -313,9 +324,9 @@ var PlayerEntity = me.ObjectEntity.extend({
 	level : function () {
 
 		me.game.HUD.addItem("levelup", new ScoreObject((this.pos.x+25) - me.game.viewport.pos.x,(this.pos.y-30) - me.game.viewport.pos.y,'LEVEL UP'));
-		this.lvl += 1; 
-		this.strength += .2; 
-		this.hitpoints += 20;
+		me.game.lvl += 1; 
+		me.game.strength += .6; 
+		me.game.hitpoints += 20;
 		me.game.HUD.updateItemValue("lvl", 1);
 		me.game.HUD.updateItemValue("experience", 0);
 		me.game.HUD.updateItemValue("score", 20);
