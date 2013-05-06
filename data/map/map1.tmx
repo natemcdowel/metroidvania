@@ -56,8 +56,8 @@
    <properties>
     <property name="animationspeed" value="5"/>
     <property name="image" value="simon"/>
-    <property name="spriteheight" value="160"/>
-    <property name="spritewidth" value="200"/>
+    <property name="spriteheight" value="240"/>
+    <property name="spritewidth" value="240"/>
    </properties>
   </object>
   <object name="sword" x="245" y="1260"/>
