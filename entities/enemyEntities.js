@@ -13,7 +13,9 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		
 		// make it collidable
 		this.collidable = true;
-		this.hitpoints = 3;
+		this.hitpoints = 100;
+		this.strength = 5;
+		this.xp = 10;
 
 		this.type = me.game.ENEMY_OBJECT;
 		this.timer = me.timer.getTime();
@@ -57,7 +59,6 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		// if (this.alive && (res.y > 0) && obj.falling) {
 
 		var self = this;
-		console.log(obj.name)
 		if (this.alive && obj.weapon == 'sword') {
 			this.hurting();
 		}
@@ -70,23 +71,31 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 
 		if (!this.renderable.flickering)
 		{	
+			var player = me.game.getEntityByName("mainPlayer")[0];
 			var self = this;
-			this.hitpoints -= 1;
+			this.hitpoints -= Math.ceil(player.strength * 1);
 			this.hurt = true;
-			setTimeout(function(){self.hurt = false;},1500);
+			setTimeout(function(){self.hurt = false;},1000);
 
+			me.game.HUD.addItem("hit", new ScoreObject((this.pos.x+25) - me.game.viewport.pos.x,(this.pos.y-30) - me.game.viewport.pos.y,Math.ceil(player.strength * 1), 1));
 			// flash the screen
 			if (this.hitpoints <= 0) {
+
 				
+				player.xp += this.xp;
 				this.alive = false; 
 				this.collidable = false;
+				me.game.HUD.updateItemValue("experience", this.xp);
 				this.renderable.flicker(45, function(){me.game.remove(self)});
+
 			}
 			else {
+				
 
-				me.game.HUD.updateItemValue("score", 1);
-				me.audio.play("enemykill", false);
+				// me.game.HUD.removeItem("hit")
+				// me.audio.play("enemykill", false);
 				this.renderable.flicker(45);
+
 			}
 		}
 	},
@@ -254,6 +263,10 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		}
 		
 		if (this.alive)	{
+			if (this.hurt) {
+				this.vel.x = 0;
+				this.vel.y = 0;
+			}
 			if (this.walkLeft && this.pos.x <= this.startX) {
 				this.vel.x = this.accel.x * me.timer.tick;
 				this.renderable.setCurrentAnimation("throwhead","walk");
@@ -279,6 +292,11 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 			this.vel.x = 0;
 		}
 		
+		// Removes BORDERLANDS style hit point 
+		if (this.renderable.flickerTimer < 10) {
+			me.game.HUD.removeItem("hit");
+		}
+
 		// check & update movement
 		this.updateMovement();
 		

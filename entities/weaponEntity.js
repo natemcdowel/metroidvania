@@ -34,16 +34,16 @@ var weaponEntity = me.ObjectEntity.extend({
 			setTimeout(function(){self.cooldown = true},700);
 			// Which side is the player attacking?	
 			if (clientData[0] == 'left') {
-				this.updateColRect(-108,150, 20,25);
+				this.updateColRect(-60,150, 65,25);
 			}
 			if (clientData[0] == 'right') {
 
 				if (mainPlayer[0].crouchAttack == true) {
 					console.log('worked')
-					this.updateColRect(10,150, 60,25);
+					this.updateColRect(10,150, 65,25);
 					mainPlayer[0].crouchAttack = false
 				} 	 	
-				else this.updateColRect(103,150, 20,25);
+				else this.updateColRect(103,150, 65,25);
 			}
 			self.collidable = false;
 		// }

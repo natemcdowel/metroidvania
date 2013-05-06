@@ -52,9 +52,9 @@
  </layer>
  <objectgroup color="#55ff00" name="secondplayer" width="120" height="40"/>
  <objectgroup color="#55ff00" name="player" width="120" height="40">
-  <object name="mainPlayer" x="1540" y="875" width="70" height="70">
+  <object name="mainPlayer" x="1015" y="1120" width="70" height="70">
    <properties>
-    <property name="animationspeed" value="1"/>
+    <property name="animationspeed" value="5"/>
     <property name="image" value="simon"/>
     <property name="spriteheight" value="160"/>
     <property name="spritewidth" value="200"/>

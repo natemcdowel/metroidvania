@@ -15,7 +15,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// y = 1232;
 		// Check if player reached screen and set position accordingly to new screen
 		if (levelDirection == 'west') {
-			x = me.game.currentLevel.width - 200;
+			x = me.game.currentLevel.width - 300;
 		}
 		if (levelDirection == 'east') {
 			x = 100; 
@@ -49,18 +49,24 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		 
 		// update the hit box
-		this.updateColRect(20,32, -1,0); 
+		// this.updateColRect(20,32, -1,0); 
 		this.dying = false;
-		this.hitpoints = 20;
+		this.hitpoints = 50;
+		this.xp = 0;
+		this.lvl = 1;
+		this.strength = 1;
+
+
+
 		this.mutipleJump = 0;
 
 		
 		// set the display around our position 
 		me.game.viewport.follow(this, me.game.viewport.AXIS.BOTH);
 
-		if (settings.animationspeed) {
-			this.renderable.animationspeed = settings.animationspeed; 
-		}
+		// if (settings.animationspeed) {
+		// 	this.renderable.animationspeed = settings.animationspeed; 
+		// }
 
 		this.renderable.animationspeed = 6;
 				
@@ -105,8 +111,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// console.log(this.pos.x + ' -- ' + this.pos.y)
 
 		// Updating hit box every frame
-		if (clientData[0] == 'left') this.updateColRect(0,75, -1,0); 
-		if (clientData[0] == 'right') this.updateColRect(65,75, -1,0); 
+		if (self.vel.x < 0) this.updateColRect(0,70, -1,100); 
+		if (self.vel.x > 0) this.updateColRect(110,70, -1,100); 
 		// if (self.attackFinished == false) this.updateColRect(65,0, -1,0); 
 		this.attack = false;
 
@@ -139,11 +145,14 @@ var PlayerEntity = me.ObjectEntity.extend({
 			// Attacking
 			if (!self.attackFinished) {
 
-				this.updateColRect(25,75, -1,0); 
+				// this.updateColRect(25,75, -1,0); 
+
 
 				// Which direction movement
 				if (clientData[0] == 'left') self.vel.x = -.5;  
 				if (clientData[0] == 'right') self.vel.x = .5;
+				if (self.vel.x > 0) this.updateColRect(0,70, -1,100); 
+				if (self.vel.x < 0) this.updateColRect(110,70, -1,100); 
 				self.renderable.setCurrentAnimation("attack", function() {
 
 					self.renderable.setAnimationFrame();
@@ -274,15 +283,20 @@ var PlayerEntity = me.ObjectEntity.extend({
 						// jump
 						this.vel.y -= this.maxVel.y * me.timer.tick;
 					} else {
-						this.hurt();
-
+		
+						this.hurt(res);
 					}
 					break;
 				}
 				default : break;
 			}
 		}
-	
+		
+		// Check for LEVEL UP!
+		if (this.xp > lvlcap[this.lvl]) {
+			this.level();
+		}
+		console.log(this.xp)
 		// check if we moved (a "stand" animation would definitely be cleaner)
 		if (this.vel.x!=0 || this.vel.y!=0 || (this.renderable&&this.renderable.isFlickering())) {
 			this.parent();
@@ -292,18 +306,33 @@ var PlayerEntity = me.ObjectEntity.extend({
 		return false;
 	},
 
-	
+	/**
+	 * Bigger, Faster, Stronger
+	 */
+
+	level : function () {
+
+		me.game.HUD.addItem("levelup", new ScoreObject((this.pos.x+25) - me.game.viewport.pos.x,(this.pos.y-30) - me.game.viewport.pos.y,'LEVEL UP'));
+		this.lvl += 1; 
+		this.strength += .2; 
+		this.hitpoints += 20;
+		me.game.HUD.updateItemValue("lvl", 1);
+		me.game.HUD.updateItemValue("experience", 0);
+		me.game.HUD.updateItemValue("score", 20);
+		setTimeout(function(){me.game.HUD.removeItem("levelup");},2500);
+	},
+
 	/**
 	 * ouch
 	 */
-	hurt : function () {
+	hurt : function (res) {
 		if (!this.renderable.flickering)
 		{	
 			this.renderable.setCurrentAnimation("hurt", "walk");
 			this.renderable.flicker(100);
 
 			if (this.vel.x >= 0) {
-				this.maxVel.x = 20;
+				// this.maxVel.x = 20;
 				this.vel.x = -80;
 				this.vel.y = -15;
 			}
@@ -313,11 +342,15 @@ var PlayerEntity = me.ObjectEntity.extend({
 				this.vel.y = -15;
 			}
 
-			me.game.HUD.updateItemValue("score", -1);
-			this.hitpoints -= 1;
+			me.game.HUD.updateItemValue("score", -res.obj.strength);
+			this.hitpoints -= res.obj.strength;
 
 			// DEATH!
-			if (this.hitpoints <= 1) {me.levelDirector.reloadLevel();}
+			if (this.hitpoints <= 1) {
+
+				me.game.HUD.updateItemValue("score", 50);
+				me.levelDirector.reloadLevel();
+			}
 			this.maxVel.x = 6;
 		}
 	},

@@ -29,6 +29,11 @@
 	var playerYlast = '';
 	var nextScreenY = '';
 	var nextScreenX = '';
+	var lvlcap = Array(); 
+	lvlcap[1] = 9;
+	lvlcap[2] = 19;
+	lvlcap[3] = 29;
+	lvlcap[4] = 39;
 
 	var socket = io.connect('10.10.10.100:80');
 
@@ -90,6 +95,7 @@
 			 <script type="text/javascript" src="build/melonJS-0.9.7.js"></script>
 			 <script type="text/javascript" src="plugins/debug/debugPanel.js"></script>
 	         <script type="text/javascript" src="entities/entities.js"></script>
+	         <script type="text/javascript" src="entities/screen.js"></script>
 	         <script type="text/javascript" src="entities/playerEntity.js"></script>
 	         <script type="text/javascript" src="entities/player2Entity.js"></script>
 	         <script type="text/javascript" src="entities/enemyEntities.js"></script>

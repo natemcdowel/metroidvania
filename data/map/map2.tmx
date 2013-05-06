@@ -81,7 +81,7 @@
     <property name="velX" value="4"/>
    </properties>
   </object>
-  <object name="SkeletonEntity" x="632" y="1222" width="700" height="35">
+  <object name="SkeletonEntity" x="971" y="1228" width="700" height="35">
    <properties>
     <property name="animationspeed" value="10"/>
     <property name="gravity" value="0"/>
@@ -116,6 +116,11 @@
     <property name="to" value="map1"/>
    </properties>
   </object>
+  <object name="me.LevelEntity" x="4158" y="878" width="35" height="245">
+   <properties>
+    <property name="to" value="map1"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup color="#ffff00" name="coins" width="120" height="40"/>
  <objectgroup color="#ff0000" name="flies" width="120" height="40">
@@ -128,7 +133,7 @@
     <property name="velX" value="2"/>
    </properties>
   </object>
-  <object name="SkeletonEntity" x="1351" y="1228" width="700" height="35">
+  <object name="SkeletonEntity" x="1748" y="1228" width="700" height="35">
    <properties>
     <property name="animationspeed" value="10"/>
     <property name="gravity" value="0"/>

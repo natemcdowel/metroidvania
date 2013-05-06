@@ -14,8 +14,8 @@ var game = {
 		{name: "atascii",		type:"image",	src: "data/gfx/atascii_24px.png"},
 		{name: "background",	type:"image",	src: "data/gfx/background.png"},
 		{name: "cling",			type: "audio",	src: "data/audio/",	channel : 2},
-		{name: "die",			type: "audio",	src: "data/audio/",	channel : 1},
-		{name: "enemykill",		type: "audio",	src: "data/audio/",	channel : 1},
+		// {name: "die",			type: "audio",	src: "data/audio/04.wav"},
+		// {name: "enemykill",		type: "audio",	src: "data/audio/04.wav"},
 		{name: "jump",			type: "audio",	src: "data/audio/",	channel : 2},
 		// {name: "DST-GameForest",type: "audio",	src: "data/audio/",	channel : 1},
 		// level map
@@ -93,6 +93,8 @@ var game = {
 	loaded: function ()	{
 
 		// set the "Play/Ingame" Screen Object
+    	me.state.set(me.state.MENU, new TitleScreen());
+		// set the "Play/Ingame" Screen Object
 		me.state.set(me.state.PLAY, new PlayScreen());
 		
 		// set the fade transition effect
@@ -101,7 +103,7 @@ var game = {
 		// add our enemy entity in the entity pool
 		// me.entityPool.add("BatEntity", BatEnemyEntity);
 		me.entityPool.add("SkeletonEntity", SkeletonEnemyEntity);
-		me.entityPool.add("CrowEntity", CrowEnemyEntity);
+		// me.entityPool.add("CrowEntity", CrowEnemyEntity);
 		// var coin2 = me.entityPool.add("CoinEntity", CoinEntity); 
 
 		// add our player entity in the entity pool
@@ -111,6 +113,8 @@ var game = {
 		
 		// switch to PLAY state
 		me.state.change(me.state.PLAY);
+		    // display the menu title
+   		 // me.state.change(me.state.MENU);
 
 	}
 };
@@ -128,10 +132,13 @@ var PlayScreen = me.ScreenObject.extend( {
 		// me.game.addHUD(0,560,800,40);
 
 		// add a default HUD to the game mngr
-		me.game.addHUD(0,0,800,40);
+		me.game.addHUD(0,0,1280, 720);
 		
 		// add a new HUD item 
-		me.game.HUD.addItem("score", new ScoreObject(700,00));
+		me.game.HUD.addItem("score", new ScoreObject(0,00,'HP: ', 50));
+		me.game.HUD.addItem("experience", new ScoreObject(0,30,'XP: ', 0));
+		me.game.HUD.addItem("lvl", new ScoreObject(0,60,'LVL: ', 1)); 
+
 		// me.game.HUD.addItem("score", new ScoreObject(00,790));  
 		
 		// play some music
