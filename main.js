@@ -32,7 +32,7 @@ var game = {
 
 		// texturePacker
 		// {name: "texture",		type: "tps",	src: "data/gfx/goblin.json"},
-		{name: "simon",		type:"image",	src: "data/gfx/testattack3@4x.png"}, 
+		{name: "simon",		type:"image",	src: "data/gfx/playerattack3@4xx.png"},  
 		{name: "skeleton",		type:"image",	src: "data/gfx/Skeleton3@4x.png"},
 		{name: "skeletonhead",		type:"image",	src: "data/gfx/Skeleton3@4x.png"},
 		{name: "crow",		type:"image",	src: "data/gfx/Crow@4x.png"}, 
