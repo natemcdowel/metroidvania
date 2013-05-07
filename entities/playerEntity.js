@@ -52,6 +52,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// this.updateColRect(20,32, -1,0); 
 		this.dying = false;
 		this.hitpoints = 50;
+		this.collidable = false;
 		// this.xp = 0;
 		// this.lvl = 1;
 		// this.strength = 1;
@@ -96,9 +97,10 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// this.renderable.animationspeed = 1;
 		// set the renderable position to bottom center
 		this.anchorPoint.set(0.5, 1.0); 
+		if (clientData[0] == 'right')this.updateColRect(110,60, 130,100);
 		this.attackFinished = true;
 
-		console.log(this)
+
 
 	},
 
@@ -112,11 +114,20 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		var self = this;
 
+		this.animationspeed = 1;
+
 		// console.log(this.pos.x + ' -- ' + this.pos.y)
 
 		// Updating hit box every frame
-		if (self.vel.x < 0) this.updateColRect(0,70, -1,100); 
-		if (self.vel.x > 0) this.updateColRect(110,70, -1,100); 
+		// if (clientData[0] == 'left')  this.updateColRect(50,60, 130,100); 
+		// else if (clientData[0] == 'right')this.updateColRect(130,60, 130,100);  
+		// if (this.vel.x == 0 && this.vel.y == 0 && clientData[0] == 'left') {
+				
+		// 		this.renderable.setCurrentAnimation("walk");
+		// 		if (clientData[0] == 'left') this.updateColRect(0,0, 0,0); 
+		// 		if (clientData[0] == 'right')this.updateColRect(0,0, 0,0);  
+		// 		console.log(this.collisionBox)
+		// }
 		// if (self.attackFinished == false) this.updateColRect(65,0, -1,0); 
 		this.attack = false;
 
@@ -125,19 +136,22 @@ var PlayerEntity = me.ObjectEntity.extend({
 			if (me.input.isKeyPressed('down')) { 
 
 				this.renderable.setCurrentAnimation("crouch");
-				if (me.input.isKeyPressed('attack')) { 
+
+			}
+			if (me.input.isKeyPressed('down') && me.input.isKeyPressed('attack')) {			
 					
+					this.crouchAttack = true;
+					this.attack = true;
 					if (self.vel.x == 0) {
 						if (clientData[0] == 'left') self.vel.x = -.5;  
 						if (clientData[0] == 'right') self.vel.x = .5;
 					}
-					this.renderable.setCurrentAnimation("crouchattack");
-					this.crouchAttack = true;
-					this.attack = true;
+					self.renderable.setCurrentAnimation("crouchattack", function() {
+						self.renderable.setAnimationFrame();
+						self.attackFinished = true;
+					});
 
-					// console.log(clientData[0])
-				}
-			}
+			} 
 			else if (me.input.isKeyPressed('attack'))	{ 
 
 				this.attack = true;  
@@ -155,8 +169,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 				// Which direction movement
 				if (clientData[0] == 'left') self.vel.x = -.5;  
 				if (clientData[0] == 'right') self.vel.x = .5;
-				if (self.vel.x > 0) this.updateColRect(0,70, -1,100); 
-				if (self.vel.x < 0) this.updateColRect(110,70, -1,100); 
+				// if (clientData[0] == 'left') this.updateColRect(130,60, 130,100); 
+				// if (clientData[0] == 'right')this.updateColRect(50,60, 130,100);  
 				self.renderable.setCurrentAnimation("attack", function() {
 
 					self.renderable.setAnimationFrame();
@@ -165,6 +179,11 @@ var PlayerEntity = me.ObjectEntity.extend({
 			}
 			else if (me.input.isKeyPressed('left'))	{ 
 
+				// Offset for flipping character
+				if (clientData[0] == 'right') {
+					this.pos.x -= 70;
+				}
+				
 				this.renderable.setCurrentAnimation("walk");
 
 				// Loading next/previous level if at the end of the screen
@@ -184,6 +203,11 @@ var PlayerEntity = me.ObjectEntity.extend({
 				this.flipX(true);
 
 			} else if (me.input.isKeyPressed('right')) {
+
+				// Offset for flipping character
+				if (clientData[0] == 'left') {
+					this.pos.x += 70;
+				}
 
 				this.renderable.setCurrentAnimation("walk");
 
@@ -249,9 +273,11 @@ var PlayerEntity = me.ObjectEntity.extend({
 					}
 				}	
 			}
-			if ((this.vel.y > 0 || this.vel.y < 0) && this.vel.x == 0) this.vel.x = .1;
-			if (this.vel.x == 0 && this.vel.y == 0) this.renderable.setCurrentAnimation("walk")
+			// if ((this.vel.y > 0 || this.vel.y < 0) && this.vel.x == 0) this.vel.x = .1;
+
 		}
+
+		
 		//  End movement
 
 
@@ -267,6 +293,10 @@ var PlayerEntity = me.ObjectEntity.extend({
 		if (this.vel.y > 0 && this.pos.y < 150 ) {
 			levelDirection = 'north'; 
 		} 
+
+				//  Updating Hit Box
+		if (clientData[0] == 'left')  this.updateColRect(130,60, 140,100); 
+		else if (clientData[0] == 'right')this.updateColRect(50,60, 140,100);  
 
 		// check for collision with environment
 		this.updateMovement();
@@ -307,7 +337,9 @@ var PlayerEntity = me.ObjectEntity.extend({
 		if (me.game.xp > lvlcap[me.game.lvl]) {
 			this.level();
 		}
-		console.log(me.game.xp)
+
+
+
 		// check if we moved (a "stand" animation would definitely be cleaner)
 		if (this.vel.x!=0 || this.vel.y!=0 || (this.renderable&&this.renderable.isFlickering())) {
 			this.parent();

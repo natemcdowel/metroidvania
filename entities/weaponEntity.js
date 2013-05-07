@@ -19,7 +19,6 @@ var weaponEntity = me.ObjectEntity.extend({
 		this.weapon = 'sword';
 		this.cooldown = true;
 		
-
 	},
 
 	attack : function () {
@@ -34,16 +33,24 @@ var weaponEntity = me.ObjectEntity.extend({
 			setTimeout(function(){self.cooldown = true},700);
 			// Which side is the player attacking?	
 			if (clientData[0] == 'left') {
-				this.updateColRect(-60,150, 65,25);
+				
+				if (mainPlayer[0].crouchAttack == true) {
+					// console.log('worked')
+					this.updateColRect(-13,145, 185,25);
+					mainPlayer[0].crouchAttack = false
+				} 	
+				else {
+					this.updateColRect(-13,145, 150,25);
+				} 	
 			}
 			if (clientData[0] == 'right') {
 
 				if (mainPlayer[0].crouchAttack == true) {
 					// console.log('worked')
-					this.updateColRect(10,150, 85,25);
+					this.updateColRect(103,145, 185,25);
 					mainPlayer[0].crouchAttack = false
 				} 	 	
-				else this.updateColRect(103,150, 65,25);
+				else this.updateColRect(103,145, 150,25);
 			}
 			self.collidable = false;
 		// }
@@ -62,32 +69,9 @@ var weaponEntity = me.ObjectEntity.extend({
 
 		// COLLISIONS with various objects
 		var res = me.game.collide(this);
-		// console.log(res);
-		
-		if (res) {
-			switch (res.obj.type) {	
-				case me.game.ENEMY_OBJECT : {
-					// if ((res.y>0) && this.falling) {
-					// 	// jump
-					// 	this.vel.y -= this.maxVel.y * me.timer.tick;
-					// } else {
-					// 	this.hurt();
-					// 	this.enemyhit();
-					// }
-					// break;
-					// alert('test')
-				}
-				
-				// case "spikeObject" :{
-				// 	// jump & die
-				// 	this.vel.y -= this.maxVel.y * me.timer.tick;
-				// 	// this.hurt();
 
-				// 	break;
-				// }
+		// this.computeVelocity(this.vel);
+		// this.pos.add(this.vel);
 
-				default : break;
-			}
-		}
 	}
 });

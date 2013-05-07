@@ -249,7 +249,8 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 
 		// set the renderable position to bottom center
 		this.anchorPoint.set(0.5, 1.0);		
-		
+		this.updateColRect(10,80, 0,100);
+
 		// make it collidable
 		this.collidable = true;
 		this.hitpoints = 3;

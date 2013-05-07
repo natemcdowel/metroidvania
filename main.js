@@ -9,7 +9,9 @@ var game = {
 
 	// game assets
 	assets : [	
-		{name: "tileset",		type:"image",	src: "data/gfx/Forestground@4x.png"},
+		{name: "Wall@4x",		type:"image",	src: "data/gfx/Wall@4x.png"},
+		{name: "metatiles35x35",		type:"image",	src: "data/gfx/metatiles35x35.png"},
+		{name: "Forestground@4x",		type:"image",	src: "data/gfx/Forestground@4x.png"},
 		{name: "tileset",		type:"image",	src: "data/gfx/tileset.png"},
 		{name: "atascii",		type:"image",	src: "data/gfx/atascii_24px.png"},
 		{name: "background",	type:"image",	src: "data/gfx/background.png"},
@@ -103,7 +105,7 @@ var game = {
 		// add our enemy entity in the entity pool
 		// me.entityPool.add("BatEntity", BatEnemyEntity);
 		me.entityPool.add("SkeletonEntity", SkeletonEnemyEntity);
-		me.entityPool.add("CrowEntity", CrowEnemyEntity);
+		// me.entityPool.add("CrowEntity", CrowEnemyEntity);
 		// var coin2 = me.entityPool.add("CoinEntity", CoinEntity); 
 
 		// add our player entity in the entity pool

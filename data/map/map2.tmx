@@ -56,8 +56,8 @@
    <properties>
     <property name="animationspeed" value="5"/>
     <property name="image" value="simon"/>
-    <property name="spriteheight" value="160"/>
-    <property name="spritewidth" value="200"/>
+    <property name="spriteheight" value="240"/>
+    <property name="spritewidth" value="240"/>
    </properties>
   </object>
   <object name="sword" x="151" y="1030" width="70" height="35"/>
@@ -71,7 +71,7 @@
     <property name="velX" value="2"/>
    </properties>
   </object>
-  <object name="CrowEntity" x="1446" y="801" width="350" height="35">
+  <object name="CrowEntity" x="1382" y="661" width="350" height="35">
    <properties>
     <property name="animationspeed" value="5"/>
     <property name="gravity" value="0"/>
@@ -101,16 +101,6 @@
     <property name="velX" value="3"/>
    </properties>
   </object>
-  <object name="CrowEntity" x="2513" y="774" width="350" height="35">
-   <properties>
-    <property name="animationspeed" value="5"/>
-    <property name="gravity" value="0"/>
-    <property name="image" value="crow"/>
-    <property name="spriteheight" value="100"/>
-    <property name="spritewidth" value="100"/>
-    <property name="velX" value="4"/>
-   </properties>
-  </object>
   <object name="me.LevelEntity" x="7" y="871" width="35" height="245">
    <properties>
     <property name="to" value="map1"/>
@@ -124,15 +114,6 @@
  </objectgroup>
  <objectgroup color="#ffff00" name="coins" width="120" height="40"/>
  <objectgroup color="#ff0000" name="flies" width="120" height="40">
-  <object name="FlyEntity" x="1190" y="385" width="210" height="35">
-   <properties>
-    <property name="animationspeed" value="12"/>
-    <property name="gravity" value="0"/>
-    <property name="image" value="lameenemy"/>
-    <property name="spritewidth" value="24"/>
-    <property name="velX" value="2"/>
-   </properties>
-  </object>
   <object name="SkeletonEntity" x="1748" y="1228" width="700" height="35">
    <properties>
     <property name="animationspeed" value="10"/>
