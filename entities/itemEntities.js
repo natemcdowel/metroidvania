@@ -119,8 +119,8 @@ var ScoreObject = me.HUD_Item.extend( {
 		// create a font
 
 		this.name = name;
-		this.font = new me.BitmapFont("atascii", {x:24});
-		this.font.set("left", .7);
+		// this.font = new me.BitmapFont("atascii", {x:24});
+		this.font = new me.Font("Impact", 20, "yellow");
 		this.value = value;
 	},
 	/**
@@ -128,6 +128,7 @@ var ScoreObject = me.HUD_Item.extend( {
 	 */
 	draw : function (context, x, y) {
 		
+		if (typeof this.value == 'undefined') this.value = '';
 		this.font.draw (context, this.name+this.value, this.pos.x +x, this.pos.y+y);
 	}
 });

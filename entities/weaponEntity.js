@@ -58,7 +58,7 @@ var weaponEntity = me.ObjectEntity.extend({
 
 	update : function () {
 
-		this.updateColRect(0,0, 0,0);
+		this.updateColRect(4000,0, 4000,0);
 		mainPlayer = me.game.getEntityByName('mainPlayer')
 		this.pos.x = mainPlayer[0].pos.x;
 		this.pos.y = mainPlayer[0].pos.y;

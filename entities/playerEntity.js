@@ -12,6 +12,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		y = nextScreenY;
 
 		console.log(me.game.currentLevel.width)
+		console.log(me.game.currentLevel.height)
 		// y = 1232;
 		// Check if player reached screen and set position accordingly to new screen
 		if (levelDirection == 'west') {
@@ -84,10 +85,12 @@ var PlayerEntity = me.ObjectEntity.extend({
 		
 		// define a basic walking animatin
 		this.renderable.addAnimation ("walk",  [0,1,2]); 
+		this.renderable.addAnimation ("stand",  [0]); 
 		this.renderable.addAnimation ("crouch",  [3]);
 		this.renderable.addAnimation ("jumpup",  [4]);
 		this.renderable.addAnimation ("jumpdown", [5]);
 		this.renderable.addAnimation ("attack",  [7,8,9,10]);
+		this.renderable.addAnimation ("jumpattack",  [9,10]);
 		this.renderable.addAnimation ("crouchattack",  [11,12,13,14]);
 		this.renderable.addAnimation ("hurt",  [16,17,18]);
 
@@ -100,7 +103,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		if (clientData[0] == 'right')this.updateColRect(110,60, 130,100);
 		this.attackFinished = true;
 
-
+		this.angle -= 90;
 
 	},
 
@@ -115,67 +118,56 @@ var PlayerEntity = me.ObjectEntity.extend({
 		var self = this;
 
 		this.animationspeed = 1;
-
 		// console.log(this.pos.x + ' -- ' + this.pos.y)
-
-		// Updating hit box every frame
-		// if (clientData[0] == 'left')  this.updateColRect(50,60, 130,100); 
-		// else if (clientData[0] == 'right')this.updateColRect(130,60, 130,100);  
-		// if (this.vel.x == 0 && this.vel.y == 0 && clientData[0] == 'left') {
-				
-		// 		this.renderable.setCurrentAnimation("walk");
-		// 		if (clientData[0] == 'left') this.updateColRect(0,0, 0,0); 
-		// 		if (clientData[0] == 'right')this.updateColRect(0,0, 0,0);  
-		// 		console.log(this.collisionBox)
-		// }
-		// if (self.attackFinished == false) this.updateColRect(65,0, -1,0); 
 		this.attack = false;
+
+		var keys = { length: 0 };
+
+		document.onkeydown = function(e){
+		    if(!keys[e.keyCode])   {
+		        keys[e.keyCode] = true;
+		        keys.length++;
+		    }
+		}
+
+		document.onkeyup = function(e){
+		    if(keys[e.keyCode])   {
+		        keys[e.keyCode] = false;
+		        keys.length--;
+		    }
+		}
 
 		// Movement
 		if (this.renderable.flickerTimer < 70) {
-			if (me.input.isKeyPressed('down')) { 
-
-				this.renderable.setCurrentAnimation("crouch");
-
-			}
-			if (me.input.isKeyPressed('down') && me.input.isKeyPressed('attack')) {			
-					
-					this.crouchAttack = true;
-					this.attack = true;
-					if (self.vel.x == 0) {
-						if (clientData[0] == 'left') self.vel.x = -.5;  
-						if (clientData[0] == 'right') self.vel.x = .5;
-					}
-					self.renderable.setCurrentAnimation("crouchattack", function() {
-						self.renderable.setAnimationFrame();
-						self.attackFinished = true;
-					});
-
-			} 
-			else if (me.input.isKeyPressed('attack'))	{ 
-
+			if (me.input.isKeyPressed('attack'))	{ 
 				this.attack = true;  
 				self.attackFinished = false;
-
-				// setTimeout(function(){self.attackFinished = true;},400);
-
 			} 
 			// Attacking
 			if (!self.attackFinished) {
 
-				// this.updateColRect(25,75, -1,0); 
-
-
 				// Which direction movement
 				if (clientData[0] == 'left') self.vel.x = -.5;  
 				if (clientData[0] == 'right') self.vel.x = .5;
-				// if (clientData[0] == 'left') this.updateColRect(130,60, 130,100); 
-				// if (clientData[0] == 'right')this.updateColRect(50,60, 130,100);  
-				self.renderable.setCurrentAnimation("attack", function() {
 
-					self.renderable.setAnimationFrame();
-					self.attackFinished = true;
-				});
+				if (me.input.isKeyPressed('down')) {
+					self.renderable.setCurrentAnimation("crouchattack", function() {
+							self.renderable.setAnimationFrame();
+							self.attackFinished = true;
+					});
+				}
+				else {
+					self.renderable.setCurrentAnimation("attack", function() {
+
+						self.renderable.setAnimationFrame();
+						self.attackFinished = true;
+					});
+				}
+			}
+			else if (self.attackFinished && me.input.isKeyPressed('down')) {
+
+				this.renderable.setCurrentAnimation("crouch");
+
 			}
 			else if (me.input.isKeyPressed('left'))	{ 
 
@@ -195,14 +187,12 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 				// Chopping up client data to be passed to server
 	    		clientData[0] = 'left';
-	    		clientData[1] = clientid; 
-	    		clientData[2] = this.pos.x; 
-	    		clientData[3] = this.pos.y;
 
 				this.vel.x -= this.accel.x * me.timer.tick;
 				this.flipX(true);
 
-			} else if (me.input.isKeyPressed('right')) {
+			} 
+			else if (me.input.isKeyPressed('right')) {
 
 				// Offset for flipping character
 				if (clientData[0] == 'left') {
@@ -217,17 +207,12 @@ var PlayerEntity = me.ObjectEntity.extend({
 				if (this.pos.y > 1232) {levelDirection = 'south';}
 				nextScreenX = this.pos.x
 				nextScreenY = this.pos.y
-
 	    		clientData[0] = 'right';
-	    		clientData[1] = clientid; 
-	    		clientData[2] = this.pos.x; 
-	    		clientData[3] = this.pos.y;
 
 				// socketResponse('keypress',clientData);  
 				this.vel.x += this.accel.x * me.timer.tick;
 				this.flipX(false);
 			}
-			
 			if (me.input.isKeyPressed('jump')) { 
 				
 				// Loading next/previous level if at the end of the screen
@@ -236,45 +221,40 @@ var PlayerEntity = me.ObjectEntity.extend({
 				if (this.pos.y > 1232) {levelDirection = 'south';}
 				nextScreenX = this.pos.x
 				nextScreenY = this.pos.y
-				
 	    		clientData[0] = 'up';
-	    		clientData[1] = clientid; 
-	    		clientData[2] = this.pos.x;
-	    		clientData[3] = this.pos.y;
 
 				// reset the dblJump flag if off the ground
 				this.mutipleJump = (this.vel.y === 0)?1:this.mutipleJump;
-				
 				if (this.mutipleJump<=1) {  // 2 for double jump
-
-					// easy 'math' for double jump
 					this.vel.y -= (this.maxVel.y * this.mutipleJump++) * me.timer.tick;
-					// me.audio.play("jump", false);
 				}
 			} 
-			if (this.vel.y > 0 || this.vel.y < 0) {
-				// Jumping
-				if (this.vel.y > 0) {
-					if (this.vel.x < 0) this.vel.x -= this.accel.x * me.timer.tick;
-					if (this.vel.x > 0) this.vel.x += this.accel.x * me.timer.tick;
-					this.renderable.setCurrentAnimation("jumpdown"); 
-					if (me.input.isKeyPressed('attack'))	{ 
-						this.renderable.setCurrentAnimation("attack","jumpdown");
-						this.attack = true;
-					}
-				}
-				if (this.vel.y < 0) {
-					if (this.vel.x < 0) this.vel.x -= this.accel.x * me.timer.tick;
-					if (this.vel.x > 0) this.vel.x += this.accel.x * me.timer.tick;
-					this.renderable.setCurrentAnimation("jumpup")
-					if (me.input.isKeyPressed('attack'))	{ 
-						this.renderable.setCurrentAnimation("attack","jumpup");
-						this.attack = true;
-					}
-				}	
-			}
-			// if ((this.vel.y > 0 || this.vel.y < 0) && this.vel.x == 0) this.vel.x = .1;
+			if (this.vel.y > 0 || this.vel.y < 0) {  // Jumping
+				
 
+				if (this.vel.x < 0) this.vel.x -= this.accel.x * me.timer.tick;
+				if (this.vel.x > 0) this.vel.x += this.accel.x * me.timer.tick;
+				if (me.input.isKeyPressed('attack'))	{ 
+					this.renderable.setCurrentAnimation("attack",function() {
+
+						if (this.vel.y < 0) this.renderable.setCurrentAnimation("jumpup");
+						if (this.vel.y > 0) this.renderable.setCurrentAnimation("jumpdown");
+						if (this.vel.x < 0) this.vel.x -= this.accel.x * me.timer.tick;
+						if (this.vel.x > 0) this.vel.x += this.accel.x * me.timer.tick;
+
+					});
+
+
+					this.attack = true;
+				}
+				else {
+						if (this.vel.y < 0) this.renderable.setCurrentAnimation("jumpup");
+						if (this.vel.y > 0) this.renderable.setCurrentAnimation("jumpdown");
+				}
+			}
+			if (this.vel.x == 0 && this.vel.y == 0 && !me.input.isKeyPressed('crouch')) this.renderable.setCurrentAnimation("stand");
+
+			// if ((this.vel.y > 0 || this.vel.y < 0) && this.vel.x == 0) this.vel.x = .1;
 		}
 
 		
@@ -345,8 +325,9 @@ var PlayerEntity = me.ObjectEntity.extend({
 			this.parent();
 			return true;
 		}
-
-		return false;
+		else {
+			return false;
+		}
 	},
 
 	/**
