@@ -44,11 +44,11 @@ var PlayerEntity = me.ObjectEntity.extend({
 		socketResponse('changemapserver', socketArray);  
 
 		// walking & jumping speed 
-		this.setVelocity(12, 11); 
+		this.setVelocity(12, 25); 
 		
-		this.setFriction(0.4,0); 
+		this.setFriction(1.2,0); 
 
-		 
+		this.gravity = 2
 		// update the hit box
 		// this.updateColRect(20,32, -1,0); 
 		this.dying = false;
@@ -146,8 +146,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 			if (!self.attackFinished) {
 
 				// Which direction movement
-				if (clientData[0] == 'left') self.vel.x = -.5;  
-				if (clientData[0] == 'right') self.vel.x = .5;
+				if (clientData[0] == 'left') self.vel.x = -1.5;  
+				if (clientData[0] == 'right') self.vel.x = 1.5;
 
 				if (me.input.isKeyPressed('down')) {
 					self.renderable.setCurrentAnimation("crouchattack", function() {
