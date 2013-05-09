@@ -59,7 +59,7 @@ var game = {
 	onload: function()
 	{
 		// init the video
-		// me.sys.useNativeAnimFrame = true;
+		me.sys.useNativeAnimFrame = true;
 		// me.sys.fps = 30;
 		if (!me.video.init('screen', 1280, 720, true, 'auto')) { 
 			alert("Sorry but your browser does not support html 5 canvas. Please try with another one!");

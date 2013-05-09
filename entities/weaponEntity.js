@@ -30,6 +30,8 @@ var weaponEntity = me.ObjectEntity.extend({
 			// self.collidable = true;
 			self.cooldown = false;
 
+			mainPlayer[0].renderable.animationspeed = 2;
+
 			setTimeout(function(){self.cooldown = true},700);
 			// Which side is the player attacking?	
 			if (clientData[0] == 'left') {

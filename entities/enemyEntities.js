@@ -38,7 +38,7 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 			else this.flipX(false);
 			//create vector based on player's postion
 	        var xDir = player.pos.x - this.pos.x; 
-	        var yDir = player.pos.y - this.pos.y;
+	        var yDir = (player.pos.y+140) - this.pos.y;
     	}
 
         //Decide distance
