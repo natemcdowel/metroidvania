@@ -44,7 +44,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		socketResponse('changemapserver', socketArray);  
 
 		// walking & jumping speed 
-		this.setVelocity(6, 22); 
+		this.setVelocity(12, 11); 
 		
 		this.setFriction(0.4,0); 
 
@@ -74,7 +74,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// 	this.renderable.animationspeed = settings.animationspeed; 
 		// }
 
-		this.renderable.animationspeed = 5;
+		this.renderable.animationspeed = 2;
 				
 		// enable keyboard
 		me.input.bindKey(me.input.KEY.LEFT,	 "left");
@@ -117,7 +117,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		var self = this;
 
-		this.animationspeed = 1;
 		// console.log(this.pos.x + ' -- ' + this.pos.y)
 		this.attack = false;
 
@@ -222,29 +221,22 @@ var PlayerEntity = me.ObjectEntity.extend({
 				nextScreenX = this.pos.x
 				nextScreenY = this.pos.y
 	    		clientData[0] = 'up';
-
 				// reset the dblJump flag if off the ground
 				this.mutipleJump = (this.vel.y === 0)?1:this.mutipleJump;
 				if (this.mutipleJump<=1) {  // 2 for double jump
 					this.vel.y -= (this.maxVel.y * this.mutipleJump++) * me.timer.tick;
 				}
 			} 
-			if (this.vel.y > 0 || this.vel.y < 0) {  // Jumping
-				
-
+			if (this.vel.y > 0 || this.vel.y < 0) {  // Jumping		
 				if (this.vel.x < 0) this.vel.x -= this.accel.x * me.timer.tick;
 				if (this.vel.x > 0) this.vel.x += this.accel.x * me.timer.tick;
 				if (me.input.isKeyPressed('attack'))	{ 
 					this.renderable.setCurrentAnimation("attack",function() {
-
 						if (this.vel.y < 0) this.renderable.setCurrentAnimation("jumpup");
 						if (this.vel.y > 0) this.renderable.setCurrentAnimation("jumpdown");
 						if (this.vel.x < 0) this.vel.x -= this.accel.x * me.timer.tick;
 						if (this.vel.x > 0) this.vel.x += this.accel.x * me.timer.tick;
-
 					});
-
-
 					this.attack = true;
 				}
 				else {
@@ -375,7 +367,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 				me.game.HUD.updateItemValue("score", 50);
 				me.levelDirector.reloadLevel();
 			}
-			this.maxVel.x = 6;
+			this.maxVel.x = 12;
 		}
 	},
 
