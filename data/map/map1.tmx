@@ -97,6 +97,14 @@
     <property name="velX" value="3"/>
    </properties>
   </object>
+  <object name="secondPlayer" x="1041" y="787" width="70" height="70">
+   <properties>
+    <property name="" value=""/>
+    <property name="image" value="simon"/>
+    <property name="spriteheight" value="240"/>
+    <property name="spritewidth" value="240"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup color="#ffff00" name="coins" width="120" height="40"/>
  <objectgroup color="#ff0000" name="flies" width="120" height="40">
