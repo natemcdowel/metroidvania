@@ -87,15 +87,13 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 				this.collidable = false;
 				me.game.HUD.updateItemValue("experience", this.xp);
 				this.renderable.flicker(45, function(){me.game.remove(self)});
+				me.audio.play("04", false);
 
 			}
 			else {
 				
-
-				// me.game.HUD.removeItem("hit")
-				// me.audio.play("enemykill", false);
 				this.renderable.flicker(45);
-
+				me.audio.play("06", false);
 			}
 		}
 	},
@@ -314,10 +312,10 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 
 var ShotEntity = AllEnemyEntity.extend({
 
-	newAngle: 0, 
-
     init: function(x, y, settings, direction) {
 
+    	this.rotate = 3;
+		
 		// call the constructor
 	    this.parent(x, y, settings);
 
@@ -348,13 +346,9 @@ var ShotEntity = AllEnemyEntity.extend({
 
 	update : function () {
 
-		        // Set the new angle increment - Big Numbers = More Fast Spin
-        this.newAngle += 20;
-        
-        if (this.newAngle > 360)
-         this.newAngle = 0;        
+		this.rotate += 10;
+		this.renderable.angle = Number.prototype.degToRad (this.rotate);
 
-        this.angle = Number.prototype.degToRad(this.newAngle);
 		this.updateMovement();
 
 		if (this.vel.x == 0) me.game.remove(this)

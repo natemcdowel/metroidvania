@@ -38,6 +38,7 @@ io.sockets.on('connection', function (socket) {
   socket.on('keypress', function (data) {
     //io.sockets.emit('playermove', data[0], data[1], data[2], data[3], data[4]);  
     // Storing users current map screen
+    users[data[1]][0]=data[0]; 
     users[data[1]][1]=data[1]; 
     users[data[1]][2]=data[2];  
     users[data[1]][3]=data[3]; 

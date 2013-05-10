@@ -10,17 +10,19 @@ var Player2Entity = me.ObjectEntity.extend({
 		// call the constructor
 		this.parent(x, y , settings);
 			 
-		// walking & jumping speed
-		this.setVelocity(6, 25);
+		// walking & jumping speed 
+		this.setVelocity(12, 25); 
 		
-		this.setFriction(0.4,0);
+		this.setFriction(1.2,0); 
+
+		this.gravity = 2
 		
 		// update the hit box
 		this.updateColRect(20,32, -1,0);
 		this.dying = false;
 		
 		this.mutipleJump = 1;
-	
+		
 		// set the display around our position 
 		me.game.viewport.follow(this, me.game.viewport.AXIS.BOTH);
 				
@@ -32,18 +34,20 @@ var Player2Entity = me.ObjectEntity.extend({
 		me.input.bindKey(me.input.KEY.DOWN,	"2down");
 
 		
-		// set a renderable
-		this.renderable = game.texture.createAnimationFromName([
-			"walk0001.png", "walk0002.png", "walk0003.png",
-			"walk0004.png", "walk0005.png", "walk0006.png",
-			"walk0007.png", "walk0008.png", "walk0009.png",
-			"walk0010.png", "walk0011.png"
-		]);
-		
 		// define a basic walking animatin
-		this.renderable.addAnimation ("walk",  [0,2,1]);
+		this.renderable.addAnimation ("walk",  [0,1,2]); 
+		this.renderable.addAnimation ("stand",  [0]); 
+		this.renderable.addAnimation ("crouch",  [3]);
+		this.renderable.addAnimation ("jumpup",  [4]);
+		this.renderable.addAnimation ("jumpdown", [5]);
+		this.renderable.addAnimation ("attack",  [7,8,9,10], 1);
+		this.renderable.addAnimation ("jumpattack",  [9,10],1);
+		this.renderable.addAnimation ("crouchattack",  [11,12,13,14],1);
+		this.renderable.addAnimation ("hurt",  [16,17,18]);
+
+		this.renderable.animationspeed = 2;
 		// set as default
-		this.renderable.setCurrentAnimation("walk");
+		this.renderable.setCurrentAnimation("walk"); 
 
 		// set the renderable position to bottom center
 		this.anchorPoint.set(0.5, 1.0);
@@ -88,16 +92,22 @@ var Player2Entity = me.ObjectEntity.extend({
 
 			// Player x, y, map
 			if (clientid == 0) {
+				player2Action = users[1][0];
 				playerX = users[1][2];
 				playerY = users[1][3];
+
 			}
 			if (clientid == 1) {
+				player2Action = users[0][0];
 				playerX = users[0][2];
 				playerY = users[0][3];
 			}
 			users = users;
 		});  
 
+		if (player2Action == 'left') this.flipX(true); 
+		if (player2Action == 'right') this.flipX(false); 
+		this.renderable.setCurrentAnimation("walk"); 
 			// console.log(playerMap + ' | ' + me.levelDirector.getCurrentLevelId())
 
 			// if (playerMap != me.levelDirector.getCurrentLevelId()) {
@@ -207,15 +217,22 @@ var Player2Entity = me.ObjectEntity.extend({
 			if(users[0][4] != users[1][4]) {
 
 				visiblePlayer = false;
-
+				
 			} 
 			else {visiblePlayer = true;} 
 		});   
 
 		this.visible = visiblePlayer;  
+		
+		
 		this.pos.x = playerX;
 		this.pos.y = playerY; 
+		console.log(player2Action)
 
+		// check for collision with environment
+		this.updateMovement();
+
+		this.parent();
 		return true;
 	},
 

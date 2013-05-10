@@ -89,9 +89,9 @@ var PlayerEntity = me.ObjectEntity.extend({
 		this.renderable.addAnimation ("crouch",  [3]);
 		this.renderable.addAnimation ("jumpup",  [4]);
 		this.renderable.addAnimation ("jumpdown", [5]);
-		this.renderable.addAnimation ("attack",  [7,8,9,10]);
-		this.renderable.addAnimation ("jumpattack",  [9,10]);
-		this.renderable.addAnimation ("crouchattack",  [11,12,13,14]);
+		this.renderable.addAnimation ("attack",  [7,8,9,10], 1);
+		this.renderable.addAnimation ("jumpattack",  [9,10],1);
+		this.renderable.addAnimation ("crouchattack",  [11,12,13,14],1);
 		this.renderable.addAnimation ("hurt",  [16,17,18]);
 
 
@@ -102,8 +102,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 		this.anchorPoint.set(0.5, 1.0); 
 		if (clientData[0] == 'right')this.updateColRect(110,60, 130,100);
 		this.attackFinished = true;
-
-		this.angle -= 90;
+		this.rotate = 10;
+		// this.renderable.angle = Number.prototype.degToRad (90);
 
 	},
 
@@ -119,7 +119,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		// console.log(this.pos.x + ' -- ' + this.pos.y)
 		this.attack = false;
-
+		// this.rotate += 10;
+		// this.renderable.angle = Number.prototype.degToRad (this.rotate);
 		var keys = { length: 0 };
 
 		document.onkeydown = function(e){

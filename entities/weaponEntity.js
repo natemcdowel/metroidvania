@@ -54,7 +54,14 @@ var weaponEntity = me.ObjectEntity.extend({
 				} 	 	
 				else this.updateColRect(103,145, 150,25);
 			}
-			self.collidable = false;
+			// self.collidable = false;
+					// COLLISIONS with various objects
+		var res = me.game.collide(this);
+		console.log(res)
+		if (!res) {
+			console.log('worked')
+			// me.audio.play("35", false); 
+		}
 		// }
 	},
 
@@ -69,8 +76,6 @@ var weaponEntity = me.ObjectEntity.extend({
 			this.attack(); 
 		}
 
-		// COLLISIONS with various objects
-		var res = me.game.collide(this);
 
 		// this.computeVelocity(this.vel);
 		// this.pos.add(this.vel);

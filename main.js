@@ -9,19 +9,23 @@ var game = {
 
 	// game assets
 	assets : [	
-		{name: "Sky@4x",		type:"image",	src: "data/gfx/background/Sky@4x.png"},
+
+		{name: "Walls@4x",		type:"image",	src: "data/gfx/objects/Walls@4x.png"},   
+		// {name: "Sky@4x",		type:"image",	src: "data/gfx/background/Sky@4x.png"},
 		{name: "SkyBackground",		type:"image",	src: "data/gfx/background/SkyBackground.png"},
-		{name: "Wall@4x",		type:"image",	src: "data/gfx/Wall@4x.png"}, 
-		{name: "Walls@4x",		type:"image",	src: "data/gfx/objects/Walls@4x.png"}, 
-		{name: "metatiles35x35",		type:"image",	src: "data/gfx/metatiles35x35.png"},
-		{name: "Forestground@4x",		type:"image",	src: "data/gfx/Forestground@4x.png"},
+		// {name: "Wall@4x",		type:"image",	src: "data/gfx/Wall@4x.png"}, 
+
+		// {name: "metatiles35x35",		type:"image",	src: "data/gfx/metatiles35x35.png"},
+		// {name: "Forestground@4x",		type:"image",	src: "data/gfx/Forestground@4x.png"},
 		{name: "tileset",		type:"image",	src: "data/gfx/tileset.png"},
 		{name: "atascii",		type:"image",	src: "data/gfx/atascii_24px.png"},
 		{name: "background",	type:"image",	src: "data/gfx/background.png"},
-		{name: "cling",			type: "audio",	src: "data/audio/",	channel : 2},
+		{name: "04",			type: "audio",	src: "data/audio/",	channel : 1},
+		{name: "06",			type: "audio",	src: "data/audio/",	channel : 1},
+		{name: "35",			type: "audio",	src: "data/audio/",	channel : 1},
 		// {name: "die",			type: "audio",	src: "data/audio/04.wav"},
-		// {name: "enemykill",		type: "audio",	src: "data/audio/04.wav"},
-		{name: "jump",			type: "audio",	src: "data/audio/",	channel : 2},
+		// {name: "04",		type: "audio",	src: "data/audio/04.wav"},
+		// {name: "jump",			type: "audio",	src: "data/audio/",	channel : 2},
 		// {name: "DST-GameForest",type: "audio",	src: "data/audio/",	channel : 1},
 		// level map
 		{name: "map1",			type: "tmx",	src: "data/map/map1.tmx"},
@@ -40,10 +44,10 @@ var game = {
 		{name: "skeletonhead",		type:"image",	src: "data/gfx/Skeleton3@4x.png"},
 		{name: "crow",		type:"image",	src: "data/gfx/Crow@4x.png"}, 
 		{name: "bat",		type:"image",	src: "data/gfx/Bat.png"},
-		{name: "symph",		type:"image",	src: "data/gfx/sword.png"}, 
-		{name: "goblin",		type:"image",	src: "data/gfx/gobl.png"},   
-		{name: "lameenemy",		type:"image",	src: "data/gfx/lameenemyspr.png"},   
-		{name: "texture",		type: "tps",	src: "data/gfx/texture.json"},
+		// {name: "symph",		type:"image",	src: "data/gfx/sword.png"}, 
+		// {name: "goblin",		type:"image",	src: "data/gfx/gobl.png"},   
+		// {name: "lameenemy",		type:"image",	src: "data/gfx/lameenemyspr.png"},   
+		// {name: "texture",		type: "tps",	src: "data/gfx/texture.json"},
 		{name: "texture",		type:"image",	src: "data/gfx/texture.png"}, 
 		 
 	],  
@@ -74,7 +78,7 @@ var game = {
 		//me.plugin.register(debugPanel, "debug");
 		
 		// initialize the "sound engine"
-		me.audio.init("mp3,ogg");
+		me.audio.init("wav");
 		
 		// set all ressources to be loaded
 		me.loader.onload = this.loaded.bind(this);
@@ -131,7 +135,7 @@ var PlayScreen = me.ScreenObject.extend( {
 	// no need to do somehting else
 	onResetEvent: function() {
 		// load a level
-		me.levelDirector.loadLevel("map1");
+		me.levelDirector.loadLevel("map2");
 		
 		// add a default HUD to the game mngr
 		// me.game.addHUD(0,560,800,40);
