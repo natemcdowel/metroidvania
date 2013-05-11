@@ -129,7 +129,7 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
 		this.endX   = x + settings.width - settings.spritewidth
 		this.pos.x  = x + settings.width - settings.spritewidth;
 	
-
+		this.hitpoints = 5;
 		// walking & jumping speed
 		this.setVelocity(settings.velX || 1, settings.velY || 6);
 

@@ -42,8 +42,8 @@
  <tileset firstgid="203" name="Forestground@4x" tilewidth="35" tileheight="35">
   <image source="../gfx/Forestground@4x.png" trans="ff00ff" width="500" height="500"/>
  </tileset>
- <imagelayer name="gradient_background" width="120" height="40" visible="0">
-  <image source="../gfx/background.png"/>
+ <imagelayer name="gradient_background" width="120" height="40">
+  <image source="../gfx/background/SkyBackground.png"/>
  </imagelayer>
  <layer name="back layer" width="120" height="40">
   <data encoding="base64">
