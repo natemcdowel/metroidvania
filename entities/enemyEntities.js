@@ -169,7 +169,7 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
 		}
 
 		// Removes BORDERLANDS style hit point 
-		if (this.renderable.flickerTimer < 10) {
+		if (this.renderable.flickerTimer < 50) {
 			me.game.HUD.removeItem("hit");
 		}
 		
@@ -354,4 +354,106 @@ var ShotEntity = AllEnemyEntity.extend({
 		if (this.vel.x == 0) me.game.remove(this)
 		return false;
 	},
+});
+
+/**
+ * A Skull enemy entity
+ * 
+ */
+var SkullEnemyEntity = AllEnemyEntity.extend({	
+    init: function(x, y, settings, direction) {
+
+    	this.rotate = 3;
+		
+		// call the constructor
+	    this.parent(x, y, settings);
+
+	     // apply gravity setting if specified
+		this.gravity = settings.gravity || me.sys.gravity;
+		this.hitpoints = 1;
+
+				// set the renderable position to bottom center
+		// this.anchorPoint.set(0.5, 1.0);		
+		
+		// set start/end position
+		// this.startX = x;
+		// this.endX   = x + settings.width - settings.spritewidth
+		// this.pos.x  = x + settings.width - settings.spritewidth;
+
+		this.renderable.animationspeed = 2;
+		this.renderable.addAnimation ("head", [3,4,5]); 
+
+		this.renderable.setCurrentAnimation("head");
+
+		// walking & jumping speed
+		this.vel.x = -9; //this.setVelocity(settings.velX || -15, settings.velY || 0);
+	    this.collidable = true;
+	    this.updateColRect(20,32, -1,0); 
+
+	    this.timer = me.timer.getTime();
+		this.i = 1;
+
+
+	},
+
+	update : function () {
+
+		// this.rotate += 10;
+		// this.renderable.angle = Number.prototype.degToRad (this.rotate);
+
+		var self = this;
+
+		if (me.timer.getTime() > self.timer+1200) {
+			
+			self.i++
+			console.log(self.i);
+			self.timer = me.timer.getTime()
+
+		} 
+
+		if (self.i % 2 == 0) {
+			self.vel.y -= .13;
+		}
+		if (self.i % 2 == 1) {
+			self.vel.y += .1;  
+		}
+		// console.log(self.interval)  
+		
+
+		this.computeVelocity(this.vel);
+		this.pos.add(this.vel);
+
+		if (this.pos.x <= 0){
+			me.game.remove(this)
+
+		} 
+
+		if (this.renderable.flickerTimer < 30) {
+			me.game.HUD.removeItem("hit");
+		}
+		// return (this.parent() || this.vel.x != 0 || this.vel.y != 0);
+		this.parent()
+		return true;
+	},
+});
+
+var EnemyFactoryEntity = AllEnemyEntity.extend({	
+
+	init: function(x, y, settings, direction) {
+		this.timer = me.timer.getTime();
+	},
+
+	update : function () {
+
+		if (me.timer.getTime() > this.timer+4000) {
+			var player = me.game.getEntityByName("mainPlayer")[0];
+
+			var skull = new SkullEnemyEntity( player.pos.x+700, player.pos.y, { image: "skull", spritewidth: 100, spriteheight: 100 }); 
+		    me.game.add(skull, this.z-1);
+		    me.game.sort();
+		    this.timer = me.timer.getTime();
+		}
+
+	}, 
+
 });

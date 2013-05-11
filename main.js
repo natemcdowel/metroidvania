@@ -10,7 +10,7 @@ var game = {
 	// game assets
 	assets : [	
 
-		{name: "Walls@4x",		type:"image",	src: "data/gfx/objects/Walls@4x.png"},   
+		// {name: "Walls@4x",		type:"image",	src: "data/gfx/objects/Walls@4x.png"},   
 		// {name: "Sky@4x",		type:"image",	src: "data/gfx/background/Sky@4x.png"},
 		{name: "SkyBackground",		type:"image",	src: "data/gfx/background/SkyBackground.png"},
 		// {name: "Wall@4x",		type:"image",	src: "data/gfx/Wall@4x.png"}, 
@@ -44,7 +44,7 @@ var game = {
 		{name: "skeletonhead",		type:"image",	src: "data/gfx/Skeleton3@4x.png"},
 		{name: "crow",		type:"image",	src: "data/gfx/Crow@4x.png"}, 
 		{name: "bat",		type:"image",	src: "data/gfx/Bat.png"},
-		// {name: "symph",		type:"image",	src: "data/gfx/sword.png"}, 
+		{name: "skull",		type:"image",	src: "data/gfx/Skull@4x.png"}, 
 		// {name: "goblin",		type:"image",	src: "data/gfx/gobl.png"},   
 		// {name: "lameenemy",		type:"image",	src: "data/gfx/lameenemyspr.png"},   
 		// {name: "texture",		type: "tps",	src: "data/gfx/texture.json"},
@@ -113,11 +113,14 @@ var game = {
 		// me.entityPool.add("BatEntity", BatEnemyEntity);
 		me.entityPool.add("SkeletonEntity", SkeletonEnemyEntity);
 		me.entityPool.add("CrowEntity", CrowEnemyEntity);
+		me.entityPool.add("SkullEntity", SkullEnemyEntity);
+		me.entityPool.add("EnemyFactory", EnemyFactoryEntity);
 		// var coin2 = me.entityPool.add("CoinEntity", CoinEntity); 
 
 		// add our player entity in the entity pool
 		me.entityPool.add("mainPlayer", PlayerEntity); 
 		me.entityPool.add("sword", weaponEntity);   
+
 		me.entityPool.add("secondPlayer", Player2Entity); 
 		
 		// switch to PLAY state

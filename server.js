@@ -42,6 +42,11 @@ io.sockets.on('connection', function (socket) {
     users[data[1]][1]=data[1]; 
     users[data[1]][2]=data[2];  
     users[data[1]][3]=data[3]; 
+    users[data[1]][5]=data[5]; 
+    users[data[1]][6]=data[6];
+
+    // users[data[1]][4]=data[4]; 
+    // users[data[1]][5]=data[5]; 
     // throw new Error(users);  
     //console.log('x:' + data[2] + ' y:' + data[3] + ' map:' + data[4]); // X position  
   });  

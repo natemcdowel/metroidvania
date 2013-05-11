@@ -214,7 +214,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 				this.flipX(false);
 			}
 			if (me.input.isKeyPressed('jump')) { 
-				
+				 
+				 console.log('jump')
 				// Loading next/previous level if at the end of the screen
 				if (this.pos.x < 200) {levelDirection = 'west';}
 				if (this.pos.x > 1100) {levelDirection = 'east';}
@@ -257,6 +258,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 		clientData[1] = clientid; 
 		clientData[2] = this.pos.x;
 		clientData[3] = this.pos.y;
+		clientData[5] = this.vel.x;
+		clientData[6] = this.vel.y;
 		socketResponse('keypress',clientData); 
 
 		// Setting which way we want to go if map is changing

@@ -24,7 +24,7 @@ var Player2Entity = me.ObjectEntity.extend({
 		this.mutipleJump = 1;
 		
 		// set the display around our position 
-		me.game.viewport.follow(this, me.game.viewport.AXIS.BOTH);
+		// me.game.viewport.follow(this, me.game.viewport.AXIS.BOTH);
 				
 		// enable keyboard
 		me.input.bindKey(me.input.KEY.A,	 "2left");
@@ -95,19 +95,30 @@ var Player2Entity = me.ObjectEntity.extend({
 				player2Action = users[1][0];
 				playerX = users[1][2];
 				playerY = users[1][3];
+				playerVelX = users[1][5];
+				playerVelY = users[1][6];
 
 			}
 			if (clientid == 1) {
 				player2Action = users[0][0];
 				playerX = users[0][2];
 				playerY = users[0][3];
+				playerVelX = users[0][5];
+				playerVelY = users[0][6];
 			}
 			users = users;
 		});  
 
-		if (player2Action == 'left') this.flipX(true); 
-		if (player2Action == 'right') this.flipX(false); 
-		this.renderable.setCurrentAnimation("walk"); 
+		if (typeof player2Action != 'undefined') {
+
+			if (playerX == this.pos.x && playerY == this.pos.y) this.renderable.setCurrentAnimation("stand");
+			else this.renderable.setCurrentAnimation("walk"); 
+			
+			if (player2Action == 'left') this.flipX(true); 
+			if (player2Action == 'right') this.flipX(false); 
+			if (playerVelY < 0) this.renderable.setCurrentAnimation("jumpup");
+			if (playerVelY > 0) this.renderable.setCurrentAnimation("jumpdown");
+		} 
 			// console.log(playerMap + ' | ' + me.levelDirector.getCurrentLevelId())
 
 			// if (playerMap != me.levelDirector.getCurrentLevelId()) {
@@ -227,7 +238,7 @@ var Player2Entity = me.ObjectEntity.extend({
 		
 		this.pos.x = playerX;
 		this.pos.y = playerY; 
-		console.log(player2Action)
+		// console.log(player2Action)
 
 		// check for collision with environment
 		this.updateMovement();

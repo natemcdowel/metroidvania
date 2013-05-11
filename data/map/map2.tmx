@@ -80,11 +80,11 @@
     <property name="velX" value="2"/>
    </properties>
   </object>
-  <object name="CrowEntity" x="1382" y="661" width="350" height="35">
+  <object name="EnemyFactory" x="3356" y="955" width="350" height="35">
    <properties>
     <property name="animationspeed" value="5"/>
     <property name="gravity" value="0"/>
-    <property name="image" value="crow"/>
+    <property name="image" value="skull"/>
     <property name="spriteheight" value="100"/>
     <property name="spritewidth" value="100"/>
     <property name="velX" value="4"/>

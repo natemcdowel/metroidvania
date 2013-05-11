@@ -59,7 +59,7 @@ var weaponEntity = me.ObjectEntity.extend({
 		var res = me.game.collide(this);
 		console.log(res)
 		if (!res) {
-			console.log('worked')
+			// console.log('worked')
 			// me.audio.play("35", false); 
 		}
 		// }
