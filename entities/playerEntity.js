@@ -44,26 +44,19 @@ var PlayerEntity = me.ObjectEntity.extend({
 		socketResponse('changemapserver', socketArray);  
 
 		// walking & jumping speed 
-		this.setVelocity(12, 25); 
+		this.setVelocity(12, 27); 
 		
 		this.setFriction(1.2,0); 
 
-		this.gravity = 2
+		this.gravity = 2.2
 		// update the hit box
 		// this.updateColRect(20,32, -1,0); 
 		this.dying = false;
 		this.hitpoints = 50;
 		this.collidable = false;
-		// this.xp = 0;
-		// this.lvl = 1;
-		// this.strength = 1;
-
 		me.game.xp = 0;
 		me.game.lvl = 1;
-		me.game.strength = 1;
-
-
-
+		me.game.strength = 3;
 		this.mutipleJump = 0;
 
 		
@@ -116,150 +109,90 @@ var PlayerEntity = me.ObjectEntity.extend({
 	update : function () { 
 
 		var self = this;
+		///////// Movements /////////
 
-		// console.log(this.pos.x + ' -- ' + this.pos.y)
-		this.attack = false;
-		// this.rotate += 10;
-		// this.renderable.angle = Number.prototype.degToRad (this.rotate);
-		var keys = { length: 0 };
-
-		document.onkeydown = function(e){
-		    if(!keys[e.keyCode])   {
-		        keys[e.keyCode] = true;
-		        keys.length++;
-		    }
-		}
-
-		document.onkeyup = function(e){
-		    if(keys[e.keyCode])   {
-		        keys[e.keyCode] = false;
-		        keys.length--;
-		    }
-		}
-
-		// Movement
-		if (this.renderable.flickerTimer < 70) {
-			if (me.input.isKeyPressed('attack'))	{ 
-				this.attack = true;  
-				self.attackFinished = false;
-			} 
-			// Attacking
-			if (!self.attackFinished) {
-
-				// Which direction movement
-				if (clientData[0] == 'left') self.vel.x = -1.5;  
-				if (clientData[0] == 'right') self.vel.x = 1.5;
-
-				if (me.input.isKeyPressed('down')) {
-					self.renderable.setCurrentAnimation("crouchattack", function() {
-							self.renderable.setAnimationFrame();
-							self.attackFinished = true;
-					});
-				}
-				else {
-					self.renderable.setCurrentAnimation("attack", function() {
-
-						self.renderable.setAnimationFrame();
-						self.attackFinished = true;
-					});
-				}
-			}
-			else if (self.attackFinished && me.input.isKeyPressed('down')) {
-
-				this.renderable.setCurrentAnimation("crouch");
-
-			}
-			else if (me.input.isKeyPressed('left'))	{ 
-
+		if (this.renderable.flickerTimer < 85) {
+			// If pressing left and not attacking
+			if (me.input.isKeyPressed('left') && (!this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack')))	{ 
+				// Walk animation if not jumping
+				if (!this.vel.y > 0 || !this.vel.y < 0) self.renderable.setCurrentAnimation("walk")
+				this.vel.x -= this.accel.x * me.timer.tick;
+				this.flipX(true);
 				// Offset for flipping character
 				if (clientData[0] == 'right') {
 					this.pos.x -= 70;
 				}
-				
-				this.renderable.setCurrentAnimation("walk");
-
-				// Loading next/previous level if at the end of the screen
-				if (this.pos.x < 200) {levelDirection = 'west';}
-				if (this.pos.x > 1100) {levelDirection = 'east';}
-				if (this.pos.y > 1232) {levelDirection = 'south';}
-				nextScreenX = this.pos.x
-				nextScreenY = this.pos.y
-
-				// Chopping up client data to be passed to server
-	    		clientData[0] = 'left';
-
-				this.vel.x -= this.accel.x * me.timer.tick;
-				this.flipX(true);
-
-			} 
-			else if (me.input.isKeyPressed('right')) {
-
+				clientData[0] = 'left';
+			}
+			
+			// If pressing right and not attacking
+			if (me.input.isKeyPressed('right') && (!this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack'))) {	
+				// Walk animation if not jumping
+				if (!this.vel.y > 0 || !this.vel.y < 0) self.renderable.setCurrentAnimation("walk")
+				this.vel.x += this.accel.x * me.timer.tick;
+				this.flipX(false);
 				// Offset for flipping character
 				if (clientData[0] == 'left') {
 					this.pos.x += 70;
 				}
-
-				this.renderable.setCurrentAnimation("walk");
-
-				// Loading next/previous level if at the end of the screen
-				if (this.pos.x < 200) {levelDirection = 'west';}
-				if (this.pos.x > 1100) {levelDirection = 'east';}
-				if (this.pos.y > 1232) {levelDirection = 'south';}
-				nextScreenX = this.pos.x
-				nextScreenY = this.pos.y
-	    		clientData[0] = 'right';
-
-				// socketResponse('keypress',clientData);  
-				this.vel.x += this.accel.x * me.timer.tick;
-				this.flipX(false);
+				clientData[0] = 'right';
 			}
+
+			// If pressed jump
 			if (me.input.isKeyPressed('jump')) { 
-				 
-				 console.log('jump')
-				// Loading next/previous level if at the end of the screen
-				if (this.pos.x < 200) {levelDirection = 'west';}
-				if (this.pos.x > 1100) {levelDirection = 'east';}
-				if (this.pos.y > 1232) {levelDirection = 'south';}
-				nextScreenX = this.pos.x
-				nextScreenY = this.pos.y
-	    		clientData[0] = 'up';
-				// reset the dblJump flag if off the ground
+				this.renderable.setCurrentAnimation("jumpdown");
 				this.mutipleJump = (this.vel.y === 0)?1:this.mutipleJump;
 				if (this.mutipleJump<=1) {  // 2 for double jump
 					this.vel.y -= (this.maxVel.y * this.mutipleJump++) * me.timer.tick;
 				}
-			} 
-			if (this.vel.y > 0 || this.vel.y < 0) {  // Jumping		
-				if (this.vel.x < 0) this.vel.x -= this.accel.x * me.timer.tick;
-				if (this.vel.x > 0) this.vel.x += this.accel.x * me.timer.tick;
-				if (me.input.isKeyPressed('attack'))	{ 
-					this.renderable.setCurrentAnimation("attack",function() {
-						if (this.vel.y < 0) this.renderable.setCurrentAnimation("jumpup");
-						if (this.vel.y > 0) this.renderable.setCurrentAnimation("jumpdown");
-						if (this.vel.x < 0) this.vel.x -= this.accel.x * me.timer.tick;
-						if (this.vel.x > 0) this.vel.x += this.accel.x * me.timer.tick;
-					});
-					this.attack = true;
-				}
-				else {
-						if (this.vel.y < 0) this.renderable.setCurrentAnimation("jumpup");
-						if (this.vel.y > 0) this.renderable.setCurrentAnimation("jumpdown");
-				}
 			}
-			if (this.vel.x == 0 && this.vel.y == 0 && !me.input.isKeyPressed('crouch')) this.renderable.setCurrentAnimation("stand");
 
-			// if ((this.vel.y > 0 || this.vel.y < 0) && this.vel.x == 0) this.vel.x = .1;
+			// If crouching
+			if (me.input.isKeyPressed('down') && !me.input.isKeyPressed('right') && !me.input.isKeyPressed('left')) {
+				this.renderable.setCurrentAnimation("crouch");
+			}
+
+			//////// Attacking /////////
+			if (me.input.isKeyPressed('attack')) {
+
+
+				// When crouching
+				if (me.input.isKeyPressed('down')) {
+					this.renderable.setCurrentAnimation("crouchattack","crouch");
+				}
+				else if (this.vel.y > 0 || this.vel.y < 0) {
+					if (this.vel.x < 0) this.vel.x -= this.accel.x * me.timer.tick;
+					if (this.vel.x > 0) this.vel.x += this.accel.x * me.timer.tick;
+					this.renderable.setCurrentAnimation("attack","stand");
+				}
+				// Any other time
+				else {
+				this.renderable.setCurrentAnimation("attack","stand");
+
+				}
+
+				// Telling sword to swing
+				var weapon = me.game.getEntityByName("sword")[0];
+				weapon.attack();
+			}
+
+			// If standing still and not attacking
+			if (this.vel.x == 0 && this.vel.y == 0 && !this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack') && !this.renderable.isCurrentAnimation('crouch')) {
+				this.renderable.setCurrentAnimation("stand");
+			}
+			//////// End Attacking /////////
 		}
-
-		
-		//  End movement
+		//////// End movements /////////
 
 
+		console.log(this.renderable.current.name)
+		// Sending information to SOCKET.io
 		clientData[1] = clientid; 
 		clientData[2] = this.pos.x;
 		clientData[3] = this.pos.y;
 		clientData[5] = this.vel.x;
 		clientData[6] = this.vel.y;
+		clientData[7] = this.renderable.current.name;  
 		socketResponse('keypress',clientData); 
 
 		// Setting which way we want to go if map is changing
@@ -270,7 +203,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 			levelDirection = 'north'; 
 		} 
 
-				//  Updating Hit Box
+		//  Updating Hit Box
 		if (clientData[0] == 'left')  this.updateColRect(130,60, 140,100); 
 		else if (clientData[0] == 'right')this.updateColRect(50,60, 140,100);  
 
@@ -317,13 +250,13 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 
 		// check if we moved (a "stand" animation would definitely be cleaner)
-		if (this.vel.x!=0 || this.vel.y!=0 || (this.renderable&&this.renderable.isFlickering())) {
+		// if (this.vel.x!=0 || this.vel.y!=0 || (this.renderable&&this.renderable.isFlickering())) {
 			this.parent();
 			return true;
-		}
-		else {
-			return false;
-		}
+		// }
+		// else {
+		// 	return false;
+		// }
 	},
 
 	/**

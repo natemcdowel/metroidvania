@@ -23,39 +23,29 @@ var weaponEntity = me.ObjectEntity.extend({
 
 	attack : function () {
 
-
 			var self = this;
-		// if (self.cooldown == true) {
 
-			// self.collidable = true;
-			self.cooldown = false;
-
-			mainPlayer[0].renderable.animationspeed = 2;
-
-			setTimeout(function(){self.cooldown = true},700);
 			// Which side is the player attacking?	
 			if (clientData[0] == 'left') {
 				
-				if (mainPlayer[0].crouchAttack == true) {
-					// console.log('worked')
+				if (mainPlayer[0].renderable.isCurrentAnimation('crouchattack')) {
 					this.updateColRect(-13,145, 185,25);
-					mainPlayer[0].crouchAttack = false
 				} 	
-				else {
+				else if (mainPlayer[0].renderable.isCurrentAnimation('attack')) {
 					this.updateColRect(-13,145, 150,25);
 				} 	
 			}
 			if (clientData[0] == 'right') {
 
-				if (mainPlayer[0].crouchAttack == true) {
-					// console.log('worked')
+				if (mainPlayer[0].renderable.isCurrentAnimation('crouchattack')) {
 					this.updateColRect(103,145, 185,25);
-					mainPlayer[0].crouchAttack = false
 				} 	 	
-				else this.updateColRect(103,145, 150,25);
+				else if (mainPlayer[0].renderable.isCurrentAnimation('attack')) {
+					this.updateColRect(103,145, 150,25);
+				}
 			}
-			// self.collidable = false;
-					// COLLISIONS with various objects
+
+		// COLLISIONS with various objects
 		var res = me.game.collide(this);
 		console.log(res)
 		if (!res) {

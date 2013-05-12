@@ -86,13 +86,13 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 				this.alive = false; 
 				this.collidable = false;
 				me.game.HUD.updateItemValue("experience", this.xp);
-				this.renderable.flicker(45, function(){me.game.remove(self)});
+				this.renderable.flicker(25, function(){me.game.remove(self)});
 				me.audio.play("04", false);
 
 			}
 			else {
 				
-				this.renderable.flicker(45);
+				this.renderable.flicker(25);
 				me.audio.play("06", false);
 			}
 		}
@@ -129,7 +129,7 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
 		this.endX   = x + settings.width - settings.spritewidth
 		this.pos.x  = x + settings.width - settings.spritewidth;
 	
-		this.hitpoints = 5;
+		this.hitpoints = 10;
 		// walking & jumping speed
 		this.setVelocity(settings.velX || 1, settings.velY || 6);
 
@@ -158,8 +158,8 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
 		
 		if (this.alive)	{
 			if (this.hurt) {
-				this.vel.x = 0;
-				this.vel.y = 0;
+				this.pos.x = 0;
+				this.pos.y = 0;
 			}
     		else if (me.timer.getTime() > self.timer+2000) {
     			self.moveTo();
@@ -251,7 +251,7 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 
 		// make it collidable
 		this.collidable = true;
-		this.hitpoints = 3;
+		this.hitpoints = 5;
 
 		this.type = me.game.ENEMY_OBJECT;
 		this.timer = me.timer.getTime();
@@ -266,12 +266,17 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 			return false;
 		}
 		
+
 		if (this.alive)	{
-			if (this.hurt) {
-				this.vel.x = 0;
-				this.vel.y = 0;
-			}
+			// if (this.hurt) {
+			// 	this.vel.x = 0;
+			// 	this.vel.y = 0;
+			// 	this.walkLeft = true;
+			// 	this.walkLeft = false;
+			// }
 			if (this.walkLeft && this.pos.x <= this.startX) {
+				console.log(this.hurt)
+				if (this.vel.x == 0) this.vel.x = 4;
 				this.vel.x = this.accel.x * me.timer.tick;
 				this.renderable.setCurrentAnimation("throwhead","walk");
 
@@ -282,6 +287,8 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 				this.walkLeft = false;
 				this.flipX(false);
 			} else if (!this.walkLeft && this.pos.x >= this.endX) {
+				console.log(this.hurt)
+				if (this.vel.x == 0) this.vel.x = 4;
 				this.vel.x = -this.accel.x * me.timer.tick;
 				this.renderable.setCurrentAnimation("throwhead","walk");
 
@@ -292,9 +299,7 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 				this.walkLeft = true;
 				this.flipX(true);
 			}
-		} else {
-			this.vel.x = 0;
-		}
+		} 
 		
 		// Removes BORDERLANDS style hit point 
 		if (this.renderable.flickerTimer < 10) {
@@ -364,13 +369,13 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
     init: function(x, y, settings, direction) {
 
     	this.rotate = 3;
-		
+		this.hitpoints = 10;
+
 		// call the constructor
 	    this.parent(x, y, settings);
 
 	     // apply gravity setting if specified
 		this.gravity = settings.gravity || me.sys.gravity;
-		this.hitpoints = 1;
 
 				// set the renderable position to bottom center
 		// this.anchorPoint.set(0.5, 1.0);		
@@ -411,11 +416,19 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 
 		} 
 
-		if (self.i % 2 == 0) {
-			self.vel.y -= .13;
+		if (!this.hurt ) {
+
+			if (this.vel.x == 0) this.vel.x = -9;
+			if (self.i % 2 == 0) {
+				self.vel.y -= .13;
+			}
+			if (self.i % 2 == 1) {
+				self.vel.y += .1;  
+			}
 		}
-		if (self.i % 2 == 1) {
-			self.vel.y += .1;  
+		else if (this.hurt) {
+			this.vel.x = 0;
+			this.vel.y = 0;
 		}
 		// console.log(self.interval)  
 		

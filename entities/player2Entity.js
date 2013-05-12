@@ -97,6 +97,7 @@ var Player2Entity = me.ObjectEntity.extend({
 				playerY = users[1][3];
 				playerVelX = users[1][5];
 				playerVelY = users[1][6];
+				currentAnim = users[1][7];
 
 			}
 			if (clientid == 1) {
@@ -105,19 +106,28 @@ var Player2Entity = me.ObjectEntity.extend({
 				playerY = users[0][3];
 				playerVelX = users[0][5];
 				playerVelY = users[0][6];
+				currentAnim = users[0][7];
 			}
 			users = users;
 		});  
 
 		if (typeof player2Action != 'undefined') {
 
-			if (playerX == this.pos.x && playerY == this.pos.y) this.renderable.setCurrentAnimation("stand");
-			else this.renderable.setCurrentAnimation("walk"); 
-			
-			if (player2Action == 'left') this.flipX(true); 
-			if (player2Action == 'right') this.flipX(false); 
-			if (playerVelY < 0) this.renderable.setCurrentAnimation("jumpup");
-			if (playerVelY > 0) this.renderable.setCurrentAnimation("jumpdown");
+			if (currentAnim != '') this.renderable.setCurrentAnimation(currentAnim);
+
+			// if (playerX == this.pos.x && playerY == this.pos.y) this.renderable.setCurrentAnimation("stand");
+			// else this.renderable.setCurrentAnimation("walk"); 
+
+			if (player2Action == 'left') {
+				this.flipX(true); 
+				this.updateColRect(130,60, 140,100); 
+			}
+			if (player2Action == 'right') {
+				this.flipX(false); 
+				this.updateColRect(50,60, 140,100);
+			}
+			// if (playerVelY < 0) this.renderable.setCurrentAnimation("jumpup");
+			// if (playerVelY > 0) this.renderable.setCurrentAnimation("jumpdown");
 		} 
 			// console.log(playerMap + ' | ' + me.levelDirector.getCurrentLevelId())
 

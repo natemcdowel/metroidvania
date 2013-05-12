@@ -16,6 +16,7 @@
 	var playerVelX = '';
 	var playerVelY = '';
 	var userlist = '';
+	var currentAnim = ''; 
 	var usernumber; 
 	var moveLeft = false;
 	var moveRight = false;
@@ -38,7 +39,7 @@
 	lvlcap[3] = 49;
 	lvlcap[4] = 69;
 
-	var socket = io.connect('mcdowellwebdevelopment.info:8080');
+	var socket = io.connect('10.10.10.100:80');
 
 	socket.on('assignid', function (id) { 
 		clientid = id;
@@ -51,7 +52,7 @@
 
     // Passing input from browser to socket.io server
 	function socketResponse(type, data) {
-			var socket = io.connect('mcdowellwebdevelopment.info:8080');
+			var socket = io.connect('10.10.10.100:80');
 		 	socket.emit(type, data);
 	}
 </script>

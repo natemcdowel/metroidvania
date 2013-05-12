@@ -114,7 +114,7 @@ var game = {
 		me.entityPool.add("SkeletonEntity", SkeletonEnemyEntity);
 		me.entityPool.add("CrowEntity", CrowEnemyEntity);
 		me.entityPool.add("SkullEntity", SkullEnemyEntity);
-		me.entityPool.add("EnemyFactory", EnemyFactoryEntity);
+		// me.entityPool.add("EnemyFactory", EnemyFactoryEntity);
 		// var coin2 = me.entityPool.add("CoinEntity", CoinEntity); 
 
 		// add our player entity in the entity pool
