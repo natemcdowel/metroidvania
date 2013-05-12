@@ -133,3 +133,64 @@ var ScoreObject = me.HUD_Item.extend( {
 	}
 });
 
+
+/** 
+ * a GUI object 
+ * Menu
+ */
+var MenuObject = me.HUD_Item.extend( {	
+	/** 
+	 * constructor
+	 */
+	init: function(x, y, name, value) {
+		// call the parent constructor
+		this.parent(x, y);
+
+
+				// enable keyboard
+		me.input.bindKey(me.input.KEY.LEFT,	 "left");
+		me.input.bindKey(me.input.KEY.RIGHT, "right"); 
+		me.input.bindKey(me.input.KEY.UP,	"jump", true); 
+		me.input.bindKey(me.input.KEY.X,	"attack"); 
+		me.input.bindKey(me.input.KEY.DOWN,	"down");
+		me.input.bindKey(me.input.KEY.ENTER, "menu");
+
+		this.name = name;
+		this.menuoptions = ['Back to Game','Inventory','Quit Game'];
+		// this.font = new me.BitmapFont("atascii", {x:24});
+		this.font = new me.Font("Impact", 20, "yellow");
+		this.image = me.loader.getImage("sword"); 
+		this.x = 250;
+		this.y = 60;
+		this.yOffset = 0;
+		this.width = 800;
+		this.height = 600;
+	
+	},
+	/**
+	 * draw the score
+	 */
+	draw : function (context, x, y) {
+		
+		// Main box
+		context.fillStyle = "black";
+		context.globalAlpha=0.4; // Half opacity
+		context.fillRect(this.x, this.y, this.width, this.height); 
+
+		// Menu Options
+
+		for(i=0; i<this.menuoptions.length; i++) { 
+
+			this.yOffset += 60;
+			context.font="40px Impact";
+			context.fillStyle = 'white';
+			context.fillText(this.menuoptions[i],this.x, this.y+this.yOffset); 
+		};
+
+
+
+    	console.log(me.game.HUD)
+
+	},
+
+});

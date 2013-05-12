@@ -75,6 +75,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		me.input.bindKey(me.input.KEY.UP,	"jump", true); 
 		me.input.bindKey(me.input.KEY.X,	"attack"); 
 		me.input.bindKey(me.input.KEY.DOWN,	"down");
+		me.input.bindKey(me.input.KEY.ENTER, "menu");
 		
 		// define a basic walking animatin
 		this.renderable.addAnimation ("walk",  [0,1,2]); 
@@ -109,9 +110,33 @@ var PlayerEntity = me.ObjectEntity.extend({
 	update : function () { 
 
 		var self = this;
-		///////// Movements /////////
 
-		if (this.renderable.flickerTimer < 85) {
+
+		///////// Menu /////////
+		if (me.input.isKeyPressed('menu')) {	
+
+			if (typeof me.game.HUD.HUDItems.mainmenu == 'undefined') {
+				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU')); 
+			}
+
+			var mainmenu = me.game.getEntityByName("MENU")
+			console.log(me.game.HUD);
+		}
+
+
+		if(me.input.isKeyPressed('up')) {
+			context.fillStyle = "#00f";
+    		context.fillRect(550, 600, 400, 100); 
+		} 
+
+		if(me.input.isKeyPressed('down')) {
+			me.game.HUD.updateItemValue("mainmenu", -1);
+		}	
+		///////// End Menu /////////
+
+
+		///////// Movements /////////
+		if (this.renderable.flickerTimer < 85 && (typeof me.game.HUD.HUDItems.mainmenu == 'undefined')) {
 			// If pressing left and not attacking
 			if (me.input.isKeyPressed('left') && (!this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack')))	{ 
 				// Walk animation if not jumping
@@ -185,7 +210,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		//////// End movements /////////
 
 
-		console.log(this.renderable.current.name)
+	
 		// Sending information to SOCKET.io
 		clientData[1] = clientid; 
 		clientData[2] = this.pos.x;

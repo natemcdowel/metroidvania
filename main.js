@@ -10,6 +10,7 @@ var game = {
 	// game assets
 	assets : [	
 
+		{name: "title_screen",		type:"image",	src: "data/gfx/gui/title_screen.png"},
 		// {name: "Walls@4x",		type:"image",	src: "data/gfx/objects/Walls@4x.png"},   
 		// {name: "Sky@4x",		type:"image",	src: "data/gfx/background/Sky@4x.png"},
 		{name: "SkyBackground",		type:"image",	src: "data/gfx/background/SkyBackground.png"},
@@ -38,7 +39,7 @@ var game = {
 		// {name: "map3-1",			type: "tmx",	src: "data/map/map3-1.tmx"},
 
 		// texturePacker
-		// {name: "texture",		type: "tps",	src: "data/gfx/goblin.json"},
+		{name: "sword",		type: "image",	src: "data/gfx/sword.png"}, 
 		{name: "simon",		type:"image",	src: "data/gfx/playerattack3@4xx.png"},  
 		{name: "skeleton",		type:"image",	src: "data/gfx/skeletons/Skeleton2@4x.png"},
 		{name: "skeletonhead",		type:"image",	src: "data/gfx/Skeleton3@4x.png"},
@@ -102,7 +103,7 @@ var game = {
 	loaded: function ()	{
 
 		// set the "Play/Ingame" Screen Object
-    	me.state.set(me.state.MENU, new TitleScreen());
+    	me.state.set(me.state.PAUSE, new CustomLoadingScreen()); 
 		// set the "Play/Ingame" Screen Object
 		me.state.set(me.state.PLAY, new PlayScreen());
 		
@@ -114,7 +115,7 @@ var game = {
 		me.entityPool.add("SkeletonEntity", SkeletonEnemyEntity);
 		me.entityPool.add("CrowEntity", CrowEnemyEntity);
 		me.entityPool.add("SkullEntity", SkullEnemyEntity);
-		// me.entityPool.add("EnemyFactory", EnemyFactoryEntity);
+		me.entityPool.add("EnemyFactory", EnemyFactoryEntity);
 		// var coin2 = me.entityPool.add("CoinEntity", CoinEntity); 
 
 		// add our player entity in the entity pool
@@ -125,8 +126,7 @@ var game = {
 		
 		// switch to PLAY state
 		me.state.change(me.state.PLAY);
-		    // display the menu title
-   		 // me.state.change(me.state.MENU);
+
 
 	}
 };
