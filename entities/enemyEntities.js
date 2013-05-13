@@ -411,7 +411,6 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 		if (me.timer.getTime() > self.timer+1200) {
 			
 			self.i++
-			console.log(self.i);
 			self.timer = me.timer.getTime()
 
 		} 

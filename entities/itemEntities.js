@@ -142,7 +142,7 @@ var MenuObject = me.HUD_Item.extend( {
 	/** 
 	 * constructor
 	 */
-	init: function(x, y, name, value) {
+	init: function(x, y, name, menuposition) {
 		// call the parent constructor
 		this.parent(x, y);
 
@@ -156,41 +156,61 @@ var MenuObject = me.HUD_Item.extend( {
 		me.input.bindKey(me.input.KEY.ENTER, "menu");
 
 		this.name = name;
-		this.menuoptions = ['Back to Game','Inventory','Quit Game'];
+		this.menuoptions = ['Back to Game','Inventory','Host Game','Join Game','Quit Game'];
 		// this.font = new me.BitmapFont("atascii", {x:24});
 		this.font = new me.Font("Impact", 20, "yellow");
 		this.image = me.loader.getImage("sword"); 
-		this.x = 250;
+		this.x = 230;
 		this.y = 60;
 		this.yOffset = 0;
 		this.width = 800;
 		this.height = 600;
+		this.menuposition = menuposition;
 	
 	},
 	/**
 	 * draw the score
 	 */
-	draw : function (context, x, y) {
+	draw : function (context, menuposition) {
+
+		console.log(this.menuposition)
 		
-		// Main box
-		context.fillStyle = "black";
-		context.globalAlpha=0.4; // Half opacity
-		context.fillRect(this.x, this.y, this.width, this.height); 
+		if (typeof this.context == 'undefined') {
+			this.context = context;
+		}
+		
+		// Main box 
+		this.context.fillStyle = "black";
+		this.context.globalAlpha=0.7; // Half opacity
+		this.context.fillRect(this.x, this.y, this.width, this.height); 
+
+		var yOffset = 0; 
+		menuSelected = 0;
 
 		// Menu Options
 
 		for(i=0; i<this.menuoptions.length; i++) { 
 
-			this.yOffset += 60;
-			context.font="40px Impact";
-			context.fillStyle = 'white';
-			context.fillText(this.menuoptions[i],this.x, this.y+this.yOffset); 
+
+			yOffset += 60;
+
+			if (i == this.menuposition) {
+				this.context.font="40px Impact";
+				this.context.fillStyle = 'yellow';
+			}
+			else {
+				this.context.font="40px Impact";
+				this.context.fillStyle = 'white';
+			}
+	
+			this.context.fillText(this.menuoptions[i],this.x+30, this.y+yOffset); 
 		};
 
-
-
-    	console.log(me.game.HUD)
-
 	},
+
+	update : function (context) {
+
+	
+	}
 
 });

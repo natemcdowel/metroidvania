@@ -58,8 +58,9 @@ var PlayerEntity = me.ObjectEntity.extend({
 		me.game.lvl = 1;
 		me.game.strength = 3;
 		this.mutipleJump = 0;
-
-		
+		this.menuposition = -1;
+		this.menuDelay = false;
+			
 		// set the display around our position 
 		me.game.viewport.follow(this, me.game.viewport.AXIS.BOTH);
 
@@ -111,32 +112,66 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		var self = this;
 
+		
 
 		///////// Menu /////////
 		if (me.input.isKeyPressed('menu')) {	
 
-			if (typeof me.game.HUD.HUDItems.mainmenu == 'undefined') {
-				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU')); 
+			// Create menu
+			if (this.menuposition == -1) {
+				this.menuposition = 0;
+				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU', this.menuposition)); 
 			}
 
-			var mainmenu = me.game.getEntityByName("MENU")
-			console.log(me.game.HUD);
+			// // Exit Menu
+			// if (typeof me.game.HUD.HUDItems.mainmenu != 'undefined' && this.menuposition == 4) {
+			// 	me.game.HUD.removeItem("mainmenu");
+			// 	setTimeout(function(){ self.menuposition = -1; },200);
+				
+			// }
+			// console.log(typeof me.game.HUD.HUDItems.mainmenu.name)
 		}
 
+		// In the menu
+		if (self.menuposition != -1) {
+			// Up Key
+			if(me.input.isKeyPressed('jump') && !self.menuDelay) {
+				this.menuposition--
+				self.menuDelay = true;
+				me.game.HUD.removeItem("mainmenu");
+				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU',this.menuposition)); 
+				setTimeout(function(){ self.menuDelay = false; },100);
+			} 
+			// Down Key
+			if(me.input.isKeyPressed('down') && !self.menuDelay) {
+				this.menuposition++
+				self.menuDelay = true;
+				me.game.HUD.removeItem("mainmenu");
+				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU',this.menuposition)); 
+				setTimeout(function(){ self.menuDelay = false; },100);
+			}	
 
-		if(me.input.isKeyPressed('up')) {
-			context.fillStyle = "#00f";
-    		context.fillRect(550, 600, 400, 100); 
+			// Exit Menu
+			if(me.input.isKeyPressed('menu') && !self.menuDelay) {
+
+				if (this.menuposition == 0) {
+
+					me.game.HUD.removeItem("mainmenu");
+					setTimeout(function(){ self.menuposition = -1; },200); 
+				}
+				else if (this.menuposition == 4) {
+
+					JavaScript:window.open('', '_self', '');window.close(); 
+					// me.game.HUD.removeItem("mainmenu");
+					// setTimeout(function(){ self.menuposition = -1; },200); 
+				}
+			}
 		} 
-
-		if(me.input.isKeyPressed('down')) {
-			me.game.HUD.updateItemValue("mainmenu", -1);
-		}	
 		///////// End Menu /////////
 
 
 		///////// Movements /////////
-		if (this.renderable.flickerTimer < 85 && (typeof me.game.HUD.HUDItems.mainmenu == 'undefined')) {
+		if (this.renderable.flickerTimer < 85 && (!me.game.HUD.HUDItems.mainmenu)) {
 			// If pressing left and not attacking
 			if (me.input.isKeyPressed('left') && (!this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack')))	{ 
 				// Walk animation if not jumping
