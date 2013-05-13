@@ -9,6 +9,8 @@
 var PlayerEntity = me.ObjectEntity.extend({	
 	init: function(x, y, settings) { 
 
+		// Remove menu if it is up
+		
 		y = nextScreenY;
 
 		console.log(me.game.currentLevel.width)
@@ -45,12 +47,10 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		// walking & jumping speed 
 		this.setVelocity(12, 27); 
-		
 		this.setFriction(1.2,0); 
-
 		this.gravity = 2.2
-		// update the hit box
-		// this.updateColRect(20,32, -1,0); 
+
+		// Player variables
 		this.dying = false;
 		this.hitpoints = 50;
 		this.collidable = false;
@@ -58,22 +58,23 @@ var PlayerEntity = me.ObjectEntity.extend({
 		me.game.lvl = 1;
 		me.game.strength = 3;
 		this.mutipleJump = 0;
-		this.menuposition = -1;
+
+		// Menus
+		this.mainMenuPosition = -1;
+		this.mainMenuPositionLength = 4
+
+		// if (typeof me.game.HUD.HUDItems.mainmenu.name != null) 
+			// me.game.HUD.removeItem("mainmenu"); 
 		this.menuDelay = false;
-			
+		
 		// set the display around our position 
 		me.game.viewport.follow(this, me.game.viewport.AXIS.BOTH);
-
-		// if (settings.animationspeed) {
-		// 	this.renderable.animationspeed = settings.animationspeed; 
-		// }
-
 		this.renderable.animationspeed = 2;
 				
 		// enable keyboard
 		me.input.bindKey(me.input.KEY.LEFT,	 "left");
 		me.input.bindKey(me.input.KEY.RIGHT, "right"); 
-		me.input.bindKey(me.input.KEY.UP,	"jump", true); 
+		me.input.bindKey(me.input.KEY.UP,	"jump"); 
 		me.input.bindKey(me.input.KEY.X,	"attack"); 
 		me.input.bindKey(me.input.KEY.DOWN,	"down");
 		me.input.bindKey(me.input.KEY.ENTER, "menu");
@@ -118,56 +119,47 @@ var PlayerEntity = me.ObjectEntity.extend({
 		if (me.input.isKeyPressed('menu')) {	
 
 			// Create menu
-			if (this.menuposition == -1) {
-				this.menuposition = 0;
-				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU', this.menuposition)); 
+			if (this.mainMenuPosition == -1) {
+				this.mainMenuPosition = 0;
+				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU', this.mainMenuPosition)); 
 			}
 
-			// // Exit Menu
-			// if (typeof me.game.HUD.HUDItems.mainmenu != 'undefined' && this.menuposition == 4) {
-			// 	me.game.HUD.removeItem("mainmenu");
-			// 	setTimeout(function(){ self.menuposition = -1; },200);
-				
-			// }
-			// console.log(typeof me.game.HUD.HUDItems.mainmenu.name)
 		}
 
 		// In the menu
-		if (self.menuposition != -1) {
+		if (self.mainMenuPosition != -1) {
 			// Up Key
 			if(me.input.isKeyPressed('jump') && !self.menuDelay) {
-				this.menuposition--
+
+				if ( this.mainMenuPosition <= this.mainMenuPositionLength && this.mainMenuPosition >= 1) this.mainMenuPosition--
 				self.menuDelay = true;
 				me.game.HUD.removeItem("mainmenu");
-				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU',this.menuposition)); 
+				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU',this.mainMenuPosition)); 
 				setTimeout(function(){ self.menuDelay = false; },100);
 			} 
 			// Down Key
-			if(me.input.isKeyPressed('down') && !self.menuDelay) {
-				this.menuposition++
+			else if(me.input.isKeyPressed('down') && !self.menuDelay) {
+				if ( this.mainMenuPosition < this.mainMenuPositionLength && this.mainMenuPosition >= 0) this.mainMenuPosition++
 				self.menuDelay = true;
 				me.game.HUD.removeItem("mainmenu");
-				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU',this.menuposition)); 
+				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU',this.mainMenuPosition)); 
 				setTimeout(function(){ self.menuDelay = false; },100);
 			}	
 
 			// Exit Menu
-			if(me.input.isKeyPressed('menu') && !self.menuDelay) {
+			else if(me.input.isKeyPressed('menu') && !self.menuDelay) {
 
-				if (this.menuposition == 0) {
+				if (this.mainMenuPosition == 0) {
 
 					me.game.HUD.removeItem("mainmenu");
-					setTimeout(function(){ self.menuposition = -1; },200); 
+					setTimeout(function(){ self.mainMenuPosition = -1; },200); 
 				}
-				else if (this.menuposition == 4) {
-
+				else if (this.mainMenuPosition == 4) {
 					JavaScript:window.open('', '_self', '');window.close(); 
-					// me.game.HUD.removeItem("mainmenu");
-					// setTimeout(function(){ self.menuposition = -1; },200); 
 				}
 			}
 		} 
-		///////// End Menu /////////
+		///////// End Menu //////////
 
 
 		///////// Movements /////////
@@ -262,6 +254,13 @@ var PlayerEntity = me.ObjectEntity.extend({
 		if (this.vel.y > 0 && this.pos.y < 150 ) {
 			levelDirection = 'north'; 
 		} 
+		if (this.pos.x < 200) {
+			levelDirection = 'west';
+		}
+		if (this.pos.x > 1100) {
+			levelDirection = 'east';
+		}
+		nextScreenY = this.pos.y
 
 		//  Updating Hit Box
 		if (clientData[0] == 'left')  this.updateColRect(130,60, 140,100); 

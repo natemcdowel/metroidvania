@@ -393,7 +393,6 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 		// walking & jumping speed
 		this.vel.x = -9; //this.setVelocity(settings.velX || -15, settings.velY || 0);
 	    this.collidable = true;
-	    this.updateColRect(20,32, -1,0); 
 
 	    this.timer = me.timer.getTime();
 		this.i = 1;

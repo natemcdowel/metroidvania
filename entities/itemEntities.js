@@ -17,8 +17,7 @@ var CoinEntity = me.CollectableEntity.extend({
 		// set the renderable position to bottom center
 		this.anchorPoint.set(0.5, 1.0);
 		var count = me.game.getEntityByGUID(this.GUID)
-		
-		
+				
 	},		
 	
 
@@ -175,6 +174,7 @@ var MenuObject = me.HUD_Item.extend( {
 
 		console.log(this.menuposition)
 		
+		// If the first time it was created
 		if (typeof this.context == 'undefined') {
 			this.context = context;
 		}
