@@ -10,7 +10,6 @@ var weaponEntity = me.ObjectEntity.extend({
 	init: function (x, y, settings) {
 
 		mainPlayer = me.game.getEntityByName('mainPlayer')
-		// console.log(mainPlayer[0].pos.x)
 
 		this.parent(mainPlayer[0].pos.x+10, mainPlayer[0].pos.y, settings);
 		
@@ -47,12 +46,7 @@ var weaponEntity = me.ObjectEntity.extend({
 
 		// COLLISIONS with various objects
 		var res = me.game.collide(this);
-		console.log(res)
-		if (!res) {
-			// console.log('worked')
-			// me.audio.play("35", false); 
-		}
-		// }
+
 	},
 
 	update : function () {
@@ -72,3 +66,62 @@ var weaponEntity = me.ObjectEntity.extend({
 
 	}
 });
+
+/************************************************************************************/
+/*																					*/
+/*		Secondary weapon entity															*/
+/*																					*/
+/************************************************************************************/
+var secondWeaponEntity = me.ObjectEntity.extend({	
+
+    init: function(x, y, settings, direction) {
+
+		
+		// call the constructor
+	    this.parent(x, y, settings);
+
+
+	     // apply gravity setting if specified
+		this.gravity = settings.gravity || me.sys.gravity;
+		this.collidable = true;
+		this.weapon = 'sword';
+
+		this.renderable.addAnimation ("head", [0]); 
+
+		this.renderable.setCurrentAnimation("head");
+
+		// walking & jumping speed
+		if (direction == 'right') {
+			this.vel.x = 35; 
+			this.flipX(false);
+		}
+		else {
+			this.pos.x += 100; 
+			this.vel.x = -35;
+			this.flipX(true);
+		}
+	     
+	     this.updateColRect(20,32, -1,0);  
+
+
+	},
+
+	update : function () {
+
+		// this.rotate += 10;
+		// this.renderable.angle = Number.prototype.degToRad (this.rotate);
+		var res = me.game.collide(this);
+		if (res) {
+			if (res.obj.type == me.game.ENEMY_OBJECT)
+			me.game.remove(this)
+		}
+
+		this.updateMovement();
+
+		if (this.vel.x == 0) me.game.remove(this)
+		return false;
+	},
+});
+
+
+

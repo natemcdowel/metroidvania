@@ -46,7 +46,6 @@ var AllEnemyEntity = me.ObjectEntity.extend({
         yDir = (Math.abs(yDir) < 8) ? 0 : yDir.clamp(-1,1);
         
         this.vel.x = this.accel.x * xDir;
-
         this.vel.y = this.accel.y * yDir;
 
 	},
@@ -78,16 +77,21 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 			setTimeout(function(){self.hurt = false;},1000);
 
 			me.game.HUD.addItem("hit", new ScoreObject((this.pos.x+25) - me.game.viewport.pos.x,(this.pos.y-30) - me.game.viewport.pos.y,Math.ceil(me.game.strength * 1), 1));
+
 			// flash the screen
 			if (this.hitpoints <= 0) {
-
-				
+			
 				me.game.xp += this.xp;
 				this.alive = false; 
 				this.collidable = false;
 				me.game.HUD.updateItemValue("experience", this.xp);
 				this.renderable.flicker(25, function(){me.game.remove(self)});
 				me.audio.play("04", false);
+
+				// Drop item
+				var pickup = new PickupEntity( self.pos.x, self.pos.y-20, { image: "pickups", spritewidth: 110, spriteheight: 65 }, true); 
+			    me.game.add(pickup, self.z-1);
+			    me.game.sort();
 
 			}
 			else {
@@ -99,9 +103,6 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 	},
 });
 
-
-
-/**
 
 
 /**
@@ -132,6 +133,7 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
 		this.hitpoints = 10;
 		// walking & jumping speed
 		this.setVelocity(settings.velX || 1, settings.velY || 6);
+		this.updateColRect(80,80, 70,100);
 
 		// walking animation
 		this.renderable.addAnimation ("walk", [0,1,2]);
@@ -237,17 +239,21 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		// walking & jumping speed
 		this.setVelocity(settings.velX || 4, settings.velY || 6);
 
-				// // walking animatin
+        // walking animating
 		this.renderable.addAnimation ("walk", [0,1,2]);
-		// dead animatin
-		this.renderable.addAnimation ("throwhead", [3,4]);
 		
+		// throw head
+		this.renderable.addAnimation ("throwhead", [3,4]);
+
+		// Death
+		this.renderable.addAnimation ("dead", [6,7,8]);
+
 		// // set default one
 		this.renderable.setCurrentAnimation("walk");
 
 		// set the renderable position to bottom center
 		this.anchorPoint.set(0.5, 1.0);		
-		this.updateColRect(10,80, 0,100);
+		this.updateColRect(80,80, 140,100);
 
 		// make it collidable
 		this.collidable = true;
@@ -280,7 +286,7 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 				this.vel.x = this.accel.x * me.timer.tick;
 				this.renderable.setCurrentAnimation("throwhead","walk");
 
-				var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeletonhead", spritewidth: 100, spriteheight: 100 }, this.walkLeft); 
+				var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240 }, this.walkLeft); 
 		        me.game.add(shot, this.z); 
 		        me.game.sort();
 
@@ -292,7 +298,7 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 				this.vel.x = -this.accel.x * me.timer.tick;
 				this.renderable.setCurrentAnimation("throwhead","walk");
 
-				var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeletonhead", spritewidth: 100, spriteheight: 100 }, this.walkLeft); 
+				var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240 }, this.walkLeft); 
 		        me.game.add(shot, this.z); 
 		        me.game.sort();
 
@@ -300,6 +306,9 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 				this.flipX(true);
 			}
 		} 
+		else {
+			this.renderable.setCurrentAnimation("dead");
+		}
 		
 		// Removes BORDERLANDS style hit point 
 		if (this.renderable.flickerTimer < 10) {
@@ -310,7 +319,9 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		this.updateMovement();
 		
 		// return true if we moved of if flickering
-		return (this.parent() || this.vel.x != 0 || this.vel.y != 0);
+		// return (this.parent() || this.vel.x != 0 || this.vel.y != 0);
+		this.parent()
+		return true;
 	},
 });
 
@@ -319,7 +330,7 @@ var ShotEntity = AllEnemyEntity.extend({
 
     init: function(x, y, settings, direction) {
 
-    	this.rotate = 3;
+    	this.rotate = 1;
 		
 		// call the constructor
 	    this.parent(x, y, settings);
@@ -340,24 +351,24 @@ var ShotEntity = AllEnemyEntity.extend({
 		this.renderable.setCurrentAnimation("head");
 
 		// walking & jumping speed
-		if (direction) this.vel.x = -7; //this.setVelocity(settings.velX || -15, settings.velY || 0);
-		else this.vel.x = 7;
+		if (direction) this.vel.x = -24; //this.setVelocity(settings.velX || -15, settings.velY || 0);
+		else this.vel.x = 24;
 
 	     this.collidable = true;
-	     this.updateColRect(20,32, -1,0); 
+	     this.updateColRect(110,30, 140,30);
 
 
 	},
 
 	update : function () {
 
-		this.rotate += 10;
-		this.renderable.angle = Number.prototype.degToRad (this.rotate);
+		// this.rotate += 25;
+		// this.renderable.angle = Number.prototype.degToRad (this.rotate);
 
 		this.updateMovement();
 
 		if (this.vel.x == 0) me.game.remove(this)
-		return false;
+		return true;
 	},
 });
 
@@ -416,7 +427,9 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 
 		if (!this.hurt ) {
 
-			if (this.vel.x == 0) this.vel.x = -9;
+			if (this.vel.x == 0) {
+				this.vel.x = -9;
+			}
 			if (self.i % 2 == 0) {
 				self.vel.y -= .13;
 			}
@@ -428,8 +441,6 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 			this.vel.x = 0;
 			this.vel.y = 0;
 		}
-		// console.log(self.interval)  
-		
 
 		this.computeVelocity(this.vel);
 		this.pos.add(this.vel);
@@ -458,8 +469,7 @@ var EnemyFactoryEntity = AllEnemyEntity.extend({
 
 		if (me.timer.getTime() > this.timer+4000) {
 			var player = me.game.getEntityByName("mainPlayer")[0];
-
-			var skull = new SkullEnemyEntity( player.pos.x+700, player.pos.y, { image: "skull", spritewidth: 100, spriteheight: 100 }); 
+			var skull = new SkullEnemyEntity( player.pos.x+1000, player.pos.y, { image: "skull", spritewidth: 100, spriteheight: 100 }); 
 		    me.game.add(skull, this.z-1);
 		    me.game.sort();
 		    this.timer = me.timer.getTime();
@@ -467,4 +477,33 @@ var EnemyFactoryEntity = AllEnemyEntity.extend({
 
 	}, 
 
-});
+}); 
+
+
+var WeatherFactoryEntity = AllEnemyEntity.extend({	
+
+	init: function() {
+		this.min = 0;
+		this.max = 4200;
+
+		this.minY = 200;
+		this.maxY = 500;
+		this.timer = me.timer.getTime();
+	},
+
+	update : function () {
+
+		var player = me.game.getEntityByName("mainPlayer")[0];
+		this.minX = player.pos.x-1250
+		this.maxX = player.pos.x+1250
+		for (var i = 0; i < 6; i++) {
+			me.game.add(new DropletParticle(Math.floor(Math.random() * (this.maxX - this.minX + 1)) + this.minX, Math.floor(Math.random() * (this.maxY - this.minY + 1)) + this.minY, 10, 5), 10);
+		}
+		me.game.sort();
+		return false;
+	}, 
+
+}); 
+
+
+

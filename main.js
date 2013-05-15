@@ -24,6 +24,7 @@ var game = {
 		{name: "04",			type: "audio",	src: "data/audio/",	channel : 1},
 		{name: "06",			type: "audio",	src: "data/audio/",	channel : 1},
 		{name: "35",			type: "audio",	src: "data/audio/",	channel : 1},
+		{name: "12",			type: "audio",	src: "data/audio/",	channel : 1},
 		// {name: "die",			type: "audio",	src: "data/audio/04.wav"},
 		// {name: "04",		type: "audio",	src: "data/audio/04.wav"},
 		// {name: "jump",			type: "audio",	src: "data/audio/",	channel : 2},
@@ -38,18 +39,29 @@ var game = {
 		{name: "map2-1",			type: "tmx",	src: "data/map/map2-1.tmx"},
 		// {name: "map3-1",			type: "tmx",	src: "data/map/map3-1.tmx"},
 
-		// texturePacker
-		{name: "sword",		type: "image",	src: "data/gfx/sword.png"}, 
-		{name: "simon",		type:"image",	src: "data/gfx/playerattack3@4xx.png"},  
-		{name: "skeleton",		type:"image",	src: "data/gfx/skeletons/Skeleton2@4x.png"},
-		{name: "skeletonhead",		type:"image",	src: "data/gfx/Skeleton3@4x.png"},
-		{name: "crow",		type:"image",	src: "data/gfx/Crow@4x.png"}, 
-		{name: "bat",		type:"image",	src: "data/gfx/Bat.png"},
-		{name: "skull",		type:"image",	src: "data/gfx/Skull@4x.png"}, 
-		// {name: "goblin",		type:"image",	src: "data/gfx/gobl.png"},   
-		// {name: "lameenemy",		type:"image",	src: "data/gfx/lameenemyspr.png"},   
-		// {name: "texture",		type: "tps",	src: "data/gfx/texture.json"},
+		// Environment
+		{name: "rain",		type:"image",	src: "data/gfx/objects/rain.png"},
 		{name: "texture",		type:"image",	src: "data/gfx/texture.png"}, 
+		{name: "torches",		type:"image",	src: "data/gfx/objects/Breakable@4x.png"}, 
+		{name: "pickups",		type:"image",	src: "data/gfx/objects/Life@4x.png"},   
+
+		// Player
+		{name: "sword",		type: "image",	src: "data/gfx/sword.png"}, 
+		{name: "simon",		type:"image",	src: "data/gfx/players/testattack4@4x.png"}, 
+		// {name: "simon",		type:"image",	src: "data/gfx/playerattack3@4xx.png"},  
+
+		// Weapons
+		{name: "throwingweapons",		type:"image",	src: "data/gfx/weapons/Throwing Weapons@4x.png"}, 
+
+		// Enemies
+		{name: "skeleton",		type:"image",	src: "data/gfx/enemies/Skeleton2@4x.png"},
+		{name: "skeletonhead",		type:"image",	src: "data/gfx/enemies/Skeleton@4x.png"},
+		{name: "crow",		type:"image",	src: "data/gfx/enemies/Crow@4x.png"}, 
+		{name: "bat",		type:"image",	src: "data/gfx/enemies/Giant Bat@4x.png"},
+		{name: "skull",		type:"image",	src: "data/gfx/enemies/Skull@4x.png"}, 
+
+
+		
 		 
 	],  
 
@@ -102,6 +114,23 @@ var game = {
 		---										*/
 	loaded: function ()	{
 
+				// add our enemy entity in the entity pool
+		// me.entityPool.add("BatEntity", BatEnemyEntity);
+		me.entityPool.add("WeatherFactory", WeatherFactoryEntity);
+		me.entityPool.add("SkeletonEntity", SkeletonEnemyEntity);
+		me.entityPool.add("CrowEntity", CrowEnemyEntity);
+		me.entityPool.add("SkullEntity", SkullEnemyEntity);
+		me.entityPool.add("EnemyFactory", EnemyFactoryEntity);
+		
+
+		me.entityPool.add("BreakableEntity", BreakableEntity);
+
+		// add our player entity in the entity pool
+		me.entityPool.add("mainPlayer", PlayerEntity); 
+		me.entityPool.add("sword", weaponEntity);   
+
+		me.entityPool.add("secondPlayer", Player2Entity); 
+
 		// set the "Play/Ingame" Screen Object
     	me.state.set(me.state.PAUSE, new CustomLoadingScreen()); 
 		// set the "Play/Ingame" Screen Object
@@ -110,22 +139,13 @@ var game = {
 		// set the fade transition effect
 		me.state.transition("fade","#FFFFFF", 250);
 
-		// add our enemy entity in the entity pool
-		// me.entityPool.add("BatEntity", BatEnemyEntity);
-		me.entityPool.add("SkeletonEntity", SkeletonEnemyEntity);
-		me.entityPool.add("CrowEntity", CrowEnemyEntity);
-		me.entityPool.add("SkullEntity", SkullEnemyEntity);
-		me.entityPool.add("EnemyFactory", EnemyFactoryEntity);
-		// var coin2 = me.entityPool.add("CoinEntity", CoinEntity); 
 
-		// add our player entity in the entity pool
-		me.entityPool.add("mainPlayer", PlayerEntity); 
-		me.entityPool.add("sword", weaponEntity);   
-
-		me.entityPool.add("secondPlayer", Player2Entity); 
 		
+
+
 		// switch to PLAY state
 		me.state.change(me.state.PLAY);
+
 
 
 	}
@@ -138,7 +158,7 @@ var PlayScreen = me.ScreenObject.extend( {
 	// no need to do somehting else
 	onResetEvent: function() {
 		// load a level
-		me.levelDirector.loadLevel("map2");
+		me.levelDirector.loadLevel("map1");
 		
 		// add a default HUD to the game mngr
 		// me.game.addHUD(0,560,800,40);

@@ -126,3 +126,49 @@ var myButton = me.GUI_Object.extend(
       return true;
    }
 }); 
+
+
+var DropletParticle = me.AnimationSheet.extend(
+{
+    // distance = from point x original
+        // altitude = from point y original       
+    init: function(x, y, distance, altitude)
+    {
+        // Class Constructor
+        this.parent(x, y, me.loader.getImage("rain"), 2, 4);
+
+        // Calculate Random Launch Angle
+        var launch = Number.prototype.random(20, 35);
+        
+        // Set Initial Particle Velocity
+                // Number.prototype.random(-1, 1) => Particle Screen Side (value negative is left and positive is right)
+        this.vel = new me.Vector2d(-Math.sin(Number.prototype.degToRad(launch)) * distance * Number.prototype.random(-1, 1), -Math.cos(Number.prototype.degToRad(launch)) * altitude);          
+        // Add Single Animation
+        this.addAnimation("particle", [0]);
+        this.setCurrentAnimation("particle");
+        this.vel.y = 20;
+
+    },
+        
+    update: function()
+    {       
+        // console.log(this.pos.y + '--' + me.sys.gravity)
+        // Check if the Limits of Particles in Game Screen
+        if ((this.pos.y > 0) && (this.pos.y < 1350) && (this.pos.x > 0))
+        {
+            // Set Particle Position
+            this.vel.y += 1.3;
+            this.pos.x += this.vel.x;
+            this.pos.y += this.vel.y;           
+            
+            this.parent(); 
+            return true;
+        }
+        else {
+    
+            // Remove Particle
+            me.game.remove(this, true);
+        }
+        return false;
+    }
+});
