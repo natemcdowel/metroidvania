@@ -25,6 +25,7 @@ var game = {
 		{name: "06",			type: "audio",	src: "data/audio/",	channel : 1},
 		{name: "35",			type: "audio",	src: "data/audio/",	channel : 1},
 		{name: "12",			type: "audio",	src: "data/audio/",	channel : 1},
+		{name: "distant_thunder_and_light_rain",			type: "audio",	src: "data/audio/",	channel : 2},
 		// {name: "die",			type: "audio",	src: "data/audio/04.wav"},
 		// {name: "04",		type: "audio",	src: "data/audio/04.wav"},
 		// {name: "jump",			type: "audio",	src: "data/audio/",	channel : 2},
@@ -91,7 +92,7 @@ var game = {
 		//me.plugin.register(debugPanel, "debug");
 		
 		// initialize the "sound engine"
-		me.audio.init("wav");
+		me.audio.init("mp3");
 		
 		// set all ressources to be loaded
 		me.loader.onload = this.loaded.bind(this);
@@ -174,7 +175,7 @@ var PlayScreen = me.ScreenObject.extend( {
 		// me.game.HUD.addItem("score", new ScoreObject(00,790));  
 		
 		// play some music
-		// me.audio.playTrack("DST-GameForest");
+		me.audio.playTrack("distant_thunder_and_light_rain");
 
 	}
 

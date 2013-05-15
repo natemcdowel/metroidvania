@@ -124,7 +124,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		this.move(self)
 
-		// this.socket(self)
+		this.socket(self)
 
 				// Setting which way we want to go if map is changing
 		if (this.vel.y > 0 && this.pos.y > 1230 ) {
