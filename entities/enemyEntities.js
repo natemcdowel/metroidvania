@@ -536,8 +536,6 @@ var BossFactoryEntity = AllEnemyEntity.extend({
 
 	update : function () {
 
-
-
 		if (me.timer.getTime() > this.timer+6000 && this.risen == false) {
 
 			var player = me.game.getEntityByName("mainPlayer")[0];

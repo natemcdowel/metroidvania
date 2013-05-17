@@ -107,7 +107,7 @@
   </object>
   <object name="me.LevelEntity" x="4158" y="878" width="35" height="245">
    <properties>
-    <property name="to" value="map1"/>
+    <property name="to" value="map3"/>
    </properties>
   </object>
   <object name="WeatherFactory" x="1812" y="193" width="35" height="35"/>

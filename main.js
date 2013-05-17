@@ -122,7 +122,7 @@ var game = {
 		me.entityPool.add("SkeletonEntity", SkeletonEnemyEntity);
 		me.entityPool.add("CrowEntity", CrowEnemyEntity);
 		me.entityPool.add("SkullEntity", SkullEnemyEntity);
-		// me.entityPool.add("EnemyFactory", EnemyFactoryEntity);
+		me.entityPool.add("EnemyFactory", EnemyFactoryEntity);
 		me.entityPool.add("BossFactory", BossFactoryEntity); 								
 											
 
@@ -157,7 +157,7 @@ var PlayScreen = me.ScreenObject.extend( {
 	// no need to do somehting else
 	onResetEvent: function() {
 		// load a level
-		me.levelDirector.loadLevel("map3");
+		me.levelDirector.loadLevel("map1");
 		
 		// add a default HUD to the game mngr
 		// me.game.addHUD(0,560,800,40);
