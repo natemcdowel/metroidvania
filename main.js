@@ -55,10 +55,11 @@ var game = {
 		{name: "throwingweapons",		type:"image",	src: "data/gfx/weapons/Throwing Weapons@4x.png"}, 
 
 		// Enemies
+		{name: "coffin",		type:"image",	src: "data/gfx/enemies/Coffin@4x.png"},
 		{name: "skeleton",		type:"image",	src: "data/gfx/enemies/Skeleton2@4x.png"},
 		{name: "skeletonhead",		type:"image",	src: "data/gfx/enemies/Skeleton@4x.png"},
 		{name: "crow",		type:"image",	src: "data/gfx/enemies/Crow@4x.png"}, 
-		{name: "bat",		type:"image",	src: "data/gfx/enemies/Giant Bat@4x.png"},
+		{name: "bat",		type:"image",	src: "data/gfx/enemies/Giant Bat@4x.png"}, 
 		{name: "skull",		type:"image",	src: "data/gfx/enemies/Skull@4x.png"}, 
 
 
@@ -121,8 +122,9 @@ var game = {
 		me.entityPool.add("SkeletonEntity", SkeletonEnemyEntity);
 		me.entityPool.add("CrowEntity", CrowEnemyEntity);
 		me.entityPool.add("SkullEntity", SkullEnemyEntity);
-		me.entityPool.add("EnemyFactory", EnemyFactoryEntity);
-		
+		// me.entityPool.add("EnemyFactory", EnemyFactoryEntity);
+		me.entityPool.add("BossFactory", BossFactoryEntity); 								
+											
 
 		me.entityPool.add("BreakableEntity", BreakableEntity);
 
@@ -140,10 +142,6 @@ var game = {
 		// set the fade transition effect
 		me.state.transition("fade","#FFFFFF", 250);
 
-
-		
-
-
 		// switch to PLAY state
 		me.state.change(me.state.PLAY);
 
@@ -159,7 +157,7 @@ var PlayScreen = me.ScreenObject.extend( {
 	// no need to do somehting else
 	onResetEvent: function() {
 		// load a level
-		me.levelDirector.loadLevel("map1");
+		me.levelDirector.loadLevel("map3");
 		
 		// add a default HUD to the game mngr
 		// me.game.addHUD(0,560,800,40);

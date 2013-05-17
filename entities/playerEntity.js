@@ -82,7 +82,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		me.input.bindKey(me.input.KEY.ENTER, "menu");
 		
 		// Animations
-		this.renderable.addAnimation ("walk",  [0,1,2,3,4]); 
+		this.renderable.addAnimation ("walk",  [0,1,2,3,4,3,2,1], 3); 
 		this.renderable.addAnimation ("stand",  [0]); 
 		this.renderable.addAnimation ("crouch",  [3]);
 		this.renderable.addAnimation ("secondattack",  [4]);
@@ -103,10 +103,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 		this.attackFinished = true;
 		this.rotate = 10;
 		// this.renderable.angle = Number.prototype.degToRad (90);
-	
-
-
-
 	},
 
 	
