@@ -270,12 +270,15 @@ var MenuObject = me.HUD_Item.extend( {
 		this.width = 800;
 		this.height = 600;
 		this.menuposition = menuposition;
+
 	
 	},
 	/**
 	 * draw the score
 	 */
 	draw : function (context, menuposition) {
+
+
 		
 		// If the first time it was created
 		if (typeof this.context == 'undefined') {
@@ -289,6 +292,7 @@ var MenuObject = me.HUD_Item.extend( {
 
 		var yOffset = 0; 
 		menuSelected = 0;
+
 
 		// Menu Options
 
@@ -319,3 +323,20 @@ var MenuObject = me.HUD_Item.extend( {
 });
 
 
+var textEntity = me.ObjectEntity.extend({
+	init: function (x, y, settings){
+		
+		this.parent(x, y, settings);
+		this.testText = new me.Font("Verdana", 14, "white");
+
+	},
+
+	draw: function draw(context){
+		this.parent(context);
+
+		
+		testText.draw(context, "hello", 100, 50);
+
+		me.game.sort();
+	}
+});

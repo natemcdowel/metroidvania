@@ -13,6 +13,9 @@ var PlayerEntity = me.ObjectEntity.extend({
 		
 		y = nextScreenY;
 
+	    this.tag = new me.Font("Verdana", 14, "white");
+        this.tag.bold();
+        
 		console.log(me.game.currentLevel.width)
 		console.log(me.game.currentLevel.height)
 		// y = 1232;
@@ -59,6 +62,9 @@ var PlayerEntity = me.ObjectEntity.extend({
 		me.game.strength = 3;
 		this.mutipleJump = 0;
 		this.type = 'player';
+		this.attackFinished = true;
+		this.fontsize = 0;
+		this.hpY = 0;
 
 		// Menus
 		this.mainMenuPosition = -1;
@@ -93,19 +99,27 @@ var PlayerEntity = me.ObjectEntity.extend({
 		this.renderable.addAnimation ("crouchattack",  [11,12,13,14],1);
 		this.renderable.addAnimation ("hurt",  [16,17,18]);
 
-
 		// set as default
 		this.renderable.setCurrentAnimation("walk"); 
-		// this.renderable.animationspeed = 1;
-		// set the renderable position to bottom center
 		this.anchorPoint.set(0.5, 1.0); 
 		if (clientData[0] == 'right')this.updateColRect(110,60, 130,100);
-		this.attackFinished = true;
-		this.rotate = 10;
-		// this.renderable.angle = Number.prototype.degToRad (90);
 	},
 
-	
+
+	/* -----
+
+		Draw HP and other information
+		
+	------			*/
+    draw : function(context) {
+        this.parent(context);
+
+        if (this.pos) {
+	        this.tag = new me.Font("Verdana", this.fontsize, "#DC143C");
+	        this.tag.draw(context, this.headmessage ,this.pos.x + 80, this.pos.y+150+this.hpY);
+    	}
+    },
+
 	/* -----
 
 		update the player pos
@@ -114,6 +128,9 @@ var PlayerEntity = me.ObjectEntity.extend({
 	update : function () { 
 
 		var self = this;
+
+		// Changing 
+		
 		// console.log(this.pos.y)
 
 		this.menu(self);
@@ -143,7 +160,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		// check for collision with environment
 		this.updateMovement();
-		
 		this.collision();
 		
 		// Check for LEVEL UP!
@@ -160,10 +176,13 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		if (me.input.isKeyPressed('menu')) {	
 
+			
 			// Create menu
 			if (this.mainMenuPosition == -1) {
-				this.mainMenuPosition = 0;
+				this.mainMenuPosition = 1;
 				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU', this.mainMenuPosition)); 
+				me.game.sort();
+				setTimeout(function(){ self.menuDelay = false; },100);
 			}
 
 		}
@@ -171,9 +190,9 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// In the menu
 		if (self.mainMenuPosition != -1) {
 			// Up Key
-			if(me.input.isKeyPressed('jump') && !self.menuDelay) {
+			if(me.input.isKeyPressed('up') && !self.menuDelay) {
 
-				if ( this.mainMenuPosition <= this.mainMenuPositionLength && this.mainMenuPosition >= 1) this.mainMenuPosition--
+				if (this.mainMenuPosition >= 1) this.mainMenuPosition--
 				self.menuDelay = true;
 				me.game.HUD.removeItem("mainmenu");
 				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU',this.mainMenuPosition)); 
@@ -352,14 +371,27 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 	level : function () {
 
-		me.game.HUD.addItem("levelup", new ScoreObject((this.pos.x+25) - me.game.viewport.pos.x,(this.pos.y-30) - me.game.viewport.pos.y,'LEVEL UP'));
+		
+		this.fontsize = 0;
+		// Animates hitpoints above player
+		var tween = new me.Tween(this).to({fontsize: 20, hpY: -50}, 1600).onComplete(function(){		   
+			var tween = new me.Tween(this)
+		    .to({
+		        fontsize: 0,
+		        hpY: 0,
+		    }, 600)
+		    .start();})
+	    .start();
+
+	    this.headmessage = 'Level Up!';
+
 		me.game.lvl += 1; 
 		me.game.strength += .6; 
 		me.game.hitpoints += 20;
 		me.game.HUD.updateItemValue("lvl", 1);
 		me.game.HUD.updateItemValue("experience", 0);
 		me.game.HUD.updateItemValue("score", 20);
-		setTimeout(function(){me.game.HUD.removeItem("levelup");},2500);
+
 	},
 
 	/**
@@ -382,7 +414,17 @@ var PlayerEntity = me.ObjectEntity.extend({
 				this.vel.y = -15;
 			}
 
-			me.game.HUD.updateItemValue("score", -res.obj.strength);
+			// Animates hitpoints above player
+			var tween = new me.Tween(this).to({fontsize: 40, hpY: -160}, 1600).onComplete(function(){		   
+				var tween = new me.Tween(this)
+			    .to({
+			        fontsize: 0,
+			        hpY: 0,
+			    }, 0)
+			    .start();})
+		    .start();
+
+		    this.headmessage = res.obj.strength;    
 			this.hitpoints -= res.obj.strength;
 
 			// DEATH!
@@ -390,6 +432,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 				me.game.HUD.updateItemValue("score", 50);
 				nextScreenY = '';
+				me.game.HUD.removeItem("mainmenu");
 				me.levelDirector.reloadLevel();
 			}
 			this.maxVel.x = 12;

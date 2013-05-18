@@ -17,10 +17,29 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		this.strength = 5;
 		this.xp = 10;
 
+		this.tag = new me.Font("Verdana", 14, "yellow");
+        this.tag.bold();
+		this.fontsize = 0;
+		this.hpY = 0;
+
 		this.type = me.game.ENEMY_OBJECT;
 		this.timer = me.timer.getTime();
+		this.i = 0;
 
 	},
+
+	draw : function(context) {
+        this.parent(context);
+
+        // if (this.inViewport)
+        // console.log(this.pos.x)
+        if (this.alive && this.pos.x > 20) {
+
+        	this.context = context;
+	        this.tag = new me.Font("Verdana", this.fontsize, "yellow");
+	        this.tag.draw(this.context, this.takendamage , this.pos.x + 80, this.pos.y+150+this.hpY);
+    	}
+    },
 
 
 	moveTo : function (x, y) {
@@ -63,6 +82,8 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		}
 	},
 
+
+
 	/**
 	 * ouch
 	 */
@@ -70,13 +91,26 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 
 		if (!this.renderable.flickering)
 		{	
+
+			// Animates hitpoints above player
+			var tween = new me.Tween(this).to({fontsize: 40, hpY: -160}, 700).onComplete(function(){		   
+				var tween = new me.Tween(this)
+			    .to({
+			    	globalAlpha: 0,
+			        fontsize: 0,
+			        hpY: 0
+			    }, 0)
+			    .start();})
+		    .start();
+
 			var player = me.game.getEntityByName("mainPlayer")[0];
 			var self = this;
+			this.takendamage = Math.ceil(me.game.strength * 1);
 			this.hitpoints -= Math.ceil(me.game.strength * 1);
 			this.hurt = true;
+			this.i++; 
 			setTimeout(function(){self.hurt = false;},1000);
 
-			me.game.HUD.addItem("hit", new ScoreObject((this.pos.x+25) - me.game.viewport.pos.x,(this.pos.y-30) - me.game.viewport.pos.y,Math.ceil(me.game.strength * 1), 1));
 
 			// flash the screen
 			if (this.hitpoints <= 0) {
@@ -232,7 +266,6 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		this.gravity = settings.gravity || me.sys.gravity;
 		settings.width = 550;
 
-		
 		// set start/end position
 		this.startX = x;
 		this.endX   = x + settings.width - settings.spritewidth
@@ -269,6 +302,8 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		this.vel.y = .1;
 		this.walkLeft = false;
 	},
+
+
 
 	update : function () {
 
@@ -366,7 +401,10 @@ var ShotEntity = AllEnemyEntity.extend({
 
 		this.updateMovement();
 
-		if (this.vel.x == 0) me.game.remove(this)
+		if (!this.inViewport || this.vel.x == 0){ 
+			this.alive = false;
+			me.game.remove(this)
+		}
 		return true;
 	},
 });

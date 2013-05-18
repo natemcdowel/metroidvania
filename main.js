@@ -157,7 +157,7 @@ var PlayScreen = me.ScreenObject.extend( {
 	// no need to do somehting else
 	onResetEvent: function() {
 		// load a level
-		me.levelDirector.loadLevel("map1");
+		me.levelDirector.loadLevel("map2");
 		
 		// add a default HUD to the game mngr
 		// me.game.addHUD(0,560,800,40);
