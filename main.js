@@ -34,6 +34,7 @@ var game = {
 		{name: "map1",			type: "tmx",	src: "data/map/map1.tmx"},
 		{name: "map2",			type: "tmx",	src: "data/map/map2.tmx"},
 		{name: "map3",			type: "tmx",	src: "data/map/map3.tmx"}, 
+		{name: "map4",			type: "tmx",	src: "data/map/map4.tmx"}, 
 
 		// Lower tier
 		{name: "map1-1",			type: "tmx",	src: "data/map/map1-1.tmx"},
@@ -157,7 +158,7 @@ var PlayScreen = me.ScreenObject.extend( {
 	// no need to do somehting else
 	onResetEvent: function() {
 		// load a level
-		me.levelDirector.loadLevel("map2");
+		me.levelDirector.loadLevel("map4");
 		
 		// add a default HUD to the game mngr
 		// me.game.addHUD(0,560,800,40);

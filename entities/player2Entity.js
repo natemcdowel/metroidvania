@@ -62,53 +62,29 @@ var Player2Entity = me.ObjectEntity.extend({
 	------			*/
 	update : function () {
 
-		
-		
-		// socket.on('playermove', function (keystroke, clientIndex, x, y, map) {
-
-		// 	// if (clientIndex != clientid) {
-		// 		playerX = x;
-		// 		playerY = y;  
-		// 		playerMap = map;
-		// 		socketUpdated = true;
-		// 	// }
-		// 	// return;
-		// 	// alert(playerX + ' ' +playerY);
-		// 	// // if (clientIndex == 1) {
-		// 	// 	if (keystroke == 'left' ) left = true;
-		// 	// 	if (keystroke == 'right') right = true;
-		// 	// 	if (keystroke == 'up') up = true;
-
-		// 	// 	globalClientIndex = clientIndex; 
-		// 	// } 
-		// 	// me.input.isKeyPressed('2left') = true
-		// });
-
 		socket.on('updateclientpos', function (users) {
 
- 
-			// console.log(users); 
-			// alert(users[clientid][2]); 
+			if (typeof users[1] != 'undefined') {
+				// Player x, y, map
+				if (clientid == 0) {
+					player2Action = users[1][0];
+					playerX = users[1][2];
+					playerY = users[1][3];
+					playerVelX = users[1][5];
+					playerVelY = users[1][6];
+					currentAnim = users[1][7];
 
-			// Player x, y, map
-			if (clientid == 0) {
-				player2Action = users[1][0];
-				playerX = users[1][2];
-				playerY = users[1][3];
-				playerVelX = users[1][5];
-				playerVelY = users[1][6];
-				currentAnim = users[1][7];
-
+				}
+				if (clientid == 1) {
+					player2Action = users[0][0];
+					playerX = users[0][2];
+					playerY = users[0][3];
+					playerVelX = users[0][5];
+					playerVelY = users[0][6];
+					currentAnim = users[0][7];
+				}
+				users = users;
 			}
-			if (clientid == 1) {
-				player2Action = users[0][0];
-				playerX = users[0][2];
-				playerY = users[0][3];
-				playerVelX = users[0][5];
-				playerVelY = users[0][6];
-				currentAnim = users[0][7];
-			}
-			users = users;
 		});  
 
 		if (typeof player2Action != 'undefined') {
@@ -233,14 +209,15 @@ var Player2Entity = me.ObjectEntity.extend({
 		socketResponse('checkmapserver',clientid);   
 		socket.on('checkmapclient', function (users) {	
 
-			// alert(users[clientid][4])
+		
+			if (typeof users[1] != 'undefined') {
+				if(users[0][4] != users[1][4]) {
 
-			if(users[0][4] != users[1][4]) {
-
-				visiblePlayer = false;
-				
-			} 
-			else {visiblePlayer = true;} 
+					visiblePlayer = false;
+					
+				} 
+				else {visiblePlayer = true;} 
+			}
 		});   
 
 		this.visible = visiblePlayer;  

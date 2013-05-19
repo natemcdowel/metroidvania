@@ -64,6 +64,16 @@
     <property name="spritewidth" value="240"/>
    </properties>
   </object>
+  <object name="SkeletonEntity" x="525" y="1085" width="490" height="35">
+   <properties>
+    <property name="" value=""/>
+    <property name="animationspeed" value="10"/>
+    <property name="gravity" value="0"/>
+    <property name="image" value="skeleton"/>
+    <property name="spriteheight" value="240"/>
+    <property name="spritewidth" value="240"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup color="#55ff00" name="player" width="120" height="40">
   <object name="mainPlayer" x="81" y="1030" width="70" height="70">
@@ -102,16 +112,6 @@
     <property name="image" value="torches"/>
     <property name="spriteheight" value="120"/>
     <property name="spritewidth" value="120"/>
-   </properties>
-  </object>
-  <object name="BossFactory" x="3710" y="490" width="70" height="70">
-   <properties>
-    <property name="animationspeed" value="5"/>
-    <property name="gravity" value="0"/>
-    <property name="image" value="crow"/>
-    <property name="spriteheight" value="240"/>
-    <property name="spritewidth" value="240"/>
-    <property name="velX" value="4"/>
    </properties>
   </object>
   <object name="me.LevelEntity" x="0" y="0" width="35" height="245">

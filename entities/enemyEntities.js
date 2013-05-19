@@ -8,8 +8,11 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 	 * constructor
 	 */
 	init: function (x, y, settings) {
+
 		// call the parent constructor
 		this.parent(x, y , settings);
+
+
 		
 		// make it collidable
 		this.collidable = true;
@@ -25,6 +28,9 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		this.type = me.game.ENEMY_OBJECT;
 		this.timer = me.timer.getTime();
 		this.i = 0;
+		this.enemy = new Object();
+
+		console.log(this.GUID)
 
 	},
 
@@ -33,13 +39,34 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 
         // if (this.inViewport)
         // console.log(this.pos.x)
-        if (this.alive && this.pos.x > 20) {
+        if (this.alive && this.pos) {
+
+        	var self = this;
 
         	this.context = context;
 	        this.tag = new me.Font("Verdana", this.fontsize, "yellow");
 	        this.tag.draw(this.context, this.takendamage , this.pos.x + 80, this.pos.y+150+this.hpY);
+
+
+	        this.socket(self);
     	}
     },
+
+    socket : function (self) {
+
+		// Sending information to SOCKET.io
+
+		if (this.alive && this.pos) {
+			this.enemy.GUID = this.GUID; 
+			this.enemy.x = this.pos.x;
+			this.enemy.y = this.pos.y;
+			this.enemy.velx = this.vel.x;
+			this.enemy.vely = this.vel.y;
+			this.enemy.animation = this.renderable.current.name;  
+			socketResponse('enemymove',this.enemy); 
+		}
+
+	},
 
 
 	moveTo : function (x, y) {
@@ -82,8 +109,6 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		}
 	},
 
-
-
 	/**
 	 * ouch
 	 */
@@ -119,7 +144,7 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 				this.alive = false; 
 				this.collidable = false;
 				me.game.HUD.updateItemValue("experience", this.xp);
-				this.renderable.flicker(25, function(){me.game.remove(self)});
+				this.renderable.flicker(5, function(){me.game.remove(self)});
 				me.audio.play("04", false);
 
 				// Drop item
@@ -259,9 +284,11 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 	 */
 	init: function (x, y, settings) {
 
+		this.checkplayers();
+
 		// call the parent constructor
 		this.parent(x, y , settings);
-		
+
 		// apply gravity setting if specified
 		this.gravity = settings.gravity || me.sys.gravity;
 		settings.width = 550;
@@ -301,19 +328,43 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		this.vel.x = 10;
 		this.vel.y = .1;
 		this.walkLeft = false;
+
 	},
 
+	checkplayers : function () {
 
+		var self = this;
+
+		socketResponse('checkmapserver',clientid);   
+		socket.on('checkmapclient', function (users) {	 
+
+			if (typeof users[1] != 'undefined') {
+				if(users[0][4] != users[1][4]) {
+					samemap = false;
+					console.log(samemap)
+				} 
+				else {
+					samemap = true;
+					console.log(samemap)
+				}  
+			}
+		});   
+
+	},
 
 	update : function () {
 
-		// do nothing if not visible
-		// if (!this.inViewport) {
-		// 	return false;
-		// }
-		
+		var self = this;
 
-		if (this.alive)	{
+		// Setting enemy position through SOCKET if 2nd to map
+		if (samemap == true && clientid == 1) {
+			socket.on('updateenemies', function (enemies) {	
+				self.vel.x = 0;
+				self.pos.x = enemies.x
+			});
+		}
+
+		else {
 			// if (this.hurt) {
 			// 	this.vel.x = 0;
 			// 	this.vel.y = 0;
@@ -326,29 +377,28 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 				this.vel.x = this.accel.x * me.timer.tick;
 				this.renderable.setCurrentAnimation("throwhead","walk");
 
-				var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240 }, 5); 
-		        me.game.add(shot, this.z); 
-		        me.game.sort();
+				// var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240 }, 5); 
+		  //       me.game.add(shot, this.z); 
+		  //       me.game.sort();
 
 				this.walkLeft = false;
 				this.flipX(false);
 			} else if (!this.walkLeft && this.pos.x >= this.endX) {
-				console.log(this.hurt)
 				if (this.vel.x == 0) this.vel.x = 4;
 				this.vel.x = -this.accel.x * me.timer.tick;
 				this.renderable.setCurrentAnimation("throwhead","walk");
 
-				var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240 }, 5); 
-		        me.game.add(shot, this.z); 
-		        me.game.sort();
+				// var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240 }, 5); 
+		  //       me.game.add(shot, this.z); 
+		  //       me.game.sort();
 
 				this.walkLeft = true;
 				this.flipX(true);
 			}
 		} 
-		else {
-			this.renderable.setCurrentAnimation("dead");
-		}
+		// else {
+		// 	this.renderable.setCurrentAnimation("dead");
+		// }
 		
 		// Removes BORDERLANDS style hit point 
 		if (this.renderable.flickerTimer < 10) {
@@ -363,6 +413,7 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		this.parent()
 		return true;
 	},
+
 });
 
 
@@ -405,6 +456,8 @@ var ShotEntity = AllEnemyEntity.extend({
 			this.alive = false;
 			me.game.remove(this)
 		}
+		
+		this.parent()
 		return true;
 	},
 });

@@ -10,6 +10,7 @@ server.listen(80);
 
 var clientid = '';
 var users = Array();
+enemies = new Object();
 var i = 0;
 io.sockets.on('connection', function (socket) {
 
@@ -17,7 +18,7 @@ io.sockets.on('connection', function (socket) {
   socket.emit('assignid',i);
   users[i] = Array();
   users[i][0] = '';
-  users[i][1] = i;
+  users[i][1] = i; 
   users[i][2] = 75;
   users[i][3] = 100;
   users[i][4] = 8;  
@@ -34,9 +35,8 @@ io.sockets.on('connection', function (socket) {
   //   io.sockets.emit('getplayers', users);   
   // });
  
-  // Listens for keypress and sends back to client
+  // Player data stored in server
   socket.on('keypress', function (data) {
-    //io.sockets.emit('playermove', data[0], data[1], data[2], data[3], data[4]);  
     // Storing users current map screen
     users[data[1]][0]=data[0]; 
     users[data[1]][1]=data[1]; 
@@ -45,11 +45,12 @@ io.sockets.on('connection', function (socket) {
     users[data[1]][5]=data[5]; 
     users[data[1]][6]=data[6];
     users[data[1]][7]=data[7]; 
+  });  
 
-    // users[data[1]][4]=data[4]; 
-    // users[data[1]][5]=data[5]; 
-    // throw new Error(users);  
-    //console.log('x:' + data[2] + ' y:' + data[3] + ' map:' + data[4]); // X position  
+    // Enemy Data stored in server
+  socket.on('enemymove', function (enemy) {
+    // Storing users current map screen
+    enemies = enemy
   });  
   
   // Listens for destroy and sends back to client
@@ -60,7 +61,6 @@ io.sockets.on('connection', function (socket) {
 
   // Checks for players on current map screen
   socket.on('checkmapserver', function (clientid) {
-
     socket.emit('checkmapclient', users);      
   });       
 
@@ -68,7 +68,6 @@ io.sockets.on('connection', function (socket) {
   socket.on('changemapserver', function (socketArray) {
     // Setting map into appropriate player 
     users[socketArray[0]][4] = socketArray[1];  
-     
   });       
 
   // Listens for clients leaving game
@@ -90,5 +89,6 @@ io.sockets.on('connection', function (socket) {
   // Updates player positions to client every so often
   setInterval(function(){
     io.sockets.emit('updateclientpos',users);   
+    io.sockets.emit('updateenemies',enemies);
   }, 10);  
 });  

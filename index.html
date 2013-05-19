@@ -34,6 +34,7 @@
 	var nextScreenY = '';
 	var nextScreenX = '';
 	var menuSelected = 0;
+	var samemap = '';
 	var lvlcap = Array(); 
 	lvlcap[1] = 9;
 	lvlcap[2] = 49;
@@ -43,7 +44,7 @@
 	
 
 
-	var socket = io.connect('mcdowellwebdevelopment.info:8080');
+	var socket = io.connect('10.10.10.100:80');
 
 	socket.on('assignid', function (id) { 
 		clientid = id;
@@ -56,7 +57,7 @@
 
     // Passing input from browser to socket.io server
 	function socketResponse(type, data) {
-			var socket = io.connect('mcdowellwebdevelopment.info:8080');
+			var socket = io.connect('10.10.10.100:80');
 		 	socket.emit(type, data);
 	}
 </script>
