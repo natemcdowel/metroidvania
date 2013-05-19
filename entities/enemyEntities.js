@@ -341,11 +341,11 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 			if (typeof users[1] != 'undefined') {
 				if(users[0][4] != users[1][4]) {
 					samemap = false;
-					console.log(samemap)
+					// console.log(samemap)
 				} 
 				else {
 					samemap = true;
-					console.log(samemap)
+					// console.log(samemap)
 				}  
 			}
 		});   
@@ -372,9 +372,9 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 				this.vel.x = this.accel.x * me.timer.tick;
 				this.renderable.setCurrentAnimation("throwhead","walk");
 
-				// var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240 }, 5); 
-		  //       me.game.add(shot, this.z); 
-		  //       me.game.sort();
+				var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240, direction: 'left', animframe: 5 }); 
+		        me.game.add(shot, this.z); 
+		        me.game.sort();
 
 				this.walkLeft = false;
 				this.flipX(false);
@@ -383,9 +383,9 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 				this.vel.x = -this.accel.x * me.timer.tick;
 				this.renderable.setCurrentAnimation("throwhead","walk");
 
-				// var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240 }, 5); 
-		  //       me.game.add(shot, this.z); 
-		  //       me.game.sort();
+				var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240, direction: 'right', animframe: 5 }); 
+		        me.game.add(shot, this.z); 
+		        me.game.sort();
 
 				this.walkLeft = true;
 				this.flipX(true);
@@ -414,7 +414,7 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 
 var ShotEntity = AllEnemyEntity.extend({
 
-    init: function(x, y, settings, animframe) {
+    init: function(x, y, settings) {
 
     	this.rotate = 1;
 		
@@ -424,18 +424,19 @@ var ShotEntity = AllEnemyEntity.extend({
 	     // apply gravity setting if specified
 		this.gravity = settings.gravity || me.sys.gravity;
 		this.hitpoints = 1;
-		this.renderable.addAnimation ("head", [animframe]);
+		this.renderable.addAnimation ("head", [settings.animframe]);
 		this.renderable.setCurrentAnimation("head");
+		this.direction = settings.direction;
 
 		// Finding player position, which way to shoot
 		var player = me.game.getEntityByName("mainPlayer")[0];
 
 		// walking & jumping speed
-		if (player.pos.x < this.pos.x) this.vel.x = -24; //this.setVelocity(settings.velX || -15, settings.velY || 0);
+		if (this.direction == 'left') this.vel.x = -24; //this.setVelocity(settings.velX || -15, settings.velY || 0);
 		else this.vel.x = 24;
 
-	     this.collidable = true;
-	     this.updateColRect(110,30, 140,30);
+	     this.collidablxe = true;
+	     this.updateColRect(101,30, 140,30);
 
 
 	},
@@ -570,25 +571,27 @@ var CoffinEntity = AllEnemyEntity.extend({
 	    this.updateColRect(110,30, 140,30);
 	    this.shot = false
 
-
+	    
 
 	},
 
 	update : function () {
 
-
-
+		// Raising from ground
 		if (this.pos.y < 1100) {
 			this.vel.y = 0;
-
 		}
 
 		if(this.renderable.current.name == 'risen' && this.shot == false) {
 
 			var self = this;
+			var player = me.game.getEntityByName("mainPlayer")[0];
+
+			if (this.pos.x < player.pos.x) this.direction = 'right'
+			else this.direction = 'left';
 
 			// Coffin Door flies off
-			var shot = new ShotEntity( this.pos.x, this.pos.y, { image: "coffin", spritewidth: 240, spriteheight: 240 },2); 
+			var shot = new ShotEntity( this.pos.x, this.pos.y, { image: "coffin", spritewidth: 240, spriteheight: 240, direction: this.direction, animframe: 2}); 
 			me.game.add(shot, this.z-1);
 		    me.game.sort();
 		    this.shot = true;
@@ -622,7 +625,7 @@ var BossFactoryEntity = AllEnemyEntity.extend({
 
 	update : function () {
 
-		if (me.timer.getTime() > this.timer+6000 && this.risen == false) {
+		if (me.timer.getTime() > this.timer+3500 && this.risen == false) {
 
 			var player = me.game.getEntityByName("mainPlayer")[0];
 			this.minX = player.pos.x-700
@@ -640,19 +643,25 @@ var BossFactoryEntity = AllEnemyEntity.extend({
 }); 
 
 
-
+// Abstracted Factory for all enemies
 var EnemyFactoryEntity = AllEnemyEntity.extend({	
 
 	init: function(x, y, settings, direction) {
 		this.timer = me.timer.getTime();
+		this.enemyClass = settings.enemyClass;
+		this.objectName = window[this.enemyClass]
+		this.image = settings.image;
+		this.delay = settings.delay;
+		this.spritewidth = settings.spritewidth;
+		this.spriteheight = settings.spriteheight;
 	},
 
 	update : function () {
 
-		if (me.timer.getTime() > this.timer+4000) {
+		if (me.timer.getTime() > this.timer+this.delay) {
 			var player = me.game.getEntityByName("mainPlayer")[0];
-			var skull = new SkullEnemyEntity( player.pos.x+1000, player.pos.y, { image: "skull", spritewidth: 100, spriteheight: 100 }); 
-		    me.game.add(skull, this.z-1);
+			var enemy = new this.objectName( player.pos.x+1000, player.pos.y, { image: this.image, spritewidth: this.spritewidth, spriteheight: this.spriteheight }); 
+		    me.game.add(enemy, this.z-1);
 		    me.game.sort();
 		    this.timer = me.timer.getTime();
 		}

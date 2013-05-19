@@ -15,7 +15,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 	    this.tag = new me.Font("Verdana", 14, "white");
         this.tag.bold();
-        
+
 		console.log(me.game.currentLevel.width)
 		console.log(me.game.currentLevel.height)
 		// y = 1232;
@@ -26,17 +26,19 @@ var PlayerEntity = me.ObjectEntity.extend({
 		if (levelDirection == 'east') {
 			x = 100; 
 		}
-		if (levelDirection == 'south') {
-			y = 100;
+		if (levelDirectionY == 'south' ) {
+			y = 40;
 			x = nextScreenX;
 		}
-		if (levelDirection == 'north') {
-			y = 1100;
+		if (levelDirectionY == 'north') {
+			y = 900;
 			x = nextScreenX;
+			settings.velY = -20;
 		}
 
 		// call the constructor
 		this.parent(x, y , settings); 
+		this.setVelocity(12, 27); 
 
 		// Weapon delay
 		this.cooldown = true;
@@ -45,11 +47,15 @@ var PlayerEntity = me.ObjectEntity.extend({
 		socketArray[0] = clientid;
 		socketArray[1] = me.levelDirector.getCurrentLevelId();
 
+		if (me.levelDirector.getCurrentLevelId() == 'map1-1') { me.audio.stopTrack(); me.audio.playTrack("cave1"); }
+		if (me.levelDirector.getCurrentLevelId() == 'map3') { me.audio.stopTrack(); me.audio.playTrack("distant_thunder_and_light_rain"); }
+		if (me.levelDirector.getCurrentLevelId() == 'map1') {  me.audio.stopTrack(); me.audio.playTrack("battle1"); }
+
 		// Setting our map in server 
 		socketResponse('changemapserver', socketArray);  
 
 		// walking & jumping speed 
-		this.setVelocity(12, 27); 
+		
 		this.setFriction(1.2,0); 
 		this.gravity = 2.2
 
@@ -77,6 +83,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// set the display around our position 
 		me.game.viewport.follow(this, me.game.viewport.AXIS.BOTH);
 		this.renderable.animationspeed = 2;
+
+
 				
 		// enable keyboard
 		me.input.bindKey(me.input.KEY.LEFT,	 "left");
@@ -102,7 +110,10 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// set as default
 		this.renderable.setCurrentAnimation("walk"); 
 		this.anchorPoint.set(0.5, 1.0); 
-		if (clientData[0] == 'right')this.updateColRect(110,60, 130,100);
+		this.updateColRect(110,60, 130,100);
+
+		if (typeof settings.velY != 'undefined') this.vel.y = settings.velY;
+		if (typeof nextScreenVelX != '') this.vel.x = nextScreenVelX;
 	},
 
 
@@ -131,7 +142,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		// Changing 
 		
-		// console.log(this.pos.y)
 
 		this.menu(self);
 
@@ -139,24 +149,31 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		this.socket(self)
 
-				// Setting which way we want to go if map is changing
-		if (this.vel.y > 0 && this.pos.y > 1230 ) {
-			levelDirection = 'south';
+		// Setting which way we want to go if map is changing
+		if (this.pos.y > 1100 ) {
+			levelDirectionY = 'south';
 		} 
-		if (this.vel.y > 0 && this.pos.y < 150 ) {
-			levelDirection = 'north'; 
+		else if (this.pos.y < 150 ) {
+			levelDirectionY = 'north'; 
 		} 
+		else {
+			levelDirectionY = '';
+		}
+
 		if (this.pos.x < 200) {
 			levelDirection = 'west';
 		}
 		if (this.pos.x > 1100) {
 			levelDirection = 'east';
 		}
+
 		nextScreenY = this.pos.y
+		nextScreenX = this.pos.x
+		nextScreenVelX = this.vel.x;
 
 		//  Updating Hit Box
-		if (clientData[0] == 'left')  this.updateColRect(130,60, 140,100); 
-		else if (clientData[0] == 'right')this.updateColRect(50,60, 140,100);  
+		if (clientData[0] == 'left') this.updateColRect(130,60, 140,100); 
+		else if (clientData[0] == 'right') this.updateColRect(50,60, 140,100);  
 
 		// check for collision with environment
 		this.updateMovement();
@@ -240,7 +257,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 		
 		// COLLISIONS with various objects
 		var res = me.game.collide(this);
-		// console.log(res);
 		
 		if (res) {
 			switch (res.obj.type) {	
@@ -304,6 +320,12 @@ var PlayerEntity = me.ObjectEntity.extend({
 				clientData[0] = 'right';
 			}
 
+						// In the air
+			// if (this.vel.y > 0 || this.vel.y < 0) {
+			// 	if (this.vel.x < 0) this.vel.x -= this.accel.x * me.timer.tick;
+			// 	if (this.vel.x > 0) this.vel.x += this.accel.x * me.timer.tick;
+			// }
+
 			// If pressed jump
 			if (me.input.isKeyPressed('jump')) { 
 				this.renderable.setCurrentAnimation("jumpdown");
@@ -317,6 +339,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 			if (me.input.isKeyPressed('down') && !me.input.isKeyPressed('right') && !me.input.isKeyPressed('left')) {
 				this.renderable.setCurrentAnimation("crouch");
 			}
+
 
 			//////// Attacking /////////
 			if (me.input.isKeyPressed('attack')) {

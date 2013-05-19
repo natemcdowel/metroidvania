@@ -44,7 +44,7 @@ var BreakableEntity = me.ObjectEntity.extend({
 
 	update : function () {
 
-		this.updateMovement();
+		// this.updateMovement();
 		this.parent()
 		return true;
 

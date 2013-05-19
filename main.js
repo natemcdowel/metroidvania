@@ -26,10 +26,10 @@ var game = {
 		{name: "35",			type: "audio",	src: "data/audio/",	channel : 1},
 		{name: "12",			type: "audio",	src: "data/audio/",	channel : 1},
 		{name: "distant_thunder_and_light_rain",			type: "audio",	src: "data/audio/",	channel : 2},
-		// {name: "die",			type: "audio",	src: "data/audio/04.wav"},
-		// {name: "04",		type: "audio",	src: "data/audio/04.wav"},
-		// {name: "jump",			type: "audio",	src: "data/audio/",	channel : 2},
-		// {name: "DST-GameForest",type: "audio",	src: "data/audio/",	channel : 1},
+		{name: "cave1",			type: "audio",	src: "data/audio/music/",	channel : 2},
+		{name: "battle1",			type: "audio",	src: "data/audio/music/",	channel : 2},
+
+
 		// level map
 		{name: "map1",			type: "tmx",	src: "data/map/map1.tmx"},
 		{name: "map2",			type: "tmx",	src: "data/map/map2.tmx"},
@@ -158,10 +158,7 @@ var PlayScreen = me.ScreenObject.extend( {
 	// no need to do somehting else
 	onResetEvent: function() {
 		// load a level
-		me.levelDirector.loadLevel("map4");
-		
-		// add a default HUD to the game mngr
-		// me.game.addHUD(0,560,800,40);
+		me.levelDirector.loadLevel("map1");
 
 		// add a default HUD to the game mngr
 		me.game.addHUD(0,0,1280, 720);
@@ -174,7 +171,7 @@ var PlayScreen = me.ScreenObject.extend( {
 		// me.game.HUD.addItem("score", new ScoreObject(00,790));  
 		
 		// play some music
-		me.audio.playTrack("distant_thunder_and_light_rain");
+		// me.audio.playTrack("cave1");
 
 	}
 

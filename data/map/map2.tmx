@@ -80,14 +80,14 @@
     <property name="velX" value="2"/>
    </properties>
   </object>
-  <object name="EnemyFactory" x="3356" y="955" width="350" height="35">
+  <object name="EnemyFactory" x="3220" y="910" width="350" height="35">
    <properties>
     <property name="animationspeed" value="5"/>
-    <property name="gravity" value="0"/>
+    <property name="delay" value="5000"/>
+    <property name="enemyClass" value="SkullEnemyEntity"/>
     <property name="image" value="skull"/>
     <property name="spriteheight" value="100"/>
     <property name="spritewidth" value="100"/>
-    <property name="velX" value="4"/>
    </properties>
   </object>
   <object name="SkeletonEntity" x="980" y="1085" width="700" height="35">
