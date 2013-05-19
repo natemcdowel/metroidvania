@@ -364,13 +364,8 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 			});
 		}
 
-		else {
-			// if (this.hurt) {
-			// 	this.vel.x = 0;
-			// 	this.vel.y = 0;
-				
-			// 	this.walkLeft = false;
-			// }
+		else { 
+
 			if (this.walkLeft && this.pos.x <= this.startX) {
 				console.log(this.hurt)
 				if (this.vel.x == 0) this.vel.x = 4;
