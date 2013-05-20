@@ -111,6 +111,48 @@
     <property name="to" value="map1"/>
    </properties>
   </object>
+  <object name="SkeletonEntity" x="1005" y="681" width="700" height="35">
+   <properties>
+    <property name="animation" value="zombie"/>
+    <property name="animationspeed" value="10"/>
+    <property name="customcollision" value="false"/>
+    <property name="gravity" value="0"/>
+    <property name="image" value="zombie"/>
+    <property name="spriteheight" value="120"/>
+    <property name="spritewidth" value="120"/>
+    <property name="velX" value="10"/>
+   </properties>
+  </object>
+  <object name="SkeletonEntity" x="1871" y="644" width="700" height="35">
+   <properties>
+    <property name="animation" value="zombie"/>
+    <property name="animationspeed" value="10"/>
+    <property name="customcollision" value="false"/>
+    <property name="gravity" value="0"/>
+    <property name="image" value="zombie"/>
+    <property name="spriteheight" value="120"/>
+    <property name="spritewidth" value="120"/>
+   </properties>
+  </object>
+  <object name="SkeletonEntity" x="2844" y="641" width="700" height="35">
+   <properties>
+    <property name="animation" value="zombie"/>
+    <property name="animationspeed" value="10"/>
+    <property name="customcollision" value="false"/>
+    <property name="gravity" value="0"/>
+    <property name="image" value="zombie"/>
+    <property name="spriteheight" value="120"/>
+    <property name="spritewidth" value="120"/>
+   </properties>
+  </object>
+  <object name="PickupEntity" x="805" y="527" width="70" height="35">
+   <properties>
+    <property name="image" value="throwingweapons"/>
+    <property name="item" value="basicsword"/>
+    <property name="spriteheight" value="120"/>
+    <property name="spritewidth" value="120"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup color="#ffff00" name="coins" width="120" height="40"/>
  <objectgroup color="#ff0000" name="flies" width="120" height="40"/>

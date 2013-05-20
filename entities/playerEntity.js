@@ -47,9 +47,14 @@ var PlayerEntity = me.ObjectEntity.extend({
 		socketArray[0] = clientid;
 		socketArray[1] = me.levelDirector.getCurrentLevelId();
 
-		if (me.levelDirector.getCurrentLevelId() == 'map1-1') { me.audio.stopTrack(); me.audio.playTrack("cave1"); }
-		if (me.levelDirector.getCurrentLevelId() == 'map3') { me.audio.stopTrack(); me.audio.playTrack("distant_thunder_and_light_rain"); }
-		if (me.levelDirector.getCurrentLevelId() == 'map1') {  me.audio.stopTrack(); me.audio.playTrack("battle1"); }
+		me.audio.stopTrack();
+
+		// Song logic
+		setTimeout(function(){ 
+			if (me.levelDirector.getCurrentLevelId() == 'map1-1') { me.audio.stopTrack(); me.audio.playTrack("cave1"); }
+			if (me.levelDirector.getCurrentLevelId() == 'map3') { me.audio.stopTrack(); me.audio.playTrack("distant_thunder_and_light_rain"); }
+			if (me.levelDirector.getCurrentLevelId() == 'map1') {  me.audio.stopTrack(); me.audio.playTrack("battle1"); }
+		},500);
 
 		// Setting our map in server 
 		socketResponse('changemapserver', socketArray);  

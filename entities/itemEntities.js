@@ -61,9 +61,13 @@ var PickupEntity = me.ObjectEntity.extend({
 		
 		this.parent(x, y, settings);
 
+		// Power-Ups
 		this.renderable.addAnimation ("largeheart", [0]);
 		this.renderable.addAnimation ("health", [1]);
 		this.renderable.addAnimation ("smallheart", [2]);
+
+		// Weapons
+		this.renderable.addAnimation ("basicsword", [1]); 
 		
 		// What do we drop?
 		if (enemy) this.renderable.setCurrentAnimation("smallheart");

@@ -62,6 +62,7 @@ var game = {
 		{name: "crow",		type:"image",	src: "data/gfx/enemies/Crow@4x.png"}, 
 		{name: "bat",		type:"image",	src: "data/gfx/enemies/Giant Bat@4x.png"}, 
 		{name: "skull",		type:"image",	src: "data/gfx/enemies/Skull@4x.png"}, 
+		{name: "zombie",		type:"image",	src: "data/gfx/enemies/Zombie@4x.png"}, 
 
 
 		

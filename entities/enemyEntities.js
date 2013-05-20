@@ -301,21 +301,22 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		// walking & jumping speed
 		this.setVelocity(settings.velX || 4, settings.velY || 6);
 
-        // walking animating
-		this.renderable.addAnimation ("walk", [0,1,2]);
 		
-		// throw head
+		this.renderable.addAnimation ("skeleton", [0,1,2]);
 		this.renderable.addAnimation ("throwhead", [3,4]);
-
-		// Death
 		this.renderable.addAnimation ("dead", [6,7,8]);
+		this.renderable.addAnimation ("zombie", [0,1,2,3,4,5]);
+
+		if (settings.customcollision == true) {
+			this.updateColRect(80,80, 140,100);
+		}
 
 		// // set default one
-		this.renderable.setCurrentAnimation("walk");
+		this.renderable.setCurrentAnimation(settings.image);
 
 		// set the renderable position to bottom center
 		this.anchorPoint.set(0.5, 1.0);		
-		this.updateColRect(80,80, 140,100);
+		
 
 		// make it collidable
 		this.collidable = true;
@@ -328,6 +329,7 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		this.vel.x = 10;
 		this.vel.y = .1;
 		this.walkLeft = false;
+		this.shot = settings.shot;
 
 	},
 
@@ -370,22 +372,26 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 				console.log(this.hurt)
 				if (this.vel.x == 0) this.vel.x = 4;
 				this.vel.x = this.accel.x * me.timer.tick;
-				this.renderable.setCurrentAnimation("throwhead","walk");
+				// this.renderable.setCurrentAnimation("throwhead","walk");
 
-				var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240, direction: 'left', animframe: 5 }); 
-		        me.game.add(shot, this.z); 
-		        me.game.sort();
+				if (this.shot == true) {
+					var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240, direction: 'left', animframe: 5 }); 
+			        me.game.add(shot, this.z); 
+			        me.game.sort();
+		    	}
 
 				this.walkLeft = false;
 				this.flipX(false);
 			} else if (!this.walkLeft && this.pos.x >= this.endX) {
 				if (this.vel.x == 0) this.vel.x = 4;
 				this.vel.x = -this.accel.x * me.timer.tick;
-				this.renderable.setCurrentAnimation("throwhead","walk");
+				// this.renderable.setCurrentAnimation("throwhead","walk");
 
-				var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240, direction: 'right', animframe: 5 }); 
-		        me.game.add(shot, this.z); 
-		        me.game.sort();
+				if (this.shot == true) {
+					var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240, direction: 'right', animframe: 5 }); 
+			        me.game.add(shot, this.z); 
+			        me.game.sort();
+		    	}
 
 				this.walkLeft = true;
 				this.flipX(true);
@@ -458,6 +464,7 @@ var ShotEntity = AllEnemyEntity.extend({
 	},
 });
 
+
 /**
  * A Skull enemy entity
  * 
@@ -473,22 +480,13 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 
 	     // apply gravity setting if specified
 		this.gravity = settings.gravity || me.sys.gravity;
-
-				// set the renderable position to bottom center
-		// this.anchorPoint.set(0.5, 1.0);		
-		
-		// set start/end position
-		// this.startX = x;
-		// this.endX   = x + settings.width - settings.spritewidth
-		// this.pos.x  = x + settings.width - settings.spritewidth;
-
 		this.renderable.animationspeed = 2;
 		this.renderable.addAnimation ("head", [3,4,5]); 
 
 		this.renderable.setCurrentAnimation("head");
 
 		// walking & jumping speed
-		this.vel.x = -9; //this.setVelocity(settings.velX || -15, settings.velY || 0);
+		this.vel.x = -9; 
 	    this.collidable = true;
 
 	    this.timer = me.timer.getTime();
@@ -533,13 +531,11 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 
 		if (this.pos.x <= 0){
 			me.game.remove(this)
-
 		} 
 
 		if (this.renderable.flickerTimer < 30) {
 			me.game.HUD.removeItem("hit");
 		}
-		// return (this.parent() || this.vel.x != 0 || this.vel.y != 0);
 		this.parent()
 		return true;
 	},
@@ -549,7 +545,6 @@ var CoffinEntity = AllEnemyEntity.extend({
 
     init: function(x, y, settings, direction) {
 
-    	
 		// call the constructor
 	    this.parent(x, y, settings);
 
@@ -561,17 +556,12 @@ var CoffinEntity = AllEnemyEntity.extend({
 		this.renderable.addAnimation ("dooroffskeleton",  [3], 2); 
 
 		this.renderable.setCurrentAnimation("rise","risen");
-
-		// walking & jumping speed
-		// if (direction) this.vel.x = -1; //this.setVelocity(settings.velX || -15, settings.velY || 0);
 		this.vel.x = .1;
 		this.vel.y = -5;
 
 	    this.collidable = true;
 	    this.updateColRect(110,30, 140,30);
 	    this.shot = false
-
-	    
 
 	},
 

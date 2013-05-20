@@ -92,14 +92,6 @@
    </properties>
   </object>
   <object name="WeatherFactory" x="1976" y="179" width="35" height="35"/>
-  <object name="BreakableEntity" x="385" y="1225" width="70" height="35">
-   <properties>
-    <property name="image" value="torches"/>
-    <property name="item" value="knife"/>
-    <property name="spriteheight" value="120"/>
-    <property name="spritewidth" value="120"/>
-   </properties>
-  </object>
   <object name="BreakableEntity" x="1050" y="1225" width="70" height="35">
    <properties>
     <property name="image" value="torches"/>
@@ -131,17 +123,7 @@
   </object>
   <object name="SkeletonEntity" x="2450" y="1085" width="490" height="35">
    <properties>
-    <property name="" value=""/>
-    <property name="animationspeed" value="10"/>
-    <property name="gravity" value="0"/>
-    <property name="image" value="skeleton"/>
-    <property name="spriteheight" value="240"/>
-    <property name="spritewidth" value="240"/>
-   </properties>
-  </object>
-  <object name="SkeletonEntity" x="1610" y="1085" width="490" height="35">
-   <properties>
-    <property name="" value=""/>
+    <property name="animation" value="skeleton"/>
     <property name="animationspeed" value="10"/>
     <property name="gravity" value="0"/>
     <property name="image" value="skeleton"/>
@@ -177,6 +159,21 @@
    <properties>
     <property name="direction" value="south"/>
     <property name="to" value="map1-1"/>
+   </properties>
+  </object>
+  <object name="SkeletonEntity" x="1500" y="1078" width="490" height="35">
+   <properties>
+    <property name="animation" value="skeleton"/>
+    <property name="animationspeed" value="10"/>
+    <property name="gravity" value="0"/>
+    <property name="image" value="skeleton"/>
+    <property name="spriteheight" value="240"/>
+    <property name="spritewidth" value="240"/>
+   </properties>
+  </object>
+  <object name="PickupEntity" x="577" y="1177" width="70" height="35">
+   <properties>
+    <property name="image" value="throwingweapons"/>
    </properties>
   </object>
  </objectgroup>
