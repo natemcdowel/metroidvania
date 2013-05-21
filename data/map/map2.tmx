@@ -92,8 +92,8 @@
   </object>
   <object name="SkeletonEntity" x="980" y="1085" width="700" height="35">
    <properties>
-    <property name="" value=""/>
     <property name="animationspeed" value="10"/>
+    <property name="customcollision" value="true"/>
     <property name="gravity" value="0"/>
     <property name="image" value="skeleton"/>
     <property name="spriteheight" value="240"/>

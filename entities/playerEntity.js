@@ -12,7 +12,9 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// Remove menu if it is up
 		
 		y = nextScreenY;
+		console.log(lvlcap)
 
+		// Canvas helper for Draw
 	    this.tag = new me.Font("Verdana", 14, "white");
         this.tag.bold();
 
@@ -63,14 +65,17 @@ var PlayerEntity = me.ObjectEntity.extend({
 		
 		this.setFriction(1.2,0); 
 		this.gravity = 2.2
+		this.collidable = false;
 
 		// Player variables
 		this.dying = false;
-		this.hitpoints = 50;
-		this.collidable = false;
-		me.game.xp = 0;
-		me.game.lvl = 1;
-		me.game.strength = 3;
+		this.hitpoints = playerInfo.hitpoints;
+		me.game.xp = playerInfo.xp;
+		me.game.lvl = playerInfo.lvl;
+		me.game.strength = playerInfo.strength; 
+
+		console.log(me.game.strength)
+
 		this.mutipleJump = 0;
 		this.type = 'player';
 		this.attackFinished = true;
@@ -88,9 +93,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// set the display around our position 
 		me.game.viewport.follow(this, me.game.viewport.AXIS.BOTH);
 		this.renderable.animationspeed = 2;
-
-
-				
+		
 		// enable keyboard
 		me.input.bindKey(me.input.KEY.LEFT,	 "left");
 		me.input.bindKey(me.input.KEY.RIGHT, "right"); 
@@ -103,7 +106,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// Animations
 		this.renderable.addAnimation ("walk",  [0,1,2,3,4,3,2,1], 2); 
 		this.renderable.addAnimation ("stand",  [0]); 
-		this.renderable.addAnimation ("crouch",  [3]);
+		this.renderable.addAnimation ("crouch",  [6]);
 		this.renderable.addAnimation ("secondattack",  [4]);
 		this.renderable.addAnimation ("jumpdown", [5]);
 		this.renderable.addAnimation ("attack",  [7,8,9,10], 1);
@@ -177,20 +180,29 @@ var PlayerEntity = me.ObjectEntity.extend({
 		nextScreenVelX = this.vel.x;
 
 		//  Updating Hit Box
-		if (clientData[0] == 'left') this.updateColRect(130,60, 140,100); 
-		else if (clientData[0] == 'right') this.updateColRect(50,60, 140,100);  
+		if (clientData[0] == 'left') {
+			// Smaller box for crouching
+			if (this.renderable.isCurrentAnimation('crouchattack') || this.renderable.isCurrentAnimation('crouch')) this.updateColRect(130,60, 170,70);
+			else this.updateColRect(130,60, 140,100); 
+		}
+		else if (clientData[0] == 'right') {
+			if (this.renderable.isCurrentAnimation('crouchattack') || this.renderable.isCurrentAnimation('crouch')) this.updateColRect(50,60, 170,70);
+		    else this.updateColRect(50,60, 140,100);  
+		}
+
+		
 
 		// check for collision with environment
 		this.updateMovement();
 		this.collision();
 		
 		// Check for LEVEL UP!
-		if (me.game.xp > lvlcap[me.game.lvl]) {
+		if (playerInfo.xp > lvlcap[playerInfo.lvl]) {
 			this.level();
 		}
 
 		this.parent();
-		return true;
+		return true; 
 
 	}, 
 
@@ -333,7 +345,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 			// If pressed jump
 			if (me.input.isKeyPressed('jump')) { 
-				this.renderable.setCurrentAnimation("jumpdown");
+				
+				if (this.pos.y > 0)this.renderable.setCurrentAnimation("jumpdown");
 				this.mutipleJump = (this.vel.y === 0)?1:this.mutipleJump;
 				if (this.mutipleJump<=1) {  // 2 for double jump
 					this.vel.y -= (this.maxVel.y * this.mutipleJump++) * me.timer.tick;
@@ -341,7 +354,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 			}
 
 			// If crouching
-			if (me.input.isKeyPressed('down') && !me.input.isKeyPressed('right') && !me.input.isKeyPressed('left')) {
+			if (me.input.isKeyPressed('down') && !me.input.isKeyPressed('right') && !me.input.isKeyPressed('left') && !this.renderable.isCurrentAnimation('crouchattack')) {
+	
 				this.renderable.setCurrentAnimation("crouch");
 			}
 
@@ -399,7 +413,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 	level : function () {
 
-		
 		this.fontsize = 0;
 		// Animates hitpoints above player
 		var tween = new me.Tween(this).to({fontsize: 20, hpY: -50}, 1600).onComplete(function(){		   
@@ -413,12 +426,12 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 	    this.headmessage = 'Level Up!';
 
-		me.game.lvl += 1; 
-		me.game.strength += .6; 
-		me.game.hitpoints += 20;
+		playerInfo.lvl += 1; 
+		playerInfo.strength += .6; 
+		playerInfo.hitpoints += 20;
 		me.game.HUD.updateItemValue("lvl", 1);
 		me.game.HUD.updateItemValue("experience", 0);
-		me.game.HUD.updateItemValue("score", 20);
+		me.game.HUD.setItemValue("score", playerInfo.hitpoints);
 
 	},
 
@@ -453,12 +466,14 @@ var PlayerEntity = me.ObjectEntity.extend({
 		    .start();
 
 		    this.headmessage = res.obj.strength;    
-			this.hitpoints -= res.obj.strength;
+			playerInfo.hitpoints -= res.obj.strength;
+			me.game.HUD.setItemValue("score", playerInfo.hitpoints);
 
 			// DEATH!
-			if (this.hitpoints <= 1) {
+			if (playerInfo.hitpoints <= 1) {
 
-				me.game.HUD.updateItemValue("score", 50);
+				playerInfo.hitpoints = lvlMaxHealth[playerInfo.lvl]; 
+				me.game.HUD.updateItemValue("score", playerInfo.hitpoints+20);
 				nextScreenY = '';
 				me.game.HUD.removeItem("mainmenu");
 				me.levelDirector.reloadLevel();

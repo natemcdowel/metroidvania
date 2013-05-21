@@ -326,6 +326,33 @@ var MenuObject = me.HUD_Item.extend( {
 
 });
 
+var SecondWeaponDisplay = me.HUD_Item.extend( {	
+
+    init: function(x, y, settings) {
+
+        this.parent(x, y);
+
+		this.image = me.loader.getImage("sword"); 
+		this.x = x;
+		this.y = y;
+		this.yOffset = 0;
+		this.width = settings.width;
+		this.height = settings.height;
+        
+    },
+
+    draw : function(context) {  
+
+		this.context = context;
+		
+		// Main box 
+		this.context.fillStyle = "black";
+		this.context.globalAlpha=0.7; // Half opacity
+		this.context.fillRect(this.x, this.y, this.width, this.height); 
+    }
+
+
+});
 
 var textEntity = me.ObjectEntity.extend({
 	init: function (x, y, settings){
