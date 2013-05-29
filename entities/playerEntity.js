@@ -38,7 +38,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		// call the constructor
 		this.parent(x, y , settings); 
-		this.setVelocity(12, 27); 
+		this.setVelocity(12, 32); 
 
 		// Weapon delay
 		this.cooldown = true;

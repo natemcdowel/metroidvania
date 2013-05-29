@@ -19,6 +19,7 @@ var game = {
 		// {name: "metatiles35x35",		type:"image",	src: "data/gfx/metatiles35x35.png"},
 		// {name: "Forestground@4x",		type:"image",	src: "data/gfx/Forestground@4x.png"},
 		{name: "tileset",		type:"image",	src: "data/gfx/tileset.png"},
+		{name: "Cave@4x",		type:"image",	src: "data/gfx/Cave@4x.png"},
 		{name: "atascii",		type:"image",	src: "data/gfx/atascii_24px.png"},
 		{name: "background",	type:"image",	src: "data/gfx/background.png"},
 		{name: "04",			type: "audio",	src: "data/audio/",	channel : 1},
@@ -39,6 +40,9 @@ var game = {
 		// Lower tier
 		{name: "map1-1",			type: "tmx",	src: "data/map/map1-1.tmx"},
 		{name: "map2-1",			type: "tmx",	src: "data/map/map2-1.tmx"},
+
+		// Even lower tier
+		{name: "map2-2",			type: "tmx",	src: "data/map/map2-2.tmx"},
 		// {name: "map3-1",			type: "tmx",	src: "data/map/map3-1.tmx"},
 
 		// Environment
