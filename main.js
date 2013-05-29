@@ -19,7 +19,7 @@ var game = {
 		// {name: "metatiles35x35",		type:"image",	src: "data/gfx/metatiles35x35.png"},
 		// {name: "Forestground@4x",		type:"image",	src: "data/gfx/Forestground@4x.png"},
 		{name: "tileset",		type:"image",	src: "data/gfx/tileset.png"},
-		{name: "Cave@4x",		type:"image",	src: "data/gfx/Cave@4x.png"},
+
 		{name: "atascii",		type:"image",	src: "data/gfx/atascii_24px.png"},
 		{name: "background",	type:"image",	src: "data/gfx/background.png"},
 		{name: "04",			type: "audio",	src: "data/audio/",	channel : 1},
@@ -37,7 +37,7 @@ var game = {
 		{name: "map3",			type: "tmx",	src: "data/map/map3.tmx"}, 
 		{name: "map4",			type: "tmx",	src: "data/map/map4.tmx"}, 
 
-		// Lower tier
+		// Lower tier 
 		{name: "map1-1",			type: "tmx",	src: "data/map/map1-1.tmx"},
 		{name: "map2-1",			type: "tmx",	src: "data/map/map2-1.tmx"},
 
@@ -51,9 +51,10 @@ var game = {
 		{name: "torches",		type:"image",	src: "data/gfx/objects/Breakable@4x.png"}, 
 		{name: "pickups",		type:"image",	src: "data/gfx/objects/Life@4x.png"},   
 
+
 		// Player
 		{name: "sword",		type: "image",	src: "data/gfx/sword.png"}, 
-		{name: "simon",		type:"image",	src: "data/gfx/players/testattack4@4x.png"}, 
+		{name: "simon",		type:"image",	src: "data/gfx/players/testattack5@4x.png"}, 
 		// {name: "simon",		type:"image",	src: "data/gfx/playerattack3@4xx.png"},  
 
 		// Weapons
@@ -131,8 +132,8 @@ var game = {
 		me.entityPool.add("EnemyFactory", EnemyFactoryEntity);
 		me.entityPool.add("BossFactory", BossFactoryEntity); 								
 											
-
 		me.entityPool.add("BreakableEntity", BreakableEntity);
+		me.entityPool.add("SecWeapon", SecondWeaponDisplay);
 
 		// add our player entity in the entity pool
 		me.entityPool.add("mainPlayer", PlayerEntity); 
@@ -169,9 +170,11 @@ var PlayScreen = me.ScreenObject.extend( {
 		me.game.addHUD(0,0,1280, 720);
 		
 		// add a new HUD item 
-		me.game.HUD.addItem("score", new ScoreObject(0,30,'HP: ', 50));
+		me.game.HUD.addItem("score", new ScoreObject(0,30,'HP: ', playerInfo.hitpoints));
 		me.game.HUD.addItem("experience", new ScoreObject(0,60,'XP: ', 0));
 		me.game.HUD.addItem("lvl", new ScoreObject(0,90,'LVL: ', 1)); 
+		me.game.HUD.addItem("secondWeapon", new SecondWeaponDisplay(1167,10, {width: 100, height: 100})); 
+
 
 		// me.game.HUD.addItem("score", new ScoreObject(00,790));  
 		

@@ -101,7 +101,7 @@ var secondWeaponEntity = me.ObjectEntity.extend({
 			this.flipX(true);
 		}
 	     
-	     this.updateColRect(20,32, -1,0);  
+	     this.updateColRect(20,32, 100,0);  
 
 
 	},

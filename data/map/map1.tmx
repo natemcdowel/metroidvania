@@ -125,6 +125,7 @@
    <properties>
     <property name="animation" value="skeleton"/>
     <property name="animationspeed" value="10"/>
+    <property name="customcollision" value="true"/>
     <property name="gravity" value="0"/>
     <property name="image" value="skeleton"/>
     <property name="spriteheight" value="240"/>
@@ -165,6 +166,7 @@
    <properties>
     <property name="animation" value="skeleton"/>
     <property name="animationspeed" value="10"/>
+    <property name="customcollision" value="true"/>
     <property name="gravity" value="0"/>
     <property name="image" value="skeleton"/>
     <property name="spriteheight" value="240"/>

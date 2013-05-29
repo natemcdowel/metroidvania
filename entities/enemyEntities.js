@@ -12,8 +12,6 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		// call the parent constructor
 		this.parent(x, y , settings);
 
-
-		
 		// make it collidable
 		this.collidable = true;
 		this.hitpoints = 8;
@@ -139,8 +137,8 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 
 			// flash the screen
 			if (this.hitpoints <= 0) {
-			
-				me.game.xp += this.xp;
+				
+				playerInfo.xp += this.xp;
 				this.alive = false; 
 				this.collidable = false;
 				me.game.HUD.updateItemValue("experience", this.xp);
@@ -189,7 +187,7 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
 		this.endX   = x + settings.width - settings.spritewidth
 		this.pos.x  = x + settings.width - settings.spritewidth;
 	
-		this.hitpoints = 10;
+		this.hitpoints = 9;
 		// walking & jumping speed
 		this.setVelocity(settings.velX || 1, settings.velY || 6);
 		this.updateColRect(80,80, 70,100);
@@ -219,8 +217,8 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
 		
 		if (this.alive)	{
 			if (this.hurt) {
-				this.pos.x = 0;
-				this.pos.y = 0;
+				// this.pos.x = 0;
+				// this.pos.y = 0;
 			}
     		else if (me.timer.getTime() > self.timer+2000) {
     			self.moveTo();
@@ -229,16 +227,13 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
 			this.vel.x = 0;
 		}
 
-		// Removes BORDERLANDS style hit point 
-		if (this.renderable.flickerTimer < 50) {
-			me.game.HUD.removeItem("hit");
-		}
 		
 		// check & update movement
 		this.updateMovement();
-		
+		this.parent()
+		return true;
 		// return true if we moved of if flickering
-		return (this.parent() || this.vel.x != 0 || this.vel.y != 0);
+		// return (this.parent() || this.vel.x != 0 || this.vel.y != 0);
 	},
 
 });
@@ -317,10 +312,9 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		// set the renderable position to bottom center
 		this.anchorPoint.set(0.5, 1.0);		
 		
-
 		// make it collidable
 		this.collidable = true;
-		this.hitpoints = 5;
+		this.hitpoints = 6;
 
 		this.type = me.game.ENEMY_OBJECT;
 		this.timer = me.timer.getTime();
@@ -330,6 +324,7 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		this.vel.y = .1;
 		this.walkLeft = false;
 		this.shot = settings.shot;
+		this.shot = true;
 
 	},
 
@@ -401,16 +396,8 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		// 	this.renderable.setCurrentAnimation("dead");
 		// }
 		
-		// Removes BORDERLANDS style hit point 
-		if (this.renderable.flickerTimer < 10) {
-			me.game.HUD.removeItem("hit");
-		}
-
 		// check & update movement
 		this.updateMovement();
-		
-		// return true if we moved of if flickering
-		// return (this.parent() || this.vel.x != 0 || this.vel.y != 0);
 		this.parent()
 		return true;
 	},

@@ -37,14 +37,25 @@
 	var nextScreenVelX = '';
 	var menuSelected = 0;
 	var samemap = '';
-	var lvlcap = Array(); 
-	lvlcap[1] = 9;
-	lvlcap[2] = 49;
-	lvlcap[3] = 89;
-	lvlcap[4] = 129;
-	lvlcap[5] = 190;
-	
+	var capXP = 15;
+	var capHP = 25;
+	var playerInfo = new Object();
+	playerInfo.xp = 0;
+	playerInfo.lvl = 1;
+	playerInfo.strength = 3;
+	playerInfo.hitpoints = 20;
 
+	var lvlcap = Array(); 
+	for(i=1; i<50; i++) { 
+		capXP += 30;
+		lvlcap[i] = capXP; 
+	}
+	
+	var lvlMaxHealth = Array();
+	for(i=1; i<50; i++) { 
+		capHP += 20;
+		lvlMaxHealth[i] = capHP;  
+	}
 
 	var socket = io.connect('10.10.10.100:80');
 

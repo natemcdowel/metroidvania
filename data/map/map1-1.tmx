@@ -101,7 +101,7 @@
     <property name="spritewidth" value="120"/>
    </properties>
   </object>
-  <object name="BreakableEntity" x="840" y="700" width="70" height="35">
+  <object name="BreakableEntity" x="832" y="700" width="70" height="35">
    <properties>
     <property name="image" value="torches"/>
     <property name="item" value="knife"/>
@@ -114,16 +114,16 @@
     <property name="to" value="map1"/>
    </properties>
   </object>
-  <object name="SkeletonEntity" x="1005" y="681" width="700" height="35">
+  <object name="SkeletonEntity" x="1003" y="679" width="700" height="35">
    <properties>
     <property name="animation" value="zombie"/>
-    <property name="animationspeed" value="10"/>
+    <property name="animationspeed" value="5"/>
     <property name="customcollision" value="false"/>
     <property name="gravity" value="0"/>
     <property name="image" value="zombie"/>
     <property name="spriteheight" value="120"/>
     <property name="spritewidth" value="120"/>
-    <property name="velX" value="10"/>
+    <property name="velX" value="5"/>
    </properties>
   </object>
   <object name="SkeletonEntity" x="1871" y="644" width="700" height="35">
