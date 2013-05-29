@@ -30,6 +30,7 @@ var game = {
 		{name: "cave1",			type: "audio",	src: "data/audio/music/",	channel : 2},
 		{name: "battle1",			type: "audio",	src: "data/audio/music/",	channel : 2},
 
+		
 
 		// level map
 		{name: "map1",			type: "tmx",	src: "data/map/map1.tmx"},
@@ -50,7 +51,7 @@ var game = {
 		{name: "texture",		type:"image",	src: "data/gfx/texture.png"}, 
 		{name: "torches",		type:"image",	src: "data/gfx/objects/Breakable@4x.png"}, 
 		{name: "pickups",		type:"image",	src: "data/gfx/objects/Life@4x.png"},   
-
+		{name: "Cave@4x",		type:"image",	src: "data/gfx/Cave@4x.png"},
 
 		// Player
 		{name: "sword",		type: "image",	src: "data/gfx/sword.png"}, 
