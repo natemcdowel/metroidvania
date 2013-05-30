@@ -18,6 +18,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 	    this.tag = new me.Font("Verdana", 14, "white");
         this.tag.bold();
 
+
 		console.log(me.game.currentLevel.width)
 		console.log(me.game.currentLevel.height)
 		// y = 1232;
@@ -38,8 +39,11 @@ var PlayerEntity = me.ObjectEntity.extend({
 			settings.velY = -20;
 		}
 
+		console.log(me.LevelEntity.settings)
+
 		// call the constructor
 		this.parent(x, y , settings); 
+
 		this.setVelocity(12, 32); 
 
 		// Weapon delay
@@ -147,7 +151,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 	update : function () { 
 
 		var self = this;
-
+		console.log(levelDirection)
 		// Changing 
 		
 

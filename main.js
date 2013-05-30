@@ -43,6 +43,7 @@ var game = {
 		{name: "map2-1",			type: "tmx",	src: "data/map/map2-1.tmx"},
 
 		// Even lower tier
+		{name: "map1-2",			type: "tmx",	src: "data/map/map1-2.tmx"},
 		{name: "map2-2",			type: "tmx",	src: "data/map/map2-2.tmx"},
 		// {name: "map3-1",			type: "tmx",	src: "data/map/map3-1.tmx"},
 
