@@ -11,10 +11,9 @@ var game = {
 	assets : [	
 
 		{name: "title_screen",		type:"image",	src: "data/gfx/gui/title_screen.png"},
-		// {name: "Walls@4x",		type:"image",	src: "data/gfx/objects/Walls@4x.png"},   
-		// {name: "Sky@4x",		type:"image",	src: "data/gfx/background/Sky@4x.png"},
 		{name: "SkyBackground",		type:"image",	src: "data/gfx/background/SkyBackground.png"},
-		// {name: "Wall@4x",		type:"image",	src: "data/gfx/Wall@4x.png"}, 
+		{name: "CrossBackground",		type:"image",	src: "data/gfx/background/CrossBackground.png"},
+
 
 		// {name: "metatiles35x35",		type:"image",	src: "data/gfx/metatiles35x35.png"},
 		// {name: "Forestground@4x",		type:"image",	src: "data/gfx/Forestground@4x.png"},
