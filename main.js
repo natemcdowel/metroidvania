@@ -69,6 +69,10 @@ var game = {
 		{name: "bat",		type:"image",	src: "data/gfx/enemies/Giant Bat@4x.png"}, 
 		{name: "skull",		type:"image",	src: "data/gfx/enemies/Skull@4x.png"}, 
 		{name: "zombie",		type:"image",	src: "data/gfx/enemies/Zombie@4x.png"}, 
+		{name: "skeletonsword",		type:"image",	src: "data/gfx/enemies/Skeleton Sword@4x.png"},  
+		{name: "cavebat",		type:"image",	src: "data/gfx/enemies/Bat@4x.png"}, 
+
+
 
 
 		
@@ -165,7 +169,7 @@ var PlayScreen = me.ScreenObject.extend( {
 	// no need to do somehting else
 	onResetEvent: function() {
 		// load a level
-		me.levelDirector.loadLevel("map1");
+		me.levelDirector.loadLevel("map2-2");
 
 		// add a default HUD to the game mngr
 		me.game.addHUD(0,0,1280, 720);

@@ -9,24 +9,35 @@
 var PlayerEntity = me.ObjectEntity.extend({	
 	init: function(x, y, settings) { 
 
-		// Remove menu if it is up
 		
-		y = nextScreenY;
-		console.log(lvlcap)
+		// Set position from Tiled if first 
+		if (levelDirection == '' && nextScreenY == '') y = settings.startX;
+		else y = nextScreenY;
 
 		// Canvas helper for Draw
 	    this.tag = new me.Font("Verdana", 14, "white");
         this.tag.bold();
 
 
-		console.log(me.game.currentLevel.width)
-		console.log(me.game.currentLevel.height)
+		console.log(me.game.currentLevel.width);
+		console.log(me.game.currentLevel.height+ '--' + lastLevelHeight)
+
+		if (lastLevelHeight != '' && lastLevelHeight != me.game.currentLevel.height) {
+			if (lastLevelHeight > me.game.currentLevel.height) var mapHeightOffset = lastLevelHeight - me.game.currentLevel.height;
+			else if (lastLevelHeight < me.game.currentLevel.height) var mapHeightOffset = me.game.currentLevel.height - lastLevelHeight;
+			console.log(mapHeightOffset)
+		}
+
 		// y = 1232;
 		// Check if player reached screen and set position accordingly to new screen
 		if (levelDirection == 'west') {
-			x = me.game.currentLevel.width - 300;
+			if (lastLevelHeight != me.game.currentLevel.height) y = nextScreenY - mapHeightOffset;
+			else y = nextScreenY;
+			x = me.game.currentLevel.width - 250;
 		}
 		if (levelDirection == 'east') {
+			if (lastLevelHeight != me.game.currentLevel.height) y = nextScreenY + mapHeightOffset;
+			else y = nextScreenY;
 			x = 100; 
 		}
 		if (levelDirectionY == 'south' ) {
@@ -39,7 +50,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 			settings.velY = -20;
 		}
 
-		console.log(me.LevelEntity.settings)
 
 		// call the constructor
 		this.parent(x, y , settings); 
@@ -126,6 +136,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		if (typeof settings.velY != 'undefined') this.vel.y = settings.velY;
 		if (typeof nextScreenVelX != '') this.vel.x = nextScreenVelX;
+
+		console.log(me.ObjectSettings)
 	},
 
 
@@ -151,7 +163,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 	update : function () { 
 
 		var self = this;
-		console.log(levelDirection)
+		console.log(this.pos.x + ' -- ' + this.pos.y)
 		// Changing 
 		
 
@@ -162,7 +174,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		this.socket(self)
 
 		// Setting which way we want to go if map is changing
-		if (this.pos.y > 1100 ) {
+		if (this.pos.y > me.game.currentLevel.height - 300 ) {
 			levelDirectionY = 'south';
 		} 
 		else if (this.pos.y < 150 ) {
@@ -173,9 +185,11 @@ var PlayerEntity = me.ObjectEntity.extend({
 		}
 
 		if (this.pos.x < 200) {
+			lastLevelHeight = me.game.currentLevel.height;
 			levelDirection = 'west';
 		}
 		if (this.pos.x > 1100) {
+			lastLevelHeight = me.game.currentLevel.height;
 			levelDirection = 'east';
 		}
 
@@ -193,8 +207,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 			if (this.renderable.isCurrentAnimation('crouchattack') || this.renderable.isCurrentAnimation('crouch')) this.updateColRect(50,60, 170,70);
 		    else this.updateColRect(50,60, 140,100);  
 		}
-
-		
 
 		// check for collision with environment
 		this.updateMovement();
@@ -279,7 +291,10 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// COLLISIONS with various objects
 		var res = me.game.collide(this);
 		
+
+
 		if (res) {
+			console.log(res)
 			switch (res.obj.type) {	
 				case me.game.ENEMY_OBJECT : {
 					if ((res.y>0) && this.falling && !this.renderable.flickering) {

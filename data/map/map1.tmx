@@ -158,7 +158,7 @@
   </object>
   <object name="me.LevelEntity" x="70" y="1365" width="175" height="35">
    <properties>
-    <property name="direction" value="south"/>
+    <property name="playerx" value="200"/>
     <property name="to" value="map1-1"/>
    </properties>
   </object>

@@ -4868,6 +4868,15 @@ var me = me || {};
 			
 			// a temp variable
 			this.gotolevel = settings.to;
+
+			// for (var i; i < setting.length; i++) {
+			if (typeof settings.playerx != 'undefined' && typeof settings.playery != 'undefined') {
+				this.playerx = settings.playerx;
+				this.playery = settings.playery;
+			}
+			// }
+			// this.y = settings.y;
+
 		},
 
 		/**

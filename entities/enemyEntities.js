@@ -190,8 +190,11 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
 		this.hitpoints = 9;
 		// walking & jumping speed
 		this.setVelocity(settings.velX || 1, settings.velY || 6);
-		this.updateColRect(80,80, 70,100);
 
+		if (settings.customcollision == true) {
+			this.updateColRect(80,80, 70,100);
+		}
+		
 		// walking animation
 		this.renderable.addAnimation ("walk", [0,1,2]);
 		// dead animatin
@@ -286,7 +289,7 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 
 		// apply gravity setting if specified
 		this.gravity = settings.gravity || me.sys.gravity;
-		settings.width = 550;
+		// settings.width = 550;
 
 		// set start/end position
 		this.startX = x;
@@ -298,6 +301,7 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 
 		
 		this.renderable.addAnimation ("skeleton", [0,1,2]);
+		this.renderable.addAnimation ("skeletonsword", [0,1,2,3,4,5]);
 		this.renderable.addAnimation ("throwhead", [3,4]);
 		this.renderable.addAnimation ("dead", [6,7,8]);
 		this.renderable.addAnimation ("zombie", [0,1,2,3,4,5]);
@@ -364,7 +368,7 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		else { 
 
 			if (this.walkLeft && this.pos.x <= this.startX) {
-				console.log(this.hurt)
+				// console.log(this.hurt)
 				if (this.vel.x == 0) this.vel.x = 4;
 				this.vel.x = this.accel.x * me.timer.tick;
 				// this.renderable.setCurrentAnimation("throwhead","walk");
