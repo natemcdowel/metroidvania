@@ -42,8 +42,8 @@
  <tileset firstgid="203" name="Cave@4x" tilewidth="35" tileheight="35">
   <image source="../gfx/Cave@4x.png" trans="ff00ff" width="700" height="700"/>
  </tileset>
- <imagelayer name="gradient_background" width="200" height="75" visible="0">
-  <image source="../gfx/background/SkyBackground.png"/>
+ <imagelayer name="gradient_background" width="200" height="75">
+  <image source="../gfx/background/CaveBackground.png"/>
  </imagelayer>
  <layer name="back layer" width="200" height="75">
   <data encoding="base64">

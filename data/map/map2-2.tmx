@@ -42,8 +42,8 @@
  <tileset firstgid="203" name="Cave@4x" tilewidth="35" tileheight="35">
   <image source="../gfx/Cave@4x.png" trans="ff00ff" width="700" height="700"/>
  </tileset>
- <imagelayer name="gradient_background" width="120" height="100" visible="0">
-  <image source="../gfx/background/SkyBackground.png"/>
+ <imagelayer name="gradient_background" width="120" height="100">
+  <image source="../gfx/background/CaveBackground.png"/>
  </imagelayer>
  <layer name="back layer" width="120" height="100">
   <data encoding="base64">
@@ -101,16 +101,16 @@
     <property name="to" value="map1-2"/>
    </properties>
   </object>
-  <object name="SkeletonEntity" x="803" y="2085" width="980" height="35">
+  <object name="PathEnemyEntity" x="853" y="2132" width="980" height="35">
    <properties>
     <property name="animation" value="skeleton"/>
     <property name="animationspeed" value="10"/>
     <property name="customcollision" value="false"/>
     <property name="gravity" value="0"/>
-    <property name="image" value="skeletonsword"/>
+    <property name="image" value="rat"/>
     <property name="shot" value="false"/>
-    <property name="spriteheight" value="120"/>
-    <property name="spritewidth" value="120"/>
+    <property name="spriteheight" value="60"/>
+    <property name="spritewidth" value="60"/>
    </properties>
   </object>
   <object name="SkeletonEntity" x="2256" y="1206" width="525" height="35">
@@ -186,6 +186,12 @@
     <property name="spriteheight" value="60"/>
     <property name="spritewidth" value="60"/>
     <property name="velX" value="4"/>
+   </properties>
+  </object>
+  <object x="4196" y="3500" width="16"/>
+  <object name="me.LevelEntity" x="4151" y="2699" width="35" height="490">
+   <properties>
+    <property name="to" value="map3-2"/>
    </properties>
   </object>
  </objectgroup>

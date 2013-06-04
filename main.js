@@ -13,7 +13,7 @@ var game = {
 		{name: "title_screen",		type:"image",	src: "data/gfx/gui/title_screen.png"},
 		{name: "SkyBackground",		type:"image",	src: "data/gfx/background/SkyBackground.png"},
 		{name: "CrossBackground",		type:"image",	src: "data/gfx/background/CrossBackground.png"},
-
+		{name: "CaveBackground",		type:"image",	src: "data/gfx/background/CaveBackground.png"},
 
 		// {name: "metatiles35x35",		type:"image",	src: "data/gfx/metatiles35x35.png"},
 		// {name: "Forestground@4x",		type:"image",	src: "data/gfx/Forestground@4x.png"},
@@ -44,7 +44,10 @@ var game = {
 		// Even lower tier
 		{name: "map1-2",			type: "tmx",	src: "data/map/map1-2.tmx"},
 		{name: "map2-2",			type: "tmx",	src: "data/map/map2-2.tmx"},
+		{name: "map3-2",			type: "tmx",	src: "data/map/map3-2.tmx"},
 		// {name: "map3-1",			type: "tmx",	src: "data/map/map3-1.tmx"},
+		// Lower yet
+
 
 		// Environment
 		{name: "rain",		type:"image",	src: "data/gfx/objects/rain.png"},
@@ -62,6 +65,7 @@ var game = {
 		{name: "throwingweapons",		type:"image",	src: "data/gfx/weapons/Throwing Weapons@4x.png"}, 
 
 		// Enemies
+		{name: "rat",		type:"image",	src: "data/gfx/enemies/Rat@4x.png"},
 		{name: "coffin",		type:"image",	src: "data/gfx/enemies/Coffin@4x.png"},
 		{name: "skeleton",		type:"image",	src: "data/gfx/enemies/Skeleton2@4x.png"},
 		{name: "skeletonhead",		type:"image",	src: "data/gfx/enemies/Skeleton@4x.png"},
@@ -132,6 +136,7 @@ var game = {
 		// me.entityPool.add("BatEntity", BatEnemyEntity);
 		me.entityPool.add("WeatherFactory", WeatherFactoryEntity);
 		me.entityPool.add("SkeletonEntity", SkeletonEnemyEntity);
+		me.entityPool.add("PathEnemyEntity", SkeletonEnemyEntity);
 		me.entityPool.add("CrowEntity", CrowEnemyEntity);
 		me.entityPool.add("SkullEntity", SkullEnemyEntity);
 		me.entityPool.add("EnemyFactory", EnemyFactoryEntity);

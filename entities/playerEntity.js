@@ -23,6 +23,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		console.log(me.game.currentLevel.height+ '--' + lastLevelHeight)
 
 		if (lastLevelHeight != '' && lastLevelHeight != me.game.currentLevel.height) {
+
 			if (lastLevelHeight > me.game.currentLevel.height) var mapHeightOffset = lastLevelHeight - me.game.currentLevel.height;
 			else if (lastLevelHeight < me.game.currentLevel.height) var mapHeightOffset = me.game.currentLevel.height - lastLevelHeight;
 			console.log(mapHeightOffset)

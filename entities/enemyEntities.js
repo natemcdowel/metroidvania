@@ -194,7 +194,7 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
 		if (settings.customcollision == true) {
 			this.updateColRect(80,80, 70,100);
 		}
-		
+
 		// walking animation
 		this.renderable.addAnimation ("walk", [0,1,2]);
 		// dead animatin
@@ -272,6 +272,9 @@ var BatEnemyEntity = AllEnemyEntity.extend({
 
 });
 
+var PathEnemyEntity = AllEnemyEntity.extend({	
+
+});
 /**
  * An Fly enemy entity
  * follow a horizontal path defined by the box size in Tiled
@@ -299,7 +302,7 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		// walking & jumping speed
 		this.setVelocity(settings.velX || 4, settings.velY || 6);
 
-		
+		this.renderable.addAnimation ("rat", [0,1]);
 		this.renderable.addAnimation ("skeleton", [0,1,2]);
 		this.renderable.addAnimation ("skeletonsword", [0,1,2,3,4,5]);
 		this.renderable.addAnimation ("throwhead", [3,4]);
