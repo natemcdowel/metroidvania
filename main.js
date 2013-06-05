@@ -141,7 +141,8 @@ var game = {
 		me.entityPool.add("SkullEntity", SkullEnemyEntity);
 		me.entityPool.add("EnemyFactory", EnemyFactoryEntity);
 		me.entityPool.add("BossFactory", BossFactoryEntity); 								
-											
+		
+		me.entityPool.add("PickupEntity", PickupEntity); 							
 		me.entityPool.add("BreakableEntity", BreakableEntity);
 		me.entityPool.add("SecWeapon", SecondWeaponDisplay);
 

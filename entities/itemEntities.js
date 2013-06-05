@@ -67,10 +67,15 @@ var PickupEntity = me.ObjectEntity.extend({
 		this.renderable.addAnimation ("smallheart", [2]);
 
 		// Weapons
-		this.renderable.addAnimation ("basicsword", [1]); 
+		this.renderable.addAnimation ("dagger", [0]); 
+		this.renderable.addAnimation ("axe", [2]); 
 		
 		// What do we drop?
 		if (enemy) this.renderable.setCurrentAnimation("smallheart");
+		else if (settings.weapon) {
+			this.weapon = settings.weapon;
+			this.renderable.setCurrentAnimation(settings.weapon);
+		}
 		// if (item)
 		else this.renderable.setCurrentAnimation("largeheart");
 
@@ -92,6 +97,13 @@ var PickupEntity = me.ObjectEntity.extend({
 			me.game.remove(self) 
 			me.audio.play("12");
 			this.alive = false;
+
+			if (this.weapon) {
+				var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
+				mainPlayer.secWeapon = this.weapon;
+				me.game.HUD.removeItem("secondWeapon");
+				me.game.HUD.addItem("secondWeapon", new SecondWeaponDisplay(1167,10, {width: 100, height: 100})); 
+			}
 		}
 	
 	},
@@ -352,7 +364,9 @@ var SecondWeaponDisplay = me.HUD_Item.extend( {
 		// Which weapon does player have?
 		var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
 		if (mainPlayer.secWeapon == 'axe') this.imageXOffset = 240;
-		if (mainPlayer.secWeapon == 'dagger') this.imageXOffset = 120;
+		if (mainPlayer.secWeapon == 'dagger') this.imageXOffset = 0;
+
+		console.log(mainPlayer.secWeapon)
 		
 		// // Main box 
 		this.context.fillStyle = "black";

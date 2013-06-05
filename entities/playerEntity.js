@@ -398,7 +398,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 				else if (me.input.isKeyPressed('up') && this.weaponDelay == false) {
 
 					self.weaponDelay = true;
-					var secondWeapon = new secondWeaponEntity( self.pos.x, self.pos.y+120, { image: "throwingweapons", spritewidth: 100, spriteheight: 100 }, clientData[0]); 
+					var secondWeapon = new secondWeaponEntity( self.pos.x, self.pos.y+120, { image: "throwingweapons", spritewidth: 120, spriteheight: 120 }, clientData[0]); 
 				    me.game.add(secondWeapon, self.z);  
 				    me.game.sort();  
 

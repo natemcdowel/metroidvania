@@ -88,7 +88,7 @@ var secondWeaponEntity = me.ObjectEntity.extend({
 		this.weapon = 'sword';
 
 		this.renderable.addAnimation ("dagger", [0]); 
-		this.renderable.addAnimation ("axe", [1]);  
+		this.renderable.addAnimation ("axe", [2]);  
 
 		this.renderable.setCurrentAnimation(mainPlayer.secWeapon);
 
@@ -123,7 +123,7 @@ var secondWeaponEntity = me.ObjectEntity.extend({
 				this.flipX(true);
 			}
 		}
-	     this.rotate = 50;
+	     this.rotate = 10;
 	     this.updateColRect(20,32, 100,0);  
 
 
@@ -131,7 +131,7 @@ var secondWeaponEntity = me.ObjectEntity.extend({
 
 	update : function () {
 
-		this.rotate += 25;
+		this.rotate += 35;
 		this.renderable.angle = Number.prototype.degToRad (this.rotate);
 
 		var res = me.game.collide(this);
