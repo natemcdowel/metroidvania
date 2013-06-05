@@ -88,6 +88,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		me.game.xp = playerInfo.xp;
 		me.game.lvl = playerInfo.lvl;
 		me.game.strength = playerInfo.strength; 
+		this.secWeapon = 'axe';
 
 		console.log(me.game.strength)
 
@@ -164,7 +165,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 	update : function () { 
 
 		var self = this;
-		console.log(this.pos.x + ' -- ' + this.pos.y)
+		// console.log(this.pos.x + ' -- ' + this.pos.y)
 		// Changing 
 		
 

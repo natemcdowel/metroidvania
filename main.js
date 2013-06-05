@@ -148,6 +148,7 @@ var game = {
 		// add our player entity in the entity pool
 		me.entityPool.add("mainPlayer", PlayerEntity); 
 		me.entityPool.add("sword", weaponEntity);   
+		me.entityPool.add("secSword", secondWeaponEntity);  
 
 		me.entityPool.add("secondPlayer", Player2Entity); 
 

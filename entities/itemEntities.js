@@ -332,7 +332,11 @@ var SecondWeaponDisplay = me.HUD_Item.extend( {
 
         this.parent(x, y);
 
-		this.image = me.loader.getImage("sword"); 
+        // Weapon images
+		this.image = me.loader.getImage("throwingweapons"); 
+		this.imageXOffset = 0;
+
+		// Box positioning
 		this.x = x;
 		this.y = y;
 		this.yOffset = 0;
@@ -344,11 +348,23 @@ var SecondWeaponDisplay = me.HUD_Item.extend( {
     draw : function(context) {  
 
 		this.context = context;
+
+		// Which weapon does player have?
+		var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
+		if (mainPlayer.secWeapon == 'axe') this.imageXOffset = 240;
+		if (mainPlayer.secWeapon == 'dagger') this.imageXOffset = 120;
 		
-		// Main box 
+		// // Main box 
 		this.context.fillStyle = "black";
-		this.context.globalAlpha=0.7; // Half opacity
+		// this.context.globalAlpha=0.7; // Half opacity
 		this.context.fillRect(this.x, this.y, this.width, this.height); 
+
+	    this.context.beginPath();
+        this.context.rect(this.x, this.y, this.width, this.height);
+        this.context.drawImage(this.image,this.imageXOffset,0,120,60,this.x,this.y,120,60);
+        this.context.lineWidth = 7;
+        this.context.strokeStyle = '#8B0000';
+        this.context.stroke();
     }
 
 

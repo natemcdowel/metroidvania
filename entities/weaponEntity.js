@@ -80,27 +80,50 @@ var secondWeaponEntity = me.ObjectEntity.extend({
 		// call the constructor
 	    this.parent(x, y, settings);
 
+	    var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
 
 	     // apply gravity setting if specified
 		this.gravity = settings.gravity || me.sys.gravity;
 		this.collidable = true;
 		this.weapon = 'sword';
 
-		this.renderable.addAnimation ("head", [0]); 
+		this.renderable.addAnimation ("dagger", [0]); 
+		this.renderable.addAnimation ("axe", [1]);  
 
-		this.renderable.setCurrentAnimation("head");
+		this.renderable.setCurrentAnimation(mainPlayer.secWeapon);
 
-		// walking & jumping speed
-		if (direction == 'right') {
-			this.vel.x = 35; 
-			this.flipX(false);
+		if (mainPlayer.secWeapon == 'dagger') {
+			// walking & jumping speed
+			if (direction == 'right') {
+				this.vel.x = 35; 
+				this.flipX(false);
+			}
+			else {
+				this.pos.x += 100; 
+				this.vel.x = -35;
+				this.flipX(true);
+			}
 		}
-		else {
-			this.pos.x += 100; 
-			this.vel.x = -35;
-			this.flipX(true);
+
+		if (mainPlayer.secWeapon == 'axe') {
+
+			// this.setFriction(1.2,0); 
+			this.gravity = 2.2
+
+			// walking & jumping speed
+			if (direction == 'right') {
+				this.vel.x = 18; 
+				this.vel.y = -38;
+				this.flipX(false);
+			}
+			else {
+				this.pos.x += 100; 
+				this.vel.y = -38;
+				this.vel.x = -18;
+				this.flipX(true);
+			}
 		}
-	     
+	     this.rotate = 50;
 	     this.updateColRect(20,32, 100,0);  
 
 
@@ -108,15 +131,18 @@ var secondWeaponEntity = me.ObjectEntity.extend({
 
 	update : function () {
 
-		// this.rotate += 10;
-		// this.renderable.angle = Number.prototype.degToRad (this.rotate);
+		this.rotate += 25;
+		this.renderable.angle = Number.prototype.degToRad (this.rotate);
+
 		var res = me.game.collide(this);
 		if (res) {
 			if (res.obj.type == me.game.ENEMY_OBJECT)
 			me.game.remove(this)
 		}
 
-		this.updateMovement();
+		this.computeVelocity(this.vel);
+		this.pos.add(this.vel);
+		// this.updateMovement();
 
 		if (this.vel.x == 0) me.game.remove(this)
 		return false;
