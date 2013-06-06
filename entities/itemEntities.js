@@ -313,10 +313,7 @@ var MenuObject = me.HUD_Item.extend( {
 		// Menu Options
 
 		for(i=0; i<this.menuoptions.length; i++) { 
-
-
 			yOffset += 60;
-
 			if (i == this.menuposition) {
 				this.context.font="40px Impact";
 				this.context.fillStyle = 'yellow';
@@ -324,18 +321,15 @@ var MenuObject = me.HUD_Item.extend( {
 			else {
 				this.context.font="40px Impact";
 				this.context.fillStyle = 'white';
-			}
-	
+			}	
 			this.context.fillText(this.menuoptions[i],this.x+30, this.y+yOffset); 
 		};
-
 	},
 
 	update : function (context) {
 
 	
 	}
-
 });
 
 var SecondWeaponDisplay = me.HUD_Item.extend( {	
@@ -365,8 +359,6 @@ var SecondWeaponDisplay = me.HUD_Item.extend( {
 		var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
 		if (mainPlayer.secWeapon == 'axe') this.imageXOffset = 240;
 		if (mainPlayer.secWeapon == 'dagger') this.imageXOffset = 0;
-
-		console.log(mainPlayer.secWeapon)
 		
 		// // Main box 
 		this.context.fillStyle = "black";
@@ -380,8 +372,75 @@ var SecondWeaponDisplay = me.HUD_Item.extend( {
         this.context.strokeStyle = '#8B0000';
         this.context.stroke();
     }
+});
 
 
+var dialogueBox = me.HUD_Item.extend( {	
+
+    init: function(x, y, settings, menuposition) {
+
+        this.parent(x, y);
+        var self = this;
+
+		// this.image = me.loader.getImage("throwingweapons"); 
+		// this.imageXOffset = 0;
+
+		// Box positioning
+		this.x = x;
+		this.y = y;
+		this.yOffset = 80;
+		this.width = settings.width;
+		this.height = settings.height;
+		this.menuoptions = ['Yes','No'];
+		this.menuposition = menuposition;
+
+		// Turning on keys for menu
+		me.input.bindKey(me.input.KEY.X, "attack"); 
+		me.input.bindKey(me.input.KEY.LEFT,	 "left");
+		me.input.bindKey(me.input.KEY.RIGHT, "right"); 
+		me.input.bindKey(me.input.KEY.Z,	"jump"); 
+		me.input.bindKey(me.input.KEY.UP,	"up"); 
+		me.input.bindKey(me.input.KEY.X,	"attack"); 
+		me.input.bindKey(me.input.KEY.DOWN,	"down");
+        
+    },
+
+    draw : function(context) {  
+
+		this.context = context;
+
+		// Which weapon does player have?
+		var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
+		
+	    // Main box 
+		this.context.fillStyle = "black";
+		this.context.fillRect(this.x, this.y, this.width, this.height); 
+	    this.context.beginPath();
+        this.context.rect(this.x, this.y, this.width, this.height);
+        this.context.font="30px Impact";
+        this.context.fillStyle = "white";
+        this.context.fillText('A long journey awaits... A swig of this',this.x+30, this.y+this.yOffset); 
+        this.context.fillText('swill will save your progress...',this.x+30, this.y+this.yOffset+40); 
+        this.context.lineWidth = 7;
+        this.context.strokeStyle = '#8B0000';
+        this.context.stroke();
+
+        if(me.input.isKeyPressed('down')) {console.log('hey')}
+
+        // 
+        for(i=0; i<this.menuoptions.length; i++) { 
+			this.yOffset += 80;
+			if (i == this.menuposition) {
+				this.context.font="25px Impact";
+				this.context.fillStyle = 'yellow';
+			}
+			else {
+				this.context.font="25px Impact";
+				this.context.fillStyle = 'white';
+			}	
+			this.context.fillText(this.menuoptions[i],this.x+50, this.y+this.yOffset); 
+		};
+    }
 });
 
 var textEntity = me.ObjectEntity.extend({
@@ -395,7 +454,6 @@ var textEntity = me.ObjectEntity.extend({
 	draw: function draw(context){
 		this.parent(context);
 
-		
 		testText.draw(context, "hello", 100, 50);
 
 		me.game.sort();

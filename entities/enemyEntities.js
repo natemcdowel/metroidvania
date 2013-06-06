@@ -28,7 +28,7 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		this.i = 0;
 		this.enemy = new Object();
 
-		console.log(this.GUID)
+		// console.log(this.GUID)
 
 	},
 

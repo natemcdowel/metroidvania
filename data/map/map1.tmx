@@ -173,9 +173,13 @@
     <property name="spritewidth" value="240"/>
    </properties>
   </object>
-  <object name="PickupEntity" x="577" y="1177" width="70" height="35">
+  <object name="npcEntity" x="439" y="1125" width="70" height="70">
    <properties>
-    <property name="image" value="throwingweapons"/>
+    <property name="" value=""/>
+    <property name="animationspeed" value="5"/>
+    <property name="image" value="shopkeeper"/>
+    <property name="spriteheight" value="140"/>
+    <property name="spritewidth" value="140"/>
    </properties>
   </object>
  </objectgroup>

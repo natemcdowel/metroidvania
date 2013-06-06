@@ -66,12 +66,14 @@
   </object>
  </objectgroup>
  <objectgroup color="#55ff00" name="player" width="200" height="75">
-  <object name="mainPlayer" x="1225" y="692" width="70" height="70">
+  <object name="mainPlayer" x="1499" y="510" width="70" height="70">
    <properties>
+    <property name="" value=""/>
     <property name="animationspeed" value="5"/>
     <property name="image" value="simon"/>
     <property name="spriteheight" value="240"/>
     <property name="spritewidth" value="240"/>
+    <property name="startY" value="5000"/>
    </properties>
   </object>
   <object name="sword" x="1295" y="700" width="70" height="35"/>
@@ -100,16 +102,6 @@
     <property name="velX" value="4"/>
    </properties>
   </object>
-  <object name="CrowEntity" x="5565" y="1953" width="70" height="70">
-   <properties>
-    <property name="animationspeed" value="5"/>
-    <property name="gravity" value="0"/>
-    <property name="image" value="cavebat"/>
-    <property name="spriteheight" value="60"/>
-    <property name="spritewidth" value="60"/>
-    <property name="velX" value="4"/>
-   </properties>
-  </object>
   <object name="CrowEntity" x="1350" y="1941" width="70" height="70">
    <properties>
     <property name="animationspeed" value="5"/>
@@ -121,16 +113,6 @@
    </properties>
   </object>
   <object name="CrowEntity" x="1380" y="1498" width="70" height="70">
-   <properties>
-    <property name="animationspeed" value="5"/>
-    <property name="gravity" value="0"/>
-    <property name="image" value="cavebat"/>
-    <property name="spriteheight" value="60"/>
-    <property name="spritewidth" value="60"/>
-    <property name="velX" value="4"/>
-   </properties>
-  </object>
-  <object name="CrowEntity" x="2098" y="732" width="70" height="70">
    <properties>
     <property name="animationspeed" value="5"/>
     <property name="gravity" value="0"/>
@@ -173,7 +155,7 @@
     <property name="spritewidth" value="120"/>
    </properties>
   </object>
-  <object name="SkeletonEntity" x="1348" y="798" width="420" height="35">
+  <object name="SkeletonEntity" x="1111" y="824" width="420" height="35">
    <properties>
     <property name="animation" value="zombie"/>
     <property name="animationspeed" value="10"/>
@@ -204,6 +186,24 @@
     <property name="image" value="zombie"/>
     <property name="spriteheight" value="120"/>
     <property name="spritewidth" value="120"/>
+   </properties>
+  </object>
+  <object name="npcEntity" x="5647" y="2025" width="70" height="70">
+   <properties>
+    <property name="" value=""/>
+    <property name="animationspeed" value="5"/>
+    <property name="image" value="shopkeeper"/>
+    <property name="spriteheight" value="140"/>
+    <property name="spritewidth" value="140"/>
+   </properties>
+  </object>
+  <object name="npcEntity" x="2477" y="697" width="70" height="70">
+   <properties>
+    <property name="" value=""/>
+    <property name="animationspeed" value="5"/>
+    <property name="image" value="shopkeeper"/>
+    <property name="spriteheight" value="140"/>
+    <property name="spritewidth" value="140"/>
    </properties>
   </object>
  </objectgroup>

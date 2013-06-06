@@ -69,7 +69,7 @@ var weaponEntity = me.ObjectEntity.extend({
 
 /************************************************************************************/
 /*																					*/
-/*		Secondary weapon entity															*/
+/*		Secondary weapon entity														*/
 /*																					*/
 /************************************************************************************/
 var secondWeaponEntity = me.ObjectEntity.extend({	
@@ -144,7 +144,7 @@ var secondWeaponEntity = me.ObjectEntity.extend({
 		this.pos.add(this.vel);
 		// this.updateMovement();
 
-		if (this.vel.x == 0) me.game.remove(this)
+		if (this.vel.x == 0 || this.pos.x < 40 || this.pos.x > (me.game.currentLevel.width - 80)) me.game.remove(this)
 		return false;
 	},
 });

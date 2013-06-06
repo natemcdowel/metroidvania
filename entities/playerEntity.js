@@ -55,7 +55,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// call the constructor
 		this.parent(x, y , settings); 
 
-		this.setVelocity(12, 32); 
+	 
 
 		// Weapon delay
 		this.cooldown = true;
@@ -77,7 +77,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		socketResponse('changemapserver', socketArray);  
 
 		// walking & jumping speed 
-		
+		this.setVelocity(12, 34);
 		this.setFriction(1.2,0); 
 		this.gravity = 2.2
 		this.collidable = false;
@@ -139,7 +139,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 		if (typeof settings.velY != 'undefined') this.vel.y = settings.velY;
 		if (typeof nextScreenVelX != '') this.vel.x = nextScreenVelX;
 
-		console.log(me.ObjectSettings)
 	},
 
 
@@ -166,8 +165,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		var self = this;
 		// console.log(this.pos.x + ' -- ' + this.pos.y)
-		// Changing 
-		
 
 		this.menu(self);
 
@@ -226,9 +223,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 	menu : function (self) {
 
-		if (me.input.isKeyPressed('menu')) {	
-
-			
+		if (me.input.isKeyPressed('menu') && (!me.game.HUD.HUDItems.dialogueBox)) {	
 			// Create menu
 			if (this.mainMenuPosition == -1) {
 				this.mainMenuPosition = 1;
@@ -236,7 +231,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 				me.game.sort();
 				setTimeout(function(){ self.menuDelay = false; },100);
 			}
-
 		}
 
 		// In the menu
@@ -263,7 +257,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 			else if(me.input.isKeyPressed('menu') && !self.menuDelay) {
 
 				if (this.mainMenuPosition == 0) {
-
 					me.game.HUD.removeItem("mainmenu");
 					setTimeout(function(){ self.mainMenuPosition = -1; },200); 
 				}
@@ -296,7 +289,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 
 		if (res) {
-			console.log(res)
 			switch (res.obj.type) {	
 				case me.game.ENEMY_OBJECT : {
 					if ((res.y>0) && this.falling && !this.renderable.flickering) {
@@ -331,7 +323,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		var self = this;
 
 			///////// Movements /////////
-		if (this.renderable.flickerTimer < 85 && (!me.game.HUD.HUDItems.mainmenu)) {
+		if (this.renderable.flickerTimer < 85 && (!me.game.HUD.HUDItems.mainmenu) && (!me.game.HUD.HUDItems.dialogueBox)) {
 			// If pressing left and not attacking
 			if (me.input.isKeyPressed('left') && (!this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack')))	{ 
 				// Walk animation if not jumping

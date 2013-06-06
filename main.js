@@ -25,6 +25,13 @@ var game = {
 		{name: "06",			type: "audio",	src: "data/audio/",	channel : 1},
 		{name: "35",			type: "audio",	src: "data/audio/",	channel : 1},
 		{name: "12",			type: "audio",	src: "data/audio/",	channel : 1},
+
+		// Menu Sounds
+		{name: "17",			type: "audio",	src: "data/audio/",	channel : 1},
+		{name: "18",			type: "audio",	src: "data/audio/",	channel : 1},
+		{name: "24",			type: "audio",	src: "data/audio/",	channel : 1},
+
+		// Music
 		{name: "distant_thunder_and_light_rain",			type: "audio",	src: "data/audio/",	channel : 2},
 		{name: "cave1",			type: "audio",	src: "data/audio/music/",	channel : 2},
 		{name: "battle1",			type: "audio",	src: "data/audio/music/",	channel : 2},
@@ -59,10 +66,12 @@ var game = {
 		// Player
 		{name: "sword",		type: "image",	src: "data/gfx/sword.png"}, 
 		{name: "simon",		type:"image",	src: "data/gfx/players/testattack5@4x.png"}, 
-		// {name: "simon",		type:"image",	src: "data/gfx/playerattack3@4xx.png"},  
 
 		// Weapons
 		{name: "throwingweapons",		type:"image",	src: "data/gfx/weapons/Throwing Weapons@4x.png"}, 
+
+		// NPCs
+		{name: "Shopkeeper",		type:"image",	src: "data/gfx/npcs/Shop@4x.png"}, 
 
 		// Enemies
 		{name: "rat",		type:"image",	src: "data/gfx/enemies/Rat@4x.png"},
@@ -132,7 +141,7 @@ var game = {
 		---										*/
 	loaded: function ()	{
 
-				// add our enemy entity in the entity pool
+		// add our enemy entity in the entity pool
 		// me.entityPool.add("BatEntity", BatEnemyEntity);
 		me.entityPool.add("WeatherFactory", WeatherFactoryEntity);
 		me.entityPool.add("SkeletonEntity", SkeletonEnemyEntity);
@@ -142,17 +151,23 @@ var game = {
 		me.entityPool.add("EnemyFactory", EnemyFactoryEntity);
 		me.entityPool.add("BossFactory", BossFactoryEntity); 								
 		
+		// Pickups
 		me.entityPool.add("PickupEntity", PickupEntity); 							
 		me.entityPool.add("BreakableEntity", BreakableEntity);
+
+		// HUD
 		me.entityPool.add("SecWeapon", SecondWeaponDisplay);
 
 		// add our player entity in the entity pool
 		me.entityPool.add("mainPlayer", PlayerEntity); 
+		me.entityPool.add("npcEntity", npcEntity); 
+		me.entityPool.add("secondPlayer", Player2Entity); 
+
+		// Weapons
 		me.entityPool.add("sword", weaponEntity);   
 		me.entityPool.add("secSword", secondWeaponEntity);  
 
-		me.entityPool.add("secondPlayer", Player2Entity); 
-
+		
 		// set the "Play/Ingame" Screen Object
     	me.state.set(me.state.PAUSE, new CustomLoadingScreen()); 
 		// set the "Play/Ingame" Screen Object
@@ -176,7 +191,7 @@ var PlayScreen = me.ScreenObject.extend( {
 	// no need to do somehting else
 	onResetEvent: function() {
 		// load a level
-		me.levelDirector.loadLevel("map2-2");
+		me.levelDirector.loadLevel("map1-2");
 
 		// add a default HUD to the game mngr
 		me.game.addHUD(0,0,1280, 720);
