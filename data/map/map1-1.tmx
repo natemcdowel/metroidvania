@@ -45,6 +45,12 @@
  <tileset firstgid="399" name="Cave@4x" tilewidth="35" tileheight="35">
   <image source="../gfx/Cave@4x.png" trans="ff00ff" width="700" height="700"/>
  </tileset>
+ <imagelayer name="gradient_background_back" width="120" height="40">
+  <image source="../gfx/background/CaveBackgroundBack.png"/>
+  <properties>
+   <property name="ratio" value="0.25"/>
+  </properties>
+ </imagelayer>
  <imagelayer name="gradient_background" width="120" height="40">
   <image source="../gfx/background/CaveBackground.png"/>
  </imagelayer>

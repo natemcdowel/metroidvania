@@ -14,6 +14,7 @@ var game = {
 		{name: "SkyBackground",		type:"image",	src: "data/gfx/background/SkyBackground.png"},
 		{name: "CrossBackground",		type:"image",	src: "data/gfx/background/CrossBackground.png"},
 		{name: "CaveBackground",		type:"image",	src: "data/gfx/background/CaveBackground.png"},
+		{name: "CaveBackgroundBack",		type:"image",	src: "data/gfx/background/CaveBackgroundBack.png"},
 
 		// {name: "metatiles35x35",		type:"image",	src: "data/gfx/metatiles35x35.png"},
 		// {name: "Forestground@4x",		type:"image",	src: "data/gfx/Forestground@4x.png"},
@@ -30,6 +31,10 @@ var game = {
 		{name: "17",			type: "audio",	src: "data/audio/",	channel : 1},
 		{name: "18",			type: "audio",	src: "data/audio/",	channel : 1},
 		{name: "24",			type: "audio",	src: "data/audio/",	channel : 1},
+
+		// Sec Weapons
+		{name: "29",			type: "audio",	src: "data/audio/",	channel : 1},
+		{name: "26",			type: "audio",	src: "data/audio/",	channel : 1},
 
 		// Music
 		{name: "distant_thunder_and_light_rain",			type: "audio",	src: "data/audio/",	channel : 2},
@@ -62,6 +67,7 @@ var game = {
 		{name: "torches",		type:"image",	src: "data/gfx/objects/Breakable@4x.png"}, 
 		{name: "pickups",		type:"image",	src: "data/gfx/objects/Life@4x.png"},   
 		{name: "Cave@4x",		type:"image",	src: "data/gfx/Cave@4x.png"},
+		{name: "firedeath",		type:"image",	src: "data/gfx/objects/Fire 3@4x.png"},
 
 		// Player
 		{name: "sword",		type: "image",	src: "data/gfx/sword.png"}, 

@@ -226,6 +226,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		if (me.input.isKeyPressed('menu') && (!me.game.HUD.HUDItems.dialogueBox)) {	
 			// Create menu
 			if (this.mainMenuPosition == -1) {
+				me.audio.play("18", false);
 				this.mainMenuPosition = 1;
 				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU', this.mainMenuPosition)); 
 				me.game.sort();

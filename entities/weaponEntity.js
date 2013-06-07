@@ -93,6 +93,9 @@ var secondWeaponEntity = me.ObjectEntity.extend({
 		this.renderable.setCurrentAnimation(mainPlayer.secWeapon);
 
 		if (mainPlayer.secWeapon == 'dagger') {
+
+			me.audio.play("26", false);
+
 			// walking & jumping speed
 			if (direction == 'right') {
 				this.vel.x = 35; 
@@ -107,7 +110,7 @@ var secondWeaponEntity = me.ObjectEntity.extend({
 
 		if (mainPlayer.secWeapon == 'axe') {
 
-			// this.setFriction(1.2,0); 
+			me.audio.play("26", false);
 			this.gravity = 2.2
 
 			// walking & jumping speed

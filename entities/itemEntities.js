@@ -68,6 +68,7 @@ var PickupEntity = me.ObjectEntity.extend({
 
 		// Weapons
 		this.renderable.addAnimation ("dagger", [0]); 
+		this.renderable.addAnimation ("sword", [1]); 
 		this.renderable.addAnimation ("axe", [2]); 
 		
 		// What do we drop?

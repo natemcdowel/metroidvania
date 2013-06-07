@@ -27,7 +27,8 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		this.timer = me.timer.getTime();
 		this.i = 0;
 		this.enemy = new Object();
-
+		
+		
 		// console.log(this.GUID)
 
 	},
@@ -75,7 +76,7 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 	        var yDir = y - this.pos.y;
 		}
 		else {
-		//get player entity
+	
 			var player = me.game.getEntityByName("mainPlayer")[0];
 
 			if (player.pos.x > this.pos.x) this.flipX(true);
@@ -115,6 +116,8 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		if (!this.renderable.flickering)
 		{	
 
+			var self = this;
+
 			// Animates hitpoints above player
 			var tween = new me.Tween(this).to({fontsize: 40, hpY: -160}, 700).onComplete(function(){		   
 				var tween = new me.Tween(this)
@@ -138,18 +141,22 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 			// flash the screen
 			if (this.hitpoints <= 0) {
 				
-				playerInfo.xp += this.xp;
-				this.alive = false; 
-				this.collidable = false;
-				me.game.HUD.updateItemValue("experience", this.xp);
-				this.renderable.flicker(5, function(){me.game.remove(self)});
-				me.audio.play("04", false);
+				self.renderable.addAnimation ("fire", [0,1,2,3],1);
+				self.renderable.image = me.loader.getImage("firedeath"); 
+				self.renderable.setCurrentAnimation("fire", function () {
 
-				// Drop item
-				var pickup = new PickupEntity( self.pos.x, self.pos.y-20, { image: "pickups", spritewidth: 110, spriteheight: 65 }, true); 
-			    me.game.add(pickup, self.z-1);
-			    me.game.sort();
+					playerInfo.xp += this.xp;
+					self.alive = false; 
+					self.collidable = false;
+					me.game.HUD.updateItemValue("experience", self.xp);
+					self.renderable.flicker(5, function(){me.game.remove(self)});
+					me.audio.play("04", false);
 
+					// Drop item
+					var pickup = new PickupEntity( self.pos.x, self.pos.y-20, { image: "pickups", spritewidth: 110, spriteheight: 65 }, true); 
+				    me.game.add(pickup, self.z-1);
+				    me.game.sort();
+				});
 			}
 			else {
 				
@@ -232,7 +239,8 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
 
 		
 		// check & update movement
-		this.updateMovement();
+		this.computeVelocity(this.vel);
+		this.pos.add(this.vel);
 		this.parent()
 		return true;
 		// return true if we moved of if flickering
