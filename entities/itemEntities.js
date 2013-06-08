@@ -101,17 +101,26 @@ var PickupEntity = me.ObjectEntity.extend({
 		var self = this;
 
 		if (obj.type == 'player' && this.alive) {
-			
-			me.game.remove(self) 
-			me.audio.play("12");
-			this.alive = false;
+
 
 			if (this.weapon) {
 				var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
 				mainPlayer.secWeapon = this.weapon;
 				me.game.HUD.removeItem("secondWeapon");
-				me.game.HUD.addItem("secondWeapon", new InventoryDisplay(1167,10, {width: 100, height: 100})); 
+				me.game.HUD.addItem("secondWeapon", new InventoryDisplay(1100,0, {width: 100, height: 100, type:'secweapons'})); 
 			}
+			if (this.renderable.current.name == 'smallheart') {
+				playerInfo.hearts++
+				me.game.HUD.setItemValue("hearts", playerInfo.hearts);
+			}
+			if (this.renderable.current.name == 'largeheart') {
+				playerInfo.hearts+=5;
+				me.game.HUD.setItemValue("hearts", playerInfo.hearts);
+			}
+
+			me.game.remove(self) 
+			me.audio.play("12");
+			this.alive = false;
 		}
 	
 	},
@@ -349,7 +358,8 @@ var InventoryDisplay = me.HUD_Item.extend( {
 
         if (settings.type == 'secweapons') {
 	        // Weapon images
-			this.image = me.loader.getImage("throwingweapons"); 
+			this.image = me.loader.getImage("secweaponoverlay"); 
+			this.image2 = me.loader.getImage("throwingweapons"); 
 		}
 		if (settings.type == 'primaryweapons') {
 	        // Weapon images
@@ -378,14 +388,15 @@ var InventoryDisplay = me.HUD_Item.extend( {
 			
 			// // Main box 
 			this.context.fillStyle = "black";
-			this.context.fillRect(this.x, this.y, this.width, this.height); 
+			this.context.fillRect(this.x+75, this.y, this.width, this.height); 
 
-		    this.context.beginPath();
-	        this.context.rect(this.x, this.y, this.width, this.height);
-	        this.context.drawImage(this.image,this.imageXOffset,0,120,60,this.x,this.y,120,60);
-	        this.context.lineWidth = 7;
-	        this.context.strokeStyle = '#8B0000';
-	        this.context.stroke();
+		 //    this.context.beginPath();
+	  //       this.context.rect(this.x, this.y, this.width, this.height);
+	        this.context.drawImage(this.image,this.x,this.y);
+	        this.context.drawImage(this.image2,this.imageXOffset,0,120,60,this.x+70,this.y+10,120,60);
+	        // this.context.lineWidth = 7;
+	        // this.context.strokeStyle = '#8B0000';
+	        // this.context.stroke();
     	}
     	if (this.type == 'primaryweapons') {
 			// Which weapon does player have?

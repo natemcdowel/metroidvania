@@ -244,6 +244,16 @@
     <property name="spritewidth" value="120"/>
    </properties>
   </object>
+  <object name="EnemyFactory" x="5897" y="941" width="350" height="35">
+   <properties>
+    <property name="animationspeed" value="5"/>
+    <property name="delay" value="5000"/>
+    <property name="enemyClass" value="SkullEnemyEntity"/>
+    <property name="image" value="flyingdemon"/>
+    <property name="spriteheight" value="120"/>
+    <property name="spritewidth" value="120"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer name="collision" width="200" height="75" visible="0" opacity="0.53">
   <data encoding="base64">

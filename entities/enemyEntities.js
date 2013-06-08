@@ -119,7 +119,7 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 			var self = this;
 
 			// Animates hitpoints above player
-			var tween = new me.Tween(this).to({fontsize: 40, hpY: -160}, 700).onComplete(function(){		   
+			var tween = new me.Tween(this).to({fontsize: 25, hpY: -160}, 700).onComplete(function(){		   
 				var tween = new me.Tween(this)
 			    .to({
 			    	globalAlpha: 0,
@@ -141,22 +141,21 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 			// flash the screen
 			if (this.hitpoints <= 0) {
 				
-				self.renderable.addAnimation ("fire", [0,1,2,3],1);
-				self.renderable.image = me.loader.getImage("firedeath"); 
-				self.renderable.setCurrentAnimation("fire", function () {
+				playerInfo.xp += this.xp;
+				self.alive = false; 
+				self.collidable = false;
+				me.game.HUD.updateItemValue("experience", self.xp);
+				self.renderable.flicker(5, function(){me.game.remove(self)});
+				var firedeath = new fireDeathEntity( self.pos.x, self.pos.y+40, { image: "firedeath", spritewidth: 120, spriteheight: 120 }); 
+				 me.game.add(firedeath, self.z-1);
+			    me.game.sort();
+				me.audio.play("04", false);
 
-					playerInfo.xp += this.xp;
-					self.alive = false; 
-					self.collidable = false;
-					me.game.HUD.updateItemValue("experience", self.xp);
-					self.renderable.flicker(5, function(){me.game.remove(self)});
-					me.audio.play("04", false);
-
-					// Drop item
-					var pickup = new PickupEntity( self.pos.x, self.pos.y-20, { image: "pickups", spritewidth: 60, spriteheight: 60 }, true); 
-				    me.game.add(pickup, self.z-1);
-				    me.game.sort();
-				});
+				// Drop item
+				var pickup = new PickupEntity( self.pos.x, self.pos.y-20, { image: "pickups", spritewidth: 60, spriteheight: 60 }, true); 
+			    me.game.add(pickup, self.z-1);
+			    me.game.sort();
+		
 			}
 			else {
 				
@@ -168,6 +167,27 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 });
 
 
+var fireDeathEntity = me.ObjectEntity.extend({	
+
+	init: function (x, y, settings) {
+	// parent constructor
+	this.parent(x, y, settings);
+	this.renderable.addAnimation ("fire", [0,1,2,3],1);
+
+
+	},
+
+	update : function () {
+		var self = this;
+		this.renderable.setCurrentAnimation("fire", function () {
+			me.game.remove(self);
+		});
+
+		this.parent()
+		return true;
+	}
+
+});
 
 /**
  * A Crow enemy entity
@@ -295,6 +315,7 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 
 		this.checkplayers();
 
+
 		// call the parent constructor
 		this.parent(x, y , settings);
 
@@ -307,6 +328,8 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		this.endX   = x + settings.width - settings.spritewidth
 		this.pos.x  = x + settings.width - settings.spritewidth;
 		
+				console.log(settings.width)
+
 		// walking & jumping speed
 		this.setVelocity(settings.velX || 4, settings.velY || 6);
 
@@ -366,7 +389,8 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 
 	update : function () {
 
-		var self = this;
+		var self = this;	
+
 
 		// Setting enemy position through SOCKET if 2nd to map
 		if (samemap == true && clientid == 1) {
@@ -483,7 +507,9 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 	     // apply gravity setting if specified
 		this.gravity = settings.gravity || me.sys.gravity;
 		this.renderable.animationspeed = 2;
-		this.renderable.addAnimation ("head", [3,4,5]); 
+
+		// this.renderable.addAnimation ("head", [2,3,4]); 
+		this.renderable.addAnimation ("head", [0,1,2],2); 
 
 		this.renderable.setCurrentAnimation("head");
 
@@ -590,8 +616,8 @@ var CoffinEntity = AllEnemyEntity.extend({
 
 		    // Skeleton comes out
 		    this.renderable.setCurrentAnimation("dooroffempty");
-		    var skeleton = new SkeletonEnemyEntity( this.pos.x-330, this.pos.y, { image: "skeleton", spritewidth: 240, spriteheight: 240, animationspeed: 10, gravity: 0 }); 
-		    me.game.add(skeleton, this.z+1);
+		    var skeleton = new SkeletonEnemyEntity( this.pos.x-330, this.pos.y, { image: "skeleton", spritewidth: 240, spriteheight: 240, animationspeed: 10, gravity: 0, customcollision:true, width: 600}); 
+		    me.game.add(skeleton, this.z-1);
 		    me.game.sort();
 
 		     setTimeout(function(){me.game.remove(self);},5000);

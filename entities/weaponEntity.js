@@ -126,8 +126,13 @@ var secondWeaponEntity = me.ObjectEntity.extend({
 				this.flipX(true);
 			}
 		}
-	     this.rotate = 10;
-	     this.updateColRect(20,32, 100,0);  
+	    this.rotate = 10;
+
+	    // Deducting heerts 
+	    playerInfo.hearts--
+		me.game.HUD.setItemValue("hearts", playerInfo.hearts);
+		
+	     // this.updateColRect(20,32, 100,0);  
 
 
 	},

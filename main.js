@@ -61,6 +61,8 @@ var game = {
 		// {name: "map3-1",			type: "tmx",	src: "data/map/map3-1.tmx"},
 		// Lower yet
 
+		// UI 
+		{name: "secweaponoverlay",		type:"image",	src: "data/gfx/weapons and items/Inventory@4x.png"},
 
 		// Environment
 		{name: "rain",		type:"image",	src: "data/gfx/objects/rain.png"},
@@ -85,6 +87,7 @@ var game = {
 		{name: "Teleport",		type:"image",	src: "data/gfx/shops and npcs/Teleport@4x.png"},
 
 		// Enemies
+		{name: "flyingdemon",		type:"image",	src: "data/gfx/enemies/Demon@4x.png"},
 		{name: "rat",		type:"image",	src: "data/gfx/enemies/Rat@4x.png"},
 		{name: "coffin",		type:"image",	src: "data/gfx/enemies/Coffin@4x.png"},
 		{name: "skeleton",		type:"image",	src: "data/gfx/enemies/Skeleton2@4x.png"},
@@ -206,8 +209,9 @@ var PlayScreen = me.ScreenObject.extend( {
 		me.game.HUD.addItem("score", new ScoreObject(0,30,'HP: ', playerInfo.hitpoints));
 		me.game.HUD.addItem("experience", new ScoreObject(0,60,'XP: ', 0));
 		me.game.HUD.addItem("lvl", new ScoreObject(0,90,'LVL: ', 1)); 
-		me.game.HUD.addItem("secondWeapon", new InventoryDisplay(1167,10, {width: 100, height: 100, type:'secweapons'})); 
-		me.game.HUD.addItem("primaryWeapon", new InventoryDisplay(1000,10, {width: 150, height: 100, type:'primaryweapons'})); 
+		me.game.HUD.addItem("hearts", new ScoreObject(0,120,'HEARTS: ', playerInfo.hearts)); 
+		me.game.HUD.addItem("secondWeapon", new InventoryDisplay(1100,0, {width: 100, height: 100, type:'secweapons'})); 
+		// me.game.HUD.addItem("primaryWeapon", new InventoryDisplay(1000,10, {width: 150, height: 100, type:'primaryweapons'})); 
 
 
 		// me.game.HUD.addItem("score", new ScoreObject(00,790));  

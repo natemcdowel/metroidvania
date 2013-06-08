@@ -407,7 +407,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 					this.renderable.setCurrentAnimation("attack","stand");
 				}
 				// Secondary Attack
-				else if (me.input.isKeyPressed('up') && this.weaponDelay == false) {
+				else if (me.input.isKeyPressed('up') && this.weaponDelay == false && playerInfo.hearts > 0) {
 
 					self.weaponDelay = true;
 					var secondWeapon = new secondWeaponEntity( self.pos.x, self.pos.y+120, { image: "throwingweapons", spritewidth: 120, spriteheight: 120 }, clientData[0]); 
@@ -489,7 +489,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 			}
 
 			// Animates hitpoints above player
-			var tween = new me.Tween(this).to({fontsize: 40, hpY: -160}, 1600).onComplete(function(){		   
+			var tween = new me.Tween(this).to({fontsize: 25, hpY: -160}, 1600).onComplete(function(){		   
 				var tween = new me.Tween(this)
 			    .to({
 			        fontsize: 0,
