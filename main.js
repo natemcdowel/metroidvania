@@ -39,7 +39,7 @@ var game = {
 		// Music
 		{name: "distant_thunder_and_light_rain",			type: "audio",	src: "data/audio/",	channel : 2},
 		{name: "cave1",			type: "audio",	src: "data/audio/music/",	channel : 2},
-		{name: "battle1",			type: "audio",	src: "data/audio/music/",	channel : 2},
+		{name: "battle1.2",			type: "audio",	src: "data/audio/music/",	channel : 2},
 		{name: "riff4",			type: "audio",	src: "data/audio/music/",	channel : 2},
 
 		
@@ -213,7 +213,7 @@ var PlayScreen = me.ScreenObject.extend( {
 		// me.game.HUD.addItem("score", new ScoreObject(00,790));  
 		
 		// play some music
-		// me.audio.playTrack("cave1");
+		me.audio.playTrack("battle1.2");
 
 	}
 
