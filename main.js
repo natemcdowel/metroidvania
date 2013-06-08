@@ -63,6 +63,7 @@ var game = {
 
 		// UI 
 		{name: "secweaponoverlay",		type:"image",	src: "data/gfx/weapons and items/Inventory@4x.png"},
+		{name: "secweaponoverlayleft",		type:"image",	src: "data/gfx/weapons and items/InventoryLeft@4x.png"},
 
 		// Environment
 		{name: "rain",		type:"image",	src: "data/gfx/objects/rain.png"},
@@ -188,8 +189,6 @@ var game = {
 		// switch to PLAY state
 		me.state.change(me.state.PLAY);
 
-
-
 	}
 };
 
@@ -211,6 +210,7 @@ var PlayScreen = me.ScreenObject.extend( {
 		me.game.HUD.addItem("lvl", new ScoreObject(0,90,'LVL: ', 1)); 
 		me.game.HUD.addItem("hearts", new ScoreObject(0,120,'HEARTS: ', playerInfo.hearts)); 
 		me.game.HUD.addItem("secondWeapon", new InventoryDisplay(1100,0, {width: 100, height: 100, type:'secweapons'})); 
+		me.game.HUD.addItem("secondWeapon", new InventoryDisplay(0,0, {width: 100, height: 100, type:'primaryweapons'}));  
 		// me.game.HUD.addItem("primaryWeapon", new InventoryDisplay(1000,10, {width: 150, height: 100, type:'primaryweapons'})); 
 
 

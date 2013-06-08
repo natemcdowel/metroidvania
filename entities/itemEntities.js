@@ -363,7 +363,8 @@ var InventoryDisplay = me.HUD_Item.extend( {
 		}
 		if (settings.type == 'primaryweapons') {
 	        // Weapon images
-			this.image = me.loader.getImage("twohandedsword"); 
+	        this.image = me.loader.getImage("secweaponoverlayleft"); 
+			this.image2 = me.loader.getImage("twohandedsword"); 
 		}
 		this.imageXOffset = 0;
 
@@ -381,6 +382,7 @@ var InventoryDisplay = me.HUD_Item.extend( {
 		this.context = context;
 
 		if (this.type == 'secweapons') {
+
 			// Which weapon does player have?
 			var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
 			if (mainPlayer.secWeapon == 'axe') this.imageXOffset = 240;
@@ -402,18 +404,27 @@ var InventoryDisplay = me.HUD_Item.extend( {
 			// Which weapon does player have?
 			var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
 			if (mainPlayer.primaryWeapon == 'whip') this.imageXOffset = 240;
-			if (mainPlayer.primaryWeapon == 'twohandedsword') this.image = me.loader.getImage("twohandedsword");
+			if (mainPlayer.primaryWeapon == 'twohandedsword') this.image2 = me.loader.getImage("twohandedsword");
 			
 			// // Main box 
 			this.context.fillStyle = "black";
 			this.context.fillRect(this.x, this.y, this.width, this.height); 
 
-		    this.context.beginPath();
-	        this.context.rect(this.x, this.y, this.width, this.height);
-	        this.context.drawImage(this.image,this.x+10,this.y-15);
-	        this.context.lineWidth = 7;
-	        this.context.strokeStyle = '#8B0000';
-	        this.context.stroke();
+						// // Main box 
+			this.context.fillStyle = "black";
+			this.context.fillRect(this.x, this.y, this.width, this.height); 
+
+		 //    this.context.beginPath();
+	  //       this.context.rect(this.x, this.y, this.width, this.height);
+	        this.context.drawImage(this.image,this.x,this.y);
+	        this.context.drawImage(this.image2,this.imageXOffset,0,120,60,this.x+70,this.y+10,120,60);
+
+		    // this.context.beginPath();
+	     //    this.context.rect(this.x, this.y, this.width, this.height);
+	     //    this.context.drawImage(this.image,this.x+10,this.y-15);
+	     //    this.context.lineWidth = 7;
+	     //    this.context.strokeStyle = '#8B0000';
+	     //    this.context.stroke();
     	}
     }
 });
