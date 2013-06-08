@@ -64,6 +64,18 @@
     <property name="spritewidth" value="240"/>
    </properties>
   </object>
+  <object name="npcEntity" x="412" y="1205" width="70" height="70">
+   <properties>
+    <property name="animationspeed" value="5"/>
+    <property name="image" value="teleport"/>
+    <property name="map" value="map1-2"/>
+    <property name="npc" value="teleport"/>
+    <property name="spriteheight" value="140"/>
+    <property name="spritewidth" value="140"/>
+    <property name="teleportX" value="2012"/>
+    <property name="teleportY" value="705"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup color="#55ff00" name="player" width="120" height="40">
   <object name="mainPlayer" x="81" y="1030" width="70" height="70">
@@ -171,15 +183,6 @@
     <property name="image" value="skeleton"/>
     <property name="spriteheight" value="240"/>
     <property name="spritewidth" value="240"/>
-   </properties>
-  </object>
-  <object name="npcEntity" x="439" y="1125" width="70" height="70">
-   <properties>
-    <property name="" value=""/>
-    <property name="animationspeed" value="5"/>
-    <property name="image" value="shopkeeper"/>
-    <property name="spriteheight" value="140"/>
-    <property name="spritewidth" value="140"/>
    </properties>
   </object>
  </objectgroup>

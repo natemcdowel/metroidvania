@@ -33,7 +33,7 @@ var BreakableEntity = me.ObjectEntity.extend({
 
 				// If specific drop set from Tiled 
 				if (this.item) var pickup = new PickupEntity( self.pos.x, self.pos.y-50, { image: "throwingweapons", spritewidth: 100, spriteheight: 100 },false,this.item); 
-				else var pickup = new PickupEntity( self.pos.x, self.pos.y-50, { image: "pickups", spritewidth: 90, spriteheight: 55 }); 
+				else var pickup = new PickupEntity( self.pos.x, self.pos.y-50, { image: "pickups", spritewidth: 60, spriteheight: 60 }); 
 
 			    me.game.add(pickup, self.z-1);
 			    me.game.sort();
@@ -60,29 +60,36 @@ var PickupEntity = me.ObjectEntity.extend({
 	init: function(x, y, settings, enemy,item) {
 		
 		this.parent(x, y, settings);
-
+		this.alive = true;
+		this.collidable = true;
 		// Power-Ups
 		this.renderable.addAnimation ("largeheart", [0]);
 		this.renderable.addAnimation ("health", [1]);
 		this.renderable.addAnimation ("smallheart", [2]);
 
-		// Weapons
+		// Secondary Weapons
 		this.renderable.addAnimation ("dagger", [0]); 
 		this.renderable.addAnimation ("sword", [1]); 
 		this.renderable.addAnimation ("axe", [2]); 
-		
-		// What do we drop?
-		if (enemy) this.renderable.setCurrentAnimation("smallheart");
-		else if (settings.weapon) {
-			this.weapon = settings.weapon;
-			this.renderable.setCurrentAnimation(settings.weapon);
+
+		// Main Weapons
+		this.renderable.addAnimation ("twohandedsword", [0]);
+
+		// If main weapon
+		if (settings.mainweapon) {
+			this.renderable.setCurrentAnimation("twohandedsword");
 		}
-		// if (item)
-		else this.renderable.setCurrentAnimation("largeheart");
-
-		this.alive = true;
-		this.collidable = true;
-
+		// Secondary weapons , other items
+		else {
+			// What do we drop?
+			if (enemy) this.renderable.setCurrentAnimation("smallheart");
+			else if (settings.weapon) {
+				this.weapon = settings.weapon;
+				this.renderable.setCurrentAnimation(settings.weapon);
+			}
+			// if (item)
+			else this.renderable.setCurrentAnimation("largeheart");
+		}
 	},
 
 	onCollision : function (res, obj) {
@@ -103,7 +110,7 @@ var PickupEntity = me.ObjectEntity.extend({
 				var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
 				mainPlayer.secWeapon = this.weapon;
 				me.game.HUD.removeItem("secondWeapon");
-				me.game.HUD.addItem("secondWeapon", new SecondWeaponDisplay(1167,10, {width: 100, height: 100})); 
+				me.game.HUD.addItem("secondWeapon", new InventoryDisplay(1167,10, {width: 100, height: 100})); 
 			}
 		}
 	
@@ -333,14 +340,21 @@ var MenuObject = me.HUD_Item.extend( {
 	}
 });
 
-var SecondWeaponDisplay = me.HUD_Item.extend( {	
+var InventoryDisplay = me.HUD_Item.extend( {	
 
     init: function(x, y, settings) {
 
         this.parent(x, y);
+        this.type = settings.type;
 
-        // Weapon images
-		this.image = me.loader.getImage("throwingweapons"); 
+        if (settings.type == 'secweapons') {
+	        // Weapon images
+			this.image = me.loader.getImage("throwingweapons"); 
+		}
+		if (settings.type == 'primaryweapons') {
+	        // Weapon images
+			this.image = me.loader.getImage("twohandedsword"); 
+		}
 		this.imageXOffset = 0;
 
 		// Box positioning
@@ -356,27 +370,45 @@ var SecondWeaponDisplay = me.HUD_Item.extend( {
 
 		this.context = context;
 
-		// Which weapon does player have?
-		var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
-		if (mainPlayer.secWeapon == 'axe') this.imageXOffset = 240;
-		if (mainPlayer.secWeapon == 'dagger') this.imageXOffset = 0;
-		
-		// // Main box 
-		this.context.fillStyle = "black";
-		// this.context.globalAlpha=0.7; // Half opacity
-		this.context.fillRect(this.x, this.y, this.width, this.height); 
+		if (this.type == 'secweapons') {
+			// Which weapon does player have?
+			var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
+			if (mainPlayer.secWeapon == 'axe') this.imageXOffset = 240;
+			if (mainPlayer.secWeapon == 'dagger') this.imageXOffset = 0;
+			
+			// // Main box 
+			this.context.fillStyle = "black";
+			this.context.fillRect(this.x, this.y, this.width, this.height); 
 
-	    this.context.beginPath();
-        this.context.rect(this.x, this.y, this.width, this.height);
-        this.context.drawImage(this.image,this.imageXOffset,0,120,60,this.x,this.y,120,60);
-        this.context.lineWidth = 7;
-        this.context.strokeStyle = '#8B0000';
-        this.context.stroke();
+		    this.context.beginPath();
+	        this.context.rect(this.x, this.y, this.width, this.height);
+	        this.context.drawImage(this.image,this.imageXOffset,0,120,60,this.x,this.y,120,60);
+	        this.context.lineWidth = 7;
+	        this.context.strokeStyle = '#8B0000';
+	        this.context.stroke();
+    	}
+    	if (this.type == 'primaryweapons') {
+			// Which weapon does player have?
+			var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
+			if (mainPlayer.primaryWeapon == 'whip') this.imageXOffset = 240;
+			if (mainPlayer.primaryWeapon == 'twohandedsword') this.image = me.loader.getImage("twohandedsword");
+			
+			// // Main box 
+			this.context.fillStyle = "black";
+			this.context.fillRect(this.x, this.y, this.width, this.height); 
+
+		    this.context.beginPath();
+	        this.context.rect(this.x, this.y, this.width, this.height);
+	        this.context.drawImage(this.image,this.x+10,this.y-15);
+	        this.context.lineWidth = 7;
+	        this.context.strokeStyle = '#8B0000';
+	        this.context.stroke();
+    	}
     }
 });
 
 
-var dialogueBox = me.HUD_Item.extend( {	
+var dialogueShopBox = me.HUD_Item.extend( {	
 
     init: function(x, y, settings, menuposition) {
 
@@ -394,6 +426,7 @@ var dialogueBox = me.HUD_Item.extend( {
 		this.height = settings.height;
 		this.menuoptions = ['Yes','No'];
 		this.menuposition = menuposition;
+		this.text = settings.text;
 
 		// Turning on keys for menu
 		me.input.bindKey(me.input.KEY.X, "attack"); 
@@ -420,7 +453,7 @@ var dialogueBox = me.HUD_Item.extend( {
         this.context.rect(this.x, this.y, this.width, this.height);
         this.context.font="30px Impact";
         this.context.fillStyle = "white";
-        this.context.fillText('A long journey awaits... A swig of this',this.x+30, this.y+this.yOffset); 
+        this.context.fillText(this.text,this.x+30, this.y+this.yOffset); 
         this.context.fillText('swill will save your progress...',this.x+30, this.y+this.yOffset+40); 
         this.context.lineWidth = 7;
         this.context.strokeStyle = '#8B0000';
@@ -441,6 +474,65 @@ var dialogueBox = me.HUD_Item.extend( {
 			}	
 			this.context.fillText(this.menuoptions[i],this.x+50, this.y+this.yOffset); 
 		};
+    }
+});
+
+var dialogueBlockerBox = me.HUD_Item.extend( {	
+
+    init: function(x, y, settings, menuposition) {
+
+        this.parent(x, y);
+        var self = this;
+
+		// this.image = me.loader.getImage("throwingweapons"); 
+		// this.imageXOffset = 0;
+		
+		// Box positioning
+		this.x = x;
+		this.y = y;
+		this.yOffset = 80;
+		this.width = settings.width;
+		this.height = settings.height;
+		this.menuoptions = ['Yes','No'];
+		this.menuposition = menuposition;
+		this.text = settings.text;
+		this.text = this.text.split("<br>");
+
+
+		// Turning on keys for menu
+		me.input.bindKey(me.input.KEY.X, "attack"); 
+		me.input.bindKey(me.input.KEY.LEFT,	 "left");
+		me.input.bindKey(me.input.KEY.RIGHT, "right"); 
+		me.input.bindKey(me.input.KEY.Z,	"jump"); 
+		me.input.bindKey(me.input.KEY.UP,	"up"); 
+		me.input.bindKey(me.input.KEY.X,	"attack"); 
+		me.input.bindKey(me.input.KEY.DOWN,	"down");
+        
+    },
+
+    draw : function(context) {  
+
+		this.context = context;
+
+		// Which weapon does player have?
+		var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
+		
+	    // Main box 
+		this.context.fillStyle = "black";
+		this.context.fillRect(this.x, this.y, this.width, this.height); 
+	    this.context.beginPath();
+        this.context.rect(this.x, this.y, this.width, this.height);
+        this.context.font="25px Impact";
+        this.context.fillStyle = "white";
+
+        for (var i = 0; i < this.text.length; i++) {
+        	this.context.fillText(this.text[i],this.x+30, this.y+this.yOffset); 
+        	this.yOffset += 35;
+        }
+        this.context.lineWidth = 7;
+        this.context.strokeStyle = '#8B0000';
+        this.context.stroke();
+
     }
 });
 

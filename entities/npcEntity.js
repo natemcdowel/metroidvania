@@ -10,10 +10,20 @@
 		this.parent(x, y , settings);
 
 		this.collidable = true;
+
+		// Teleporting settings
+		if (settings.map) {
+			this.map = settings.map;
+			this.teleportX = settings.teleportX;
+			this.teleportY = settings.teleportY;
+		}
+		
 		this.menuposition = 0;
 		this.shown = false;
 		this.renderable.addAnimation ("shopkeeper", [0,1,2]);
 		this.renderable.setCurrentAnimation("shopkeeper");
+		this.npc = settings.npc;
+		this.text = settings.text;
 
 		// enable keyboard
 		me.input.bindKey(me.input.KEY.LEFT,	 "left");
@@ -34,56 +44,114 @@
 		// if (this.alive && (res.y > 0) && obj.fallingx) {
 
 		var self = this;
-		if (obj.type == 'player' && me.input.isKeyPressed('up')) {
 
+		// Different collision for NPC types
+		if (this.npc == 'shop') {
+			if (obj.type == 'player' && me.input.isKeyPressed('up')) {
 
-			if (this.shown == false) {
-				me.game.HUD.addItem("dialogueBox", new dialogueBox(400,10, {width: 540, height: 400}, this.menuposition)); 
-				me.game.sort();
-				this.shown = true;
-				console.log(this.shown)
-			}		
-		} 
+				if (this.shown == false) {
+
+					me.game.HUD.addItem("dialogueShopBox", new dialogueShopBox(400,10, {width: 540, height: 400, text: this.text}, this.menuposition)); 
+					me.game.sort();
+					this.shown = true;
+					console.log(this.shown)
+				}		
+			} 
+		}
+		if (this.npc == 'blocker') {
+			if (obj.type == 'player' && me.input.isKeyPressed('up')) {
+
+				if (this.shown == false) {
+
+					me.game.HUD.addItem("dialogueBlockerBox", new dialogueBlockerBox(400,10, {width: 540, height: 400, text: this.text}, this.menuposition)); 
+					me.game.sort();
+					this.shown = true;
+					console.log(this.shown)
+				}		
+			} 
+		}
+		if (this.npc == 'teleport') {
+			if (obj.type == 'player' && me.input.isKeyPressed('up')) {
+
+				if (this.shown == false) {
+					me.game.viewport.shake(10, 70, me.game.viewport.AXIS.BOTH, setTimeout(function(){ self.teleport()},1000));
+				}		
+			} 
+		}
+	},
+
+	teleport : function () {
+
+		nextScreenX = this.teleportX;
+		nextScreenY = this.teleportY;
+		levelDirection = 'teleport';
+		me.levelDirector.loadLevel(this.map);
 	},
 
  	update : function () {
 
 		var self = this;
 
-		// Save Menu
-		if (this.shown == true) { 
-			if (me.input.isKeyPressed('down') && this.menuposition != 1) {
-				me.audio.play("24", false);
-				this.menuposition++
-				me.game.HUD.removeItem("dialogueBox");
-				me.game.HUD.addItem("dialogueBox", new dialogueBox(400,10, {width: 540, height: 400}, this.menuposition));
-				me.game.sort(); 
-			}
-			if (me.input.isKeyPressed('up') && this.menuposition != 0) {
-				me.audio.play("24", false);
-				this.menuposition--
-				me.game.HUD.removeItem("dialogueBox");
-				me.game.HUD.addItem("dialogueBox", new dialogueBox(400,10, {width: 540, height: 400}, this.menuposition));
-				me.game.sort(); 
-			}
-			if (me.input.isKeyPressed('attack')) {
-				if (this.menuposition == 0) {
-					me.audio.play("17", false);
-					this.saveText();
-					me.game.HUD.removeItem("dialogueBox");
-					setTimeout(function(){ self.shown = false; },200); 
-				}
-				// Close game
-				else if (this.menuposition == 1) {
+		// Save Menu -- Shopkeeper
+		if (this.npc == 'shop') {
+			if (this.shown == true) { 
+				if (me.input.isKeyPressed('down') && this.menuposition != 1) {
 					me.audio.play("24", false);
-					me.game.HUD.removeItem("dialogueBox");
-					setTimeout(function(){ self.shown = false; },200); 
+					this.menuposition++
+					me.game.HUD.removeItem("dialogueShopBox");
+					me.game.HUD.addItem("dialogueShopBox", new dialogueShopBox(400,10, {width: 540, height: 400, text: this.text}, this.menuposition));
+					me.game.sort(); 
+				}
+				if (me.input.isKeyPressed('up') && this.menuposition != 0) {
+					me.audio.play("24", false);
+					this.menuposition--
+					me.game.HUD.removeItem("dialogueShopBox");
+					me.game.HUD.addItem("dialogueShopBox", new dialogueShopBox(400,10, {width: 540, height: 400, text: this.text}, this.menuposition));
+					me.game.sort(); 
+				}
+				if (me.input.isKeyPressed('attack')) {
+					if (this.menuposition == 0) {
+						me.audio.play("17", false);
+						this.saveText();
+						me.game.HUD.removeItem("dialogueShopBox");
+						setTimeout(function(){ self.shown = false; },200); 
+					}
+					// Close game
+					else if (this.menuposition == 1) {
+						me.audio.play("24", false);
+						me.game.HUD.removeItem("dialogueShopBox");
+						setTimeout(function(){ self.shown = false; },200); 
+					}
+				}
+			}
+		}
+
+		// Blocking Man
+		if (this.npc == 'blocker') {
+			if (this.shown == true) { 
+				if (me.input.isKeyPressed('attack')) {
+					if (this.menuposition == 0) {
+						me.game.HUD.removeItem("dialogueBlockerBox");
+						setTimeout(function(){ self.shown = false; },200); 
+					}
+				}
+			}
+		}
+
+				// Blocking Man
+		if (this.npc == 'teleport') {
+			if (this.shown == true) { 
+				if (me.input.isKeyPressed('attack')) {
+					if (this.menuposition == 0) {
+						me.game.HUD.removeItem("dialogueBlockerBox");
+						setTimeout(function(){ self.shown = false; },200); 
+					}
 				}
 			}
 		}
 
 		// check & update movement
-		this.updateMovement();
+
 		this.parent()
 		return true;
 	},

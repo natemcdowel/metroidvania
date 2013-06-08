@@ -153,7 +153,7 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 					me.audio.play("04", false);
 
 					// Drop item
-					var pickup = new PickupEntity( self.pos.x, self.pos.y-20, { image: "pickups", spritewidth: 110, spriteheight: 65 }, true); 
+					var pickup = new PickupEntity( self.pos.x, self.pos.y-20, { image: "pickups", spritewidth: 60, spriteheight: 60 }, true); 
 				    me.game.add(pickup, self.z-1);
 				    me.game.sort();
 				});

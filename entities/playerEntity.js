@@ -31,26 +31,33 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		// y = 1232;
 		// Check if player reached screen and set position accordingly to new screen
-		if (levelDirection == 'west') {
-			if (lastLevelHeight != me.game.currentLevel.height) y = nextScreenY - mapHeightOffset;
-			else y = nextScreenY;
-			x = me.game.currentLevel.width - 250;
-		}
-		if (levelDirection == 'east') {
-			if (lastLevelHeight != me.game.currentLevel.height) y = nextScreenY + mapHeightOffset;
-			else y = nextScreenY;
-			x = 100; 
-		}
-		if (levelDirectionY == 'south' ) {
-			y = 40;
-			x = nextScreenX;
-		}
-		if (levelDirectionY == 'north') {
-			y = 900;
-			x = nextScreenX;
-			settings.velY = -20;
-		}
+		if (levelDirection == 'teleport') {
 
+			x = nextScreenX;
+			y = nextScreenY;
+			levelDirection == '';
+		}
+		else {
+			if (levelDirection == 'west') {
+				if (lastLevelHeight != me.game.currentLevel.height) y = nextScreenY - mapHeightOffset;
+				else y = nextScreenY;
+				x = me.game.currentLevel.width - 250;
+			}
+			if (levelDirection == 'east') {
+				if (lastLevelHeight != me.game.currentLevel.height) y = nextScreenY + mapHeightOffset;
+				else y = nextScreenY;
+				x = 100; 
+			}
+			if (levelDirectionY == 'south' ) {
+				y = 40;
+				x = nextScreenX;
+			}
+			if (levelDirectionY == 'north') {
+				y = 900;
+				x = nextScreenX;
+				settings.velY = -20;
+			}
+		}
 
 		// call the constructor
 		this.parent(x, y , settings); 
@@ -67,11 +74,12 @@ var PlayerEntity = me.ObjectEntity.extend({
 		me.audio.stopTrack();
 
 		// Song logic
-		setTimeout(function(){ 
-			if (me.levelDirector.getCurrentLevelId() == 'map1-1') { me.audio.stopTrack(); me.audio.playTrack("cave1"); }
-			if (me.levelDirector.getCurrentLevelId() == 'map3') { me.audio.stopTrack(); me.audio.playTrack("distant_thunder_and_light_rain"); }
-			if (me.levelDirector.getCurrentLevelId() == 'map1') {  me.audio.stopTrack(); me.audio.playTrack("battle1"); }
-		},500);
+		// me.audio.playTrack("riff4"); 
+		// setTimeout(function(){ 
+		// 	if (me.levelDirector.getCurrentLevelId() == 'map1-1') { me.audio.stopTrack(); me.audio.playTrack("cave1"); }
+		// 	if (me.levelDirector.getCurrentLevelId() == 'map3') { me.audio.stopTrack(); me.audio.playTrack("distant_thunder_and_light_rain"); }
+		// 	if (me.levelDirector.getCurrentLevelId() == 'map1') {  me.audio.stopTrack(); me.audio.playTrack("battle1"); }
+		// },500);
 
 		// Setting our map in server 
 		socketResponse('changemapserver', socketArray);  
@@ -88,6 +96,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		me.game.xp = playerInfo.xp;
 		me.game.lvl = playerInfo.lvl;
 		me.game.strength = playerInfo.strength; 
+		this.primaryWeapon = 'sword';
 		this.secWeapon = 'axe';
 
 		console.log(me.game.strength)
@@ -126,15 +135,18 @@ var PlayerEntity = me.ObjectEntity.extend({
 		this.renderable.addAnimation ("secondattack",  [4]);
 		this.renderable.addAnimation ("jumpdown", [5]);
 		this.renderable.addAnimation ("attack",  [7,8,9,10], 1);
-		// this.renderable.addAnimation ("attack",  [20,21,22,23], 1);
 		this.renderable.addAnimation ("jumpattack",  [9,10],1);
 		this.renderable.addAnimation ("crouchattack",  [11,12,13,14],1);
 		this.renderable.addAnimation ("hurt",  [16,17,18]);
+
+		// Sword animations
+		this.renderable.addAnimation ("twohandedswordattack",  [0,1,2,3], 2);
 
 		// set as default
 		this.renderable.setCurrentAnimation("walk"); 
 		this.anchorPoint.set(0.5, 1.0); 
 		this.updateColRect(110,60, 130,100);
+		
 
 		if (typeof settings.velY != 'undefined') this.vel.y = settings.velY;
 		if (typeof nextScreenVelX != '') this.vel.x = nextScreenVelX;
@@ -156,6 +168,12 @@ var PlayerEntity = me.ObjectEntity.extend({
     	}
     },
 
+    changeimage : function(image, animation) {
+
+    	this.renderable.addAnimation ("attack",  [0,1,2,3], 2);
+    	this.renderable.image = me.loader.getImage(image);
+    },
+
 	/* -----
 
 		update the player pos
@@ -165,7 +183,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		var self = this;
 		// console.log(this.pos.x + ' -- ' + this.pos.y)
-
+		// this.changeimage('simontwohandedsword','twohandedswordattack')
+		
 		this.menu(self);
 
 		this.move(self)
@@ -223,7 +242,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 	menu : function (self) {
 
-		if (me.input.isKeyPressed('menu') && (!me.game.HUD.HUDItems.dialogueBox)) {	
+		if (me.input.isKeyPressed('menu') && (!me.game.HUD.HUDItems.dialogueShopBox) && (!me.game.HUD.HUDItems.dialogueBlockerBox)) {	
 			// Create menu
 			if (this.mainMenuPosition == -1) {
 				me.audio.play("18", false);
@@ -324,7 +343,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		var self = this;
 
 			///////// Movements /////////
-		if (this.renderable.flickerTimer < 85 && (!me.game.HUD.HUDItems.mainmenu) && (!me.game.HUD.HUDItems.dialogueBox)) {
+		if (this.renderable.flickerTimer < 85 && (!me.game.HUD.HUDItems.mainmenu) && (!me.game.HUD.HUDItems.dialogueShopBox) && (!me.game.HUD.HUDItems.dialogueBlockerBox)) {
 			// If pressing left and not attacking
 			if (me.input.isKeyPressed('left') && (!this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack')))	{ 
 				// Walk animation if not jumping

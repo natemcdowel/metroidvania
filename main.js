@@ -40,6 +40,7 @@ var game = {
 		{name: "distant_thunder_and_light_rain",			type: "audio",	src: "data/audio/",	channel : 2},
 		{name: "cave1",			type: "audio",	src: "data/audio/music/",	channel : 2},
 		{name: "battle1",			type: "audio",	src: "data/audio/music/",	channel : 2},
+		{name: "riff4",			type: "audio",	src: "data/audio/music/",	channel : 2},
 
 		
 
@@ -65,19 +66,23 @@ var game = {
 		{name: "rain",		type:"image",	src: "data/gfx/objects/rain.png"},
 		{name: "texture",		type:"image",	src: "data/gfx/texture.png"}, 
 		{name: "torches",		type:"image",	src: "data/gfx/objects/Breakable@4x.png"}, 
-		{name: "pickups",		type:"image",	src: "data/gfx/objects/Life@4x.png"},   
+		{name: "pickups",		type:"image",	src: "data/gfx/weapons and items/Life@4x.png"},   
 		{name: "Cave@4x",		type:"image",	src: "data/gfx/Cave@4x.png"},
-		{name: "firedeath",		type:"image",	src: "data/gfx/objects/Fire 3@4x.png"},
+		{name: "firedeath",		type:"image",	src: "data/gfx/effects/Fire4@4x.png"},
 
 		// Player
 		{name: "sword",		type: "image",	src: "data/gfx/sword.png"}, 
 		{name: "simon",		type:"image",	src: "data/gfx/players/testattack5@4x.png"}, 
+		{name: "simontwohandedsword",		type:"image",	src: "data/gfx/players/TwoHandedSword@4x.png"}, 
 
 		// Weapons
-		{name: "throwingweapons",		type:"image",	src: "data/gfx/weapons/Throwing Weapons@4x.png"}, 
+		{name: "throwingweapons",		type:"image",	src: "data/gfx/weapons and items/Throwing Weapons@4x.png"}, 
+		{name: "twohandedsword",		type:"image",	src: "data/gfx/weapons and items/Twohandedswordsprite@4x.png"}, 
 
 		// NPCs
-		{name: "Shopkeeper",		type:"image",	src: "data/gfx/npcs/Shop@4x.png"}, 
+		{name: "Shopkeeper",		type:"image",	src: "data/gfx/shops and npcs/Shop@4x.png"}, 
+		{name: "Oldman",		type:"image",	src: "data/gfx/shops and npcs/Old Man@4x.png"},
+		{name: "Teleport",		type:"image",	src: "data/gfx/shops and npcs/Teleport@4x.png"},
 
 		// Enemies
 		{name: "rat",		type:"image",	src: "data/gfx/enemies/Rat@4x.png"},
@@ -91,11 +96,6 @@ var game = {
 		{name: "skeletonsword",		type:"image",	src: "data/gfx/enemies/Skeleton Sword@4x.png"},  
 		{name: "cavebat",		type:"image",	src: "data/gfx/enemies/Bat@4x.png"}, 
 
-
-
-
-		
-		 
 	],  
 
 	
@@ -162,11 +162,11 @@ var game = {
 		me.entityPool.add("BreakableEntity", BreakableEntity);
 
 		// HUD
-		me.entityPool.add("SecWeapon", SecondWeaponDisplay);
+		// me.entityPool.add("SecWeapon", SecondWeaponDisplay);
 
 		// add our player entity in the entity pool
-		me.entityPool.add("mainPlayer", PlayerEntity); 
-		me.entityPool.add("npcEntity", npcEntity); 
+		me.entityPool.add("mainPlayer", PlayerEntity,999); 
+		me.entityPool.add("npcEntity", npcEntity,100); 
 		me.entityPool.add("secondPlayer", Player2Entity); 
 
 		// Weapons
@@ -206,7 +206,8 @@ var PlayScreen = me.ScreenObject.extend( {
 		me.game.HUD.addItem("score", new ScoreObject(0,30,'HP: ', playerInfo.hitpoints));
 		me.game.HUD.addItem("experience", new ScoreObject(0,60,'XP: ', 0));
 		me.game.HUD.addItem("lvl", new ScoreObject(0,90,'LVL: ', 1)); 
-		me.game.HUD.addItem("secondWeapon", new SecondWeaponDisplay(1167,10, {width: 100, height: 100})); 
+		me.game.HUD.addItem("secondWeapon", new InventoryDisplay(1167,10, {width: 100, height: 100, type:'secweapons'})); 
+		me.game.HUD.addItem("primaryWeapon", new InventoryDisplay(1000,10, {width: 150, height: 100, type:'primaryweapons'})); 
 
 
 		// me.game.HUD.addItem("score", new ScoreObject(00,790));  
