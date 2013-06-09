@@ -129,15 +129,15 @@ var PlayerEntity = me.ObjectEntity.extend({
 		me.input.bindKey(me.input.KEY.ENTER, "menu");
 		
 		// Animations
-		this.renderable.addAnimation ("walk",  [0,1,2,3,4,3,2,1], 2); 
-		this.renderable.addAnimation ("stand",  [0]); 
+		this.renderable.addAnimation ("walk",  [0,1,2,3,4,2], 2); 
+		this.renderable.addAnimation ("stand",  [5]); 
 		this.renderable.addAnimation ("crouch",  [6]);
-		this.renderable.addAnimation ("secondattack",  [4]);
-		this.renderable.addAnimation ("jumpdown", [5]);
+		this.renderable.addAnimation ("secondattack",  [22,23,24],1);
+		this.renderable.addAnimation ("jumpdown", [15]);
 		this.renderable.addAnimation ("attack",  [7,8,9,10], 1);
 		this.renderable.addAnimation ("jumpattack",  [9,10],1);
 		this.renderable.addAnimation ("crouchattack",  [11,12,13,14],1);
-		this.renderable.addAnimation ("hurt",  [16,17,18]);
+		this.renderable.addAnimation ("hurt",  [17]);
 
 		// Sword animations
 		this.renderable.addAnimation ("twohandedswordattack",  [0,1,2,3], 2);
@@ -413,7 +413,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 					var secondWeapon = new secondWeaponEntity( self.pos.x, self.pos.y+120, { image: "throwingweapons", spritewidth: 120, spriteheight: 120 }, clientData[0]); 
 				    me.game.add(secondWeapon, self.z);  
 				    me.game.sort();  
-
+				    this.renderable.setCurrentAnimation("secondattack","stand");
 					setTimeout(function(){ 
 				        self.weaponDelay = false;
 					},370);
@@ -431,7 +431,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 			}
 
 			// If standing still and not attacking
-			if (this.vel.x == 0 && this.vel.y == 0 && !this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack') && !this.renderable.isCurrentAnimation('crouch')) {
+			if (this.vel.x == 0 && this.vel.y == 0 && !this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack') && !this.renderable.isCurrentAnimation('crouch') && !this.renderable.isCurrentAnimation('secondattack')) {
 				this.renderable.setCurrentAnimation("stand");
 			}
 			//////// End Attacking /////////
