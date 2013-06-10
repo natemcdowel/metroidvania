@@ -39,13 +39,15 @@ var PlayerEntity = me.ObjectEntity.extend({
 		}
 		else {
 			if (levelDirection == 'west') {
-				if (lastLevelHeight != me.game.currentLevel.height) y = nextScreenY - mapHeightOffset;
-				else y = nextScreenY;
+				// if (lastLevelHeight != me.game.currentLevel.height) y = nextScreenY - mapHeightOffset;
+				//else
+				y = nextScreenY;
 				x = me.game.currentLevel.width - 250;
 			}
 			if (levelDirection == 'east') {
-				if (lastLevelHeight != me.game.currentLevel.height) y = nextScreenY + mapHeightOffset;
-				else y = nextScreenY;
+				// if (lastLevelHeight != me.game.currentLevel.height) y = nextScreenY + mapHeightOffset;
+				//else
+				y = nextScreenY;
 				x = 100; 
 			}
 			if (levelDirectionY == 'south' ) {
@@ -114,6 +116,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// Delay variables
 		this.menuDelay = false;
 		this.weaponDelay = false;
+		this.jumpDelay = false;
 		
 		// set the display around our position 
 		me.game.viewport.follow(this, me.game.viewport.AXIS.BOTH);
@@ -309,6 +312,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 
 		if (res) {
+			console.log(res);
 			switch (res.obj.type) {	
 				case me.game.ENEMY_OBJECT : {
 					if ((res.y>0) && this.falling && !this.renderable.flickering) {
@@ -370,20 +374,18 @@ var PlayerEntity = me.ObjectEntity.extend({
 				clientData[0] = 'right';
 			}
 
-						// In the air
-			// if (this.vel.y > 0 || this.vel.y < 0) {
-			// 	if (this.vel.x < 0) this.vel.x -= this.accel.x * me.timer.tick;
-			// 	if (this.vel.x > 0) this.vel.x += this.accel.x * me.timer.tick;
-			// }
-
 			// If pressed jump
-			if (me.input.isKeyPressed('jump')) { 
+			if (me.input.isKeyPressed('jump') && self.jumpDelay == false) { 
 				
-				if (this.pos.y > 0)this.renderable.setCurrentAnimation("jumpdown");
+				if (this.vel.y < 0)this.renderable.setCurrentAnimation("jumpdown");
 				this.mutipleJump = (this.vel.y === 0)?1:this.mutipleJump;
 				if (this.mutipleJump<=1) {  // 2 for double jump
 					this.vel.y -= (this.maxVel.y * this.mutipleJump++) * me.timer.tick;
+					self.jumpDelay = true;
 				}
+				setTimeout(function(){ 
+			        self.jumpDelay = false;
+				},250);
 			}
 
 			// If crouching
@@ -434,6 +436,11 @@ var PlayerEntity = me.ObjectEntity.extend({
 			if (this.vel.x == 0 && this.vel.y == 0 && !this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack') && !this.renderable.isCurrentAnimation('crouch') && !this.renderable.isCurrentAnimation('secondattack')) {
 				this.renderable.setCurrentAnimation("stand");
 			}
+
+			// // In the air
+			// if (this.vel.y > 0 || this.vel.y < 0 && this.vel.y == 0 && !this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack') && !this.renderable.isCurrentAnimation('crouch') && !this.renderable.isCurrentAnimation('secondattack')) {
+			// 	this.renderable.setCurrentAnimation("jumpdown");
+			// }
 			//////// End Attacking /////////
 		}
 		//////// End movements /////////
@@ -509,7 +516,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 				me.game.HUD.updateItemValue("score", playerInfo.hitpoints+20);
 				nextScreenY = '';
 				me.game.HUD.removeItem("mainmenu");
-				me.levelDirector.reloadLevel();
+				// me.levelDirector.reloadLevel();
 			}
 			this.maxVel.x = 12;
 		}

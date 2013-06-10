@@ -148,6 +148,16 @@
     <property name="to" value="map2-2"/>
    </properties>
   </object>
+  <object name="EnemyFactory" x="2855" y="414" width="350" height="35">
+   <properties>
+    <property name="animationspeed" value="5"/>
+    <property name="delay" value="5000"/>
+    <property name="enemyClass" value="SkullEnemyEntity"/>
+    <property name="image" value="flyingdemon"/>
+    <property name="spriteheight" value="120"/>
+    <property name="spritewidth" value="120"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup color="#ffff00" name="coins" width="120" height="40"/>
  <objectgroup color="#ff0000" name="flies" width="120" height="40"/>

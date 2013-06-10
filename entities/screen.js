@@ -101,31 +101,40 @@ var CustomLoadingScreen = me.ScreenObject.extend(
 /************************************************************************************/
 
 // create a basic GUI Object
-var myButton = me.GUI_Object.extend(
+var levelHelper = me.ObjectEntity.extend(
 {   
-   init:function(x, y)
+   init : function(x, y, settings)
    {    
 
-      console.log('worked')
-      settings = {}
-      settings.image = "sword";
-      settings.spritewidth = 128; 
-      settings.spriteheight = 398;
       // parent constructor
       this.parent(x, y, settings);
+      this.collidable = true;
 
- 
+      if (nextScreenX) nextScreenX = settings.nextScreenX;
+      this.nextScreenY = settings.nextScreenY;
+      if (levelDirection) levelDirection = settings.levelDirection;
+      this.to = settings.to;
    },
+
+   update : function() {
+
+   },
+
+   onCollision : function (res, obj) {
+    // res.y >0 means touched by something on the bottom
+    // which mean at top position for this one
+    // if (this.alive && (res.y > 0) && obj.falling) {
+
+    if (obj.type == 'player') {
+      console.log(res)
+      nextScreenY = this.nextScreenY;
+      me.levelDirector.loadLevel(this.to);
+    }
+ },
+
+
     
-   // output something in the console
-   // when the object is clicked
-   onClick:function()
-   {
-      console.log("clicked!");
-      // don't propagate the event
-      return true;
-   }
-}); 
+});  
 
 
 

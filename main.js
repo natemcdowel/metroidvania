@@ -177,6 +177,9 @@ var game = {
 		me.entityPool.add("sword", weaponEntity);   
 		me.entityPool.add("secSword", secondWeaponEntity);  
 
+		// Helper objects
+		me.entityPool.add("levelHelper", levelHelper);
+
 		
 		// set the "Play/Ingame" Screen Object
     	me.state.set(me.state.PAUSE, new CustomLoadingScreen()); 
@@ -199,7 +202,7 @@ var PlayScreen = me.ScreenObject.extend( {
 	// no need to do somehting else
 	onResetEvent: function() {
 		// load a level
-		me.levelDirector.loadLevel("map1-2");
+		me.levelDirector.loadLevel("map2-2");
 
 		// add a default HUD to the game mngr
 		me.game.addHUD(0,0,1280, 720);
@@ -217,7 +220,7 @@ var PlayScreen = me.ScreenObject.extend( {
 		// me.game.HUD.addItem("score", new ScoreObject(00,790));  
 		
 		// play some music
-		me.audio.playTrack("battle1.2");
+		// me.audio.playTrack("battle1.2");
 
 	}
 
