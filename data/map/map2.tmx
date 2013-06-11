@@ -42,8 +42,14 @@
  <tileset firstgid="203" name="Forestground@4x" tilewidth="35" tileheight="35">
   <image source="../gfx/Forestground@4x.png" trans="ff00ff" width="500" height="500"/>
  </tileset>
+ <imagelayer name="gradient_background_back" width="120" height="40">
+  <image source="Z:/metroidvania/data/gfx/background/GraveyardBackgroundBack.png"/>
+  <properties>
+   <property name="ratio" value=".25"/>
+  </properties>
+ </imagelayer>
  <imagelayer name="gradient_background" width="120" height="40">
-  <image source="../gfx/background/CrossBackground.png"/>
+  <image source="../gfx/background/GraveyardBackground.png"/>
  </imagelayer>
  <layer name="back layer" width="120" height="40">
   <data encoding="base64">

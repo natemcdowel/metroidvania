@@ -104,6 +104,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		console.log(me.game.strength)
 
 		this.mutipleJump = 0;
+
 		this.type = 'player';
 		this.attackFinished = true;
 		this.fontsize = 0;
@@ -312,7 +313,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 
 		if (res) {
-			console.log(res);
 			switch (res.obj.type) {	
 				case me.game.ENEMY_OBJECT : {
 					if ((res.y>0) && this.falling && !this.renderable.flickering) {
@@ -374,19 +374,46 @@ var PlayerEntity = me.ObjectEntity.extend({
 				clientData[0] = 'right';
 			}
 
-			// If pressed jump
-			if (me.input.isKeyPressed('jump') && self.jumpDelay == false) { 
+			// // If pressed jump
+			// if (me.input.isKeyPressed('jump') && self.jumpDelay == false) { 
 				
+			// 	if (this.vel.y < 0)this.renderable.setCurrentAnimation("jumpdown");
+			// 	this.mutipleJump = (this.vel.y === 0)?1:this.mutipleJump;
+			// 	if (this.mutipleJump<=1) {  // 2 for double jump
+			// 		this.vel.y -= (this.maxVel.y * this.mutipleJump++) * me.timer.tick;
+			// 		self.jumpDelay = true;
+			// 	}
+			// 	setTimeout(function(){ 
+			//         self.jumpDelay = false;
+			// 	},250);
+			// }
+
+			// Reduce jump force toward zero
+			this.jumpForce *= 0.65;
+
+			if (me.input.isKeyPressed('jump')) {
+
 				if (this.vel.y < 0)this.renderable.setCurrentAnimation("jumpdown");
-				this.mutipleJump = (this.vel.y === 0)?1:this.mutipleJump;
-				if (this.mutipleJump<=1) {  // 2 for double jump
-					this.vel.y -= (this.maxVel.y * this.mutipleJump++) * me.timer.tick;
-					self.jumpDelay = true;
-				}
-				setTimeout(function(){ 
-			        self.jumpDelay = false;
-				},250);
+			    // make sure we are not already jumping or falling
+			    if (!this.jumping && !this.falling) {
+			        // set the current jump force to the maximum defined value
+			        this.maxVel.y *= 0.65;
+			        this.jumpForce = this.maxVel.y;
+
+			        // set the jumping flag
+			        this.jumping = true;
+			    }
 			}
+			else {
+			    this.jumpForce = 0;
+			    this.maxVel.y = 35;
+			    // reset the jumping flag
+			    this.jumping = false;
+			}
+
+			// update current vel with the jump force value
+			// gravity will then do the rest
+			this.vel.y -= this.jumpForce * me.timer.tick;
 
 			// If crouching
 			if (me.input.isKeyPressed('down') && !me.input.isKeyPressed('right') && !me.input.isKeyPressed('left') && !this.renderable.isCurrentAnimation('crouchattack')) {

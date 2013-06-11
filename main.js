@@ -15,6 +15,8 @@ var game = {
 		{name: "CrossBackground",		type:"image",	src: "data/gfx/background/CrossBackground.png"},
 		{name: "CaveBackground",		type:"image",	src: "data/gfx/background/CaveBackground.png"},
 		{name: "CaveBackgroundBack",		type:"image",	src: "data/gfx/background/CaveBackgroundBack.png"},
+		{name: "GraveyardBackgroundBack",		type:"image",	src: "data/gfx/background/GraveyardBackgroundBack.png"},
+		{name: "GraveyardBackground",		type:"image",	src: "data/gfx/background/GraveyardBackground.png"},
 
 		// {name: "metatiles35x35",		type:"image",	src: "data/gfx/metatiles35x35.png"},
 		// {name: "Forestground@4x",		type:"image",	src: "data/gfx/Forestground@4x.png"},
@@ -202,7 +204,7 @@ var PlayScreen = me.ScreenObject.extend( {
 	// no need to do somehting else
 	onResetEvent: function() {
 		// load a level
-		me.levelDirector.loadLevel("map2-2");
+		me.levelDirector.loadLevel("map1");
 
 		// add a default HUD to the game mngr
 		me.game.addHUD(0,0,1280, 720);
