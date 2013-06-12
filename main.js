@@ -66,6 +66,7 @@ var game = {
 		// UI 
 		{name: "secweaponoverlay",		type:"image",	src: "data/gfx/weapons and items/Inventory@4x.png"},
 		{name: "secweaponoverlayleft",		type:"image",	src: "data/gfx/weapons and items/InventoryLeft@4x.png"},
+		{name: "middleui",		type:"image",	src: "data/gfx/weapons and items/Upperui@4x.png"},
 
 		// Environment
 		{name: "rain",		type:"image",	src: "data/gfx/objects/rain.png"},
@@ -210,12 +211,13 @@ var PlayScreen = me.ScreenObject.extend( {
 		me.game.addHUD(0,0,1280, 720);
 		
 		// add a new HUD item 
-		me.game.HUD.addItem("score", new ScoreObject(0,30,'HP: ', playerInfo.hitpoints));
-		me.game.HUD.addItem("experience", new ScoreObject(0,60,'XP: ', 0));
-		me.game.HUD.addItem("lvl", new ScoreObject(0,90,'LVL: ', 1)); 
-		me.game.HUD.addItem("hearts", new ScoreObject(0,120,'HEARTS: ', playerInfo.hearts)); 
+		me.game.HUD.addItem("score", new ScoreObject(-300,30,'HP: ', playerInfo.hitpoints));
+		me.game.HUD.addItem("experience", new ScoreObject(-300,60,'XP: ', 0));
+		me.game.HUD.addItem("lvl", new ScoreObject(-300,90,'LVL: ', 1)); 
+		me.game.HUD.addItem("hearts", new ScoreObject(-300,120,'HEARTS: ', playerInfo.hearts)); 
 		me.game.HUD.addItem("secondWeapon", new InventoryDisplay(1100,0, {width: 100, height: 100, type:'secweapons'})); 
-		me.game.HUD.addItem("secondWeapon", new InventoryDisplay(0,0, {width: 100, height: 100, type:'primaryweapons'}));  
+		me.game.HUD.addItem("primaryWeapon", new InventoryDisplay(0,0, {width: 100, height: 100, type:'primaryweapons'}));  
+		me.game.HUD.addItem("middleUI", new InventoryDisplay(400,0, {width: 480, height: 180, type:'middleui'}));  
 		// me.game.HUD.addItem("primaryWeapon", new InventoryDisplay(1000,10, {width: 150, height: 100, type:'primaryweapons'})); 
 
 
