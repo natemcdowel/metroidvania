@@ -27,6 +27,9 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		this.timer = me.timer.getTime();
 		this.i = 0;
 		this.enemy = new Object();
+
+		
+			
 		
 		
 		// console.log(this.GUID)
@@ -94,6 +97,63 @@ var AllEnemyEntity = me.ObjectEntity.extend({
         this.vel.y = this.accel.y * yDir;
 
 	},
+
+	followPlayerWalk : function (x, y) {
+
+		var self = this;
+
+		// Go to specified position
+		if (typeof x != 'undefined') {
+	        var xDir = x - this.pos.x; 
+	        var yDir = y - this.pos.y;
+		}
+		else {
+	
+			var player = me.game.getEntityByName("mainPlayer")[0];
+
+			if (player.pos.x > this.pos.x) this.flipX(false);
+			else this.flipX(true);
+
+			//create vector based on player's postion
+	        var xDir = player.pos.x - this.pos.x; 
+
+	        var radiusMin = player.collisionBox.pos.x - 150;
+	        var radiusMax = player.collisionBox.pos.x + 150; 
+
+	        if (this.pos.x > radiusMin && this.pos.x < radiusMax) {
+
+				this.vel.x = 0;
+				self.attack();
+				return;
+			// setTimeout(function(){
+				// self.attack()
+			// },500);
+			}
+    	}
+
+        //Decide distance
+        xDir = (Math.abs(xDir) < 8) ? 0 : xDir.clamp(-1,1);
+        
+        this.vel.x = this.accel.x * xDir;
+
+	},
+
+	attack : function (x, y) {
+
+		console.log(this.image)
+		if (this.image == 'skeletonsword') {
+			this.renderable.setCurrentAnimation("attack","walk");
+
+		}
+		if (this.image == 'lavaman') {
+			this.renderable.setCurrentAnimation("attack","walk");
+			var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240, direction: 'right', animframe: 5 }); 
+	        me.game.add(shot, this.z); 
+	        me.game.sort();
+		} 
+
+	},
+
 	/**
 	 * collision handle
 	 */
@@ -164,6 +224,79 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 			}
 		}
 	},
+});
+
+var FollowEntity = AllEnemyEntity.extend({
+
+	init: function (x, y, settings) {
+		// parent constructor
+		this.parent(x, y, settings);
+
+		// custom animation speed ?
+		if (settings.animationspeed) {
+			this.renderable.animationspeed = settings.animationspeed; 
+		}
+		
+		// apply gravity setting if specified
+		this.gravity = settings.gravity || me.sys.gravity;
+		this.image = settings.image;
+		
+		//set start/end position
+		this.startX = x;
+		this.endX   = x + settings.width - settings.spritewidth
+		this.pos.x  = x + settings.width - settings.spritewidth;
+	
+		this.hitpoints = 9;
+
+		this.velX = settings.velX;
+		this.setVelocity(settings.velX || 1, settings.velY || 6);
+
+		if (settings.customcollision == true) {
+			this.updateColRect(80,80, 70,100);
+		}
+
+		// Determine animation from image
+		if (settings.image == 'skeletonsword') {
+			this.renderable.addAnimation ("walk", [0,1,2]);
+			this.renderable.addAnimation ("attack", [3,4,5],5);
+			this.renderable.setCurrentAnimation("walk");
+		}
+		if (settings.image == 'lavaman') {
+			this.renderable.addAnimation ("walk", [0,1,2,3,4,5]);
+			this.renderable.addAnimation ("attack", [3,4,5],5);
+			this.renderable.setCurrentAnimation("walk");
+		}
+
+		// set the renderable position to bottom center
+		// this.anchorPoint.set(0.5, 1.0);		
+
+	},
+
+		/**
+	 * manage the enemy movement
+	 */
+	update : function () {
+
+		var self = this;
+		// do nothing if not visible
+		if (!this.inViewport) {
+			return false;
+		}
+		
+		this.followPlayerWalk(); 
+		
+		// check & update movement
+		this.updateMovement();
+		this.parent()
+		return true;
+
+	},
+
+	// attack : function (x, y) {
+
+	// 	this.renderable.setCurrentAnimation("attack","walk");
+
+	// },
 });
 
 
@@ -328,8 +461,6 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		this.endX   = x + settings.width - settings.spritewidth
 		this.pos.x  = x + settings.width - settings.spritewidth;
 		
-				console.log(settings.width)
-
 		// walking & jumping speed
 		this.setVelocity(settings.velX || 4, settings.velY || 6);
 
@@ -620,7 +751,7 @@ var CoffinEntity = AllEnemyEntity.extend({
 		    me.game.add(skeleton, this.z-1);
 		    me.game.sort();
 
-		     setTimeout(function(){me.game.remove(self);},5000);
+		    setTimeout(function(){me.game.remove(self);},5000);
 		}
 
 		if (this.vel.x == 0) me.game.remove(this)

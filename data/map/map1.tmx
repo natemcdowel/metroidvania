@@ -44,15 +44,9 @@
  </tileset>
  <imagelayer name="gradient_background_back" width="120" height="40">
   <image source="Z:/metroidvania/data/gfx/background/GraveyardBackgroundBack.png"/>
-  <properties>
-   <property name="ratio" value="1.12"/>
-  </properties>
  </imagelayer>
  <imagelayer name="gradient_background" width="120" height="40">
   <image source="../gfx/background/GraveyardBackground.png"/>
-  <properties>
-   <property name="ratio" value="1"/>
-  </properties>
  </imagelayer>
  <layer name="back layer" width="120" height="40">
   <data encoding="base64">
@@ -75,7 +69,7 @@
   </object>
  </objectgroup>
  <objectgroup color="#55ff00" name="player" width="120" height="40">
-  <object name="mainPlayer" x="81" y="1030" width="70" height="70">
+  <object name="mainPlayer" x="510" y="407" width="70" height="70">
    <properties>
     <property name="animationspeed" value="5"/>
     <property name="image" value="simon"/>
@@ -83,7 +77,7 @@
     <property name="spritewidth" value="240"/>
    </properties>
   </object>
-  <object name="sword" x="151" y="1030" width="70" height="35"/>
+  <object name="sword" x="580" y="407" width="70" height="35"/>
   <object name="BatEntity" x="280" y="700" width="350" height="35">
    <properties>
     <property name="animationspeed" value="3"/>
@@ -182,7 +176,7 @@
     <property name="spritewidth" value="240"/>
    </properties>
   </object>
-  <object name="npcEntity" x="412" y="1205" width="70" height="70">
+  <object name="npcEntity" x="-47" y="1196" width="70" height="70">
    <properties>
     <property name="animationspeed" value="5"/>
     <property name="image" value="teleport"/>
@@ -192,6 +186,28 @@
     <property name="spritewidth" value="140"/>
     <property name="teleportX" value="2012"/>
     <property name="teleportY" value="705"/>
+   </properties>
+  </object>
+  <object name="FollowEntity" x="674" y="1210" width="70" height="70">
+   <properties>
+    <property name="animationspeed" value="3"/>
+    <property name="flipX" value="false"/>
+    <property name="gravity" value="0"/>
+    <property name="image" value="skeletonsword"/>
+    <property name="spriteheight" value="120"/>
+    <property name="spritewidth" value="120"/>
+    <property name="velX" value="4"/>
+   </properties>
+  </object>
+  <object name="FollowEntity" x="1265" y="1208" width="70" height="70">
+   <properties>
+    <property name="animationspeed" value="3"/>
+    <property name="flipX" value="false"/>
+    <property name="gravity" value="0"/>
+    <property name="image" value="lavaman"/>
+    <property name="spriteheight" value="120"/>
+    <property name="spritewidth" value="120"/>
+    <property name="velX" value="5"/>
    </properties>
   </object>
  </objectgroup>

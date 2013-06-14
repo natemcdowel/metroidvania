@@ -102,6 +102,8 @@ var game = {
 		{name: "zombie",		type:"image",	src: "data/gfx/enemies/Zombie@4x.png"}, 
 		{name: "skeletonsword",		type:"image",	src: "data/gfx/enemies/Skeleton Sword@4x.png"},  
 		{name: "cavebat",		type:"image",	src: "data/gfx/enemies/Bat@4x.png"}, 
+		{name: "lavaman",		type:"image",	src: "data/gfx/enemies/Lava Man@4x.png"},
+		{name: "fireball",		type:"image",	src: "data/gfx/enemies/Fireball@4x.png"},
 
 	],  
 
@@ -162,7 +164,10 @@ var game = {
 		me.entityPool.add("CrowEntity", CrowEnemyEntity);
 		me.entityPool.add("SkullEntity", SkullEnemyEntity);
 		me.entityPool.add("EnemyFactory", EnemyFactoryEntity);
-		me.entityPool.add("BossFactory", BossFactoryEntity); 								
+		me.entityPool.add("BossFactory", BossFactoryEntity); 			
+		me.entityPool.add("FollowEntity", FollowEntity); 
+
+
 		
 		// Pickups
 		me.entityPool.add("PickupEntity", PickupEntity); 							
