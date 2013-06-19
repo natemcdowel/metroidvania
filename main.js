@@ -79,7 +79,7 @@ var game = {
 		// Player
 		{name: "sword",		type: "image",	src: "data/gfx/sword.png"}, 
 		{name: "simon",		type:"image",	src: "data/gfx/players/Playerwhip@4x.png"}, 
-		{name: "simontwohandedsword",		type:"image",	src: "data/gfx/players/TwoHandedSword@4x.png"}, 
+		{name: "simontwohandedsword",		type:"image",	src: "data/gfx/players/Playertwohandedsword@4x.png"},  
 
 		// Weapons
 		{name: "throwingweapons",		type:"image",	src: "data/gfx/weapons and items/Throwing Weapons@4x.png"}, 

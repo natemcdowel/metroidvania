@@ -210,6 +210,15 @@
     <property name="velX" value="5"/>
    </properties>
   </object>
+  <object name="PickupEntity" x="340" y="1225" width="70" height="35">
+   <properties>
+    <property name="" value=""/>
+    <property name="image" value="twohandedsword"/>
+    <property name="mainweapon" value="twohandedsword"/>
+    <property name="spriteheight" value="120"/>
+    <property name="spritewidth" value="120"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup color="#ffff00" name="coins" width="120" height="40"/>
  <objectgroup color="#ff0000" name="flies" width="120" height="40"/>

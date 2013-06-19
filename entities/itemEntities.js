@@ -77,7 +77,8 @@ var PickupEntity = me.ObjectEntity.extend({
 
 		// If main weapon
 		if (settings.mainweapon) {
-			this.renderable.setCurrentAnimation("twohandedsword");
+			this.mainweapon = settings.mainweapon;
+			this.renderable.setCurrentAnimation(settings.mainweapon);
 		}
 		// Secondary weapons , other items
 		else {
@@ -93,29 +94,29 @@ var PickupEntity = me.ObjectEntity.extend({
 	},
 
 	onCollision : function (res, obj) {
-		// res.y >0 means touched by something on the bottom
-		// which mean at top position for this one
-		// if (this.alive && (res.y > 0) && obj.falling) {
-
 		
 		var self = this;
+		var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
 
 		if (obj.type == 'player' && this.alive) {
 
-
 			if (this.weapon) {
-				var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
+				
 				mainPlayer.secWeapon = this.weapon;
 				me.game.HUD.removeItem("secondWeapon");
 				me.game.HUD.addItem("secondWeapon", new InventoryDisplay(1100,0, {width: 100, height: 100, type:'secweapons'})); 
 			}
-			if (this.renderable.current.name == 'smallheart') {
+			else if (this.renderable.current.name == 'smallheart') {
 				playerInfo.hearts++
 				me.game.HUD.setItemValue("hearts", playerInfo.hearts);
 			}
-			if (this.renderable.current.name == 'largeheart') {
+			else if (this.renderable.current.name == 'largeheart') {
 				playerInfo.hearts+=5;
 				me.game.HUD.setItemValue("hearts", playerInfo.hearts);
+			}
+			else if (this.mainweapon) {
+				mainPlayer.mainweapon = this.mainweapon;
+				mainPlayer.changeimage();
 			}
 
 			me.game.remove(self) 
@@ -442,8 +443,10 @@ var InventoryDisplay = me.HUD_Item.extend( {
     	if (this.type == 'primaryweapons') {
 			// Which weapon does player have?
 			var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
-			if (mainPlayer.primaryWeapon == 'whip') this.imageXOffset = 240;
-			if (mainPlayer.primaryWeapon == 'twohandedsword') this.image2 = me.loader.getImage("twohandedsword");
+			if (mainPlayer.mainweapon == 'whip') this.imageXOffset = 240;
+			else if (mainPlayer.mainweapon == 'twohandedsword') {
+				this.image2 = me.loader.getImage("twohandedsword");
+			}
 			
 			// // Main box 
 			this.context.fillStyle = "black";
@@ -456,7 +459,8 @@ var InventoryDisplay = me.HUD_Item.extend( {
 		 //    this.context.beginPath();
 	  //       this.context.rect(this.x, this.y, this.width, this.height);
 	        this.context.drawImage(this.image,this.x,this.y);
-	        this.context.drawImage(this.image2,this.imageXOffset,0,120,60,this.x+70,this.y+10,120,60);
+	        this.context.drawImage(this.image2,this.x,this.y);
+	        // this.context.drawImage(this.image2,this.imageXOffset,0,120,60,this.x+70,this.y+10,120,60);
 
 		    // this.context.beginPath();
 	     //    this.context.rect(this.x, this.y, this.width, this.height);

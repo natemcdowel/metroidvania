@@ -98,7 +98,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 		me.game.xp = playerInfo.xp;
 		me.game.lvl = playerInfo.lvl;
 		me.game.strength = playerInfo.strength; 
-		this.primaryWeapon = 'sword';
 		this.secWeapon = 'axe';
 
 		console.log(me.game.strength)
@@ -133,15 +132,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		me.input.bindKey(me.input.KEY.ENTER, "menu");
 		
 		// Animations
-		this.renderable.addAnimation ("walk",  [0,1,2,3,4,2], 2); 
-		this.renderable.addAnimation ("stand",  [5]); 
-		this.renderable.addAnimation ("crouch",  [6]);
-		this.renderable.addAnimation ("secondattack",  [22,23,24],1);
-		this.renderable.addAnimation ("jumpdown", [15]);
-		this.renderable.addAnimation ("attack",  [7,8,9,10], 1);
-		this.renderable.addAnimation ("jumpattack",  [9,10],1);
-		this.renderable.addAnimation ("crouchattack",  [11,12,13,14],1);
-		this.renderable.addAnimation ("hurt",  [17]);
+		this.changeimage();
 
 		// Sword animations
 		this.renderable.addAnimation ("twohandedswordattack",  [0,1,2,3], 2);
@@ -172,10 +163,37 @@ var PlayerEntity = me.ObjectEntity.extend({
     	}
     },
 
-    changeimage : function(image, animation) {
-
-    	this.renderable.addAnimation ("attack",  [0,1,2,3], 2);
-    	this.renderable.image = me.loader.getImage(image);
+    changeimage : function() {
+    	
+    	if (this.mainweapon == 'twohandedsword') {
+	    	this.renderable.image = me.loader.getImage('simontwohandedsword');
+	    	this.renderable.addAnimation ("walk",  [0,1,2,3,4,2], 2); 
+			this.renderable.addAnimation ("stand",  [6]); 
+			this.renderable.addAnimation ("crouch",  [7]);
+			this.renderable.addAnimation ("secondattack",  [22,23,24],1);
+			this.renderable.addAnimation ("jumpdown", [16]);
+			this.renderable.addAnimation ("jumpup", [18]);
+			this.renderable.addAnimation ("turnright", [34,33]);
+			this.renderable.addAnimation ("turnleft", [32,31]);
+			this.renderable.addAnimation ("attack",  [7,8,9,10], 1);
+			this.renderable.addAnimation ("jumpattack",  [9,10],1);
+			this.renderable.addAnimation ("crouchattack",  [13,14,15,16],1);
+			this.renderable.addAnimation ("hurt",  [17]);
+    	}
+    	else if (this.mainweapon == 'whip' || !this.mainweapon) {
+			this.renderable.addAnimation ("walk",  [0,1,2,3,4,2], 2); 
+			this.renderable.addAnimation ("stand",  [5]); 
+			this.renderable.addAnimation ("crouch",  [6]);
+			this.renderable.addAnimation ("secondattack",  [22,23,24],1);
+			this.renderable.addAnimation ("jumpdown", [14]);
+			this.renderable.addAnimation ("jumpup", [14]);
+			this.renderable.addAnimation ("turnright", [34,33]);
+			this.renderable.addAnimation ("turnleft", [32,31]);
+			this.renderable.addAnimation ("attack",  [7,8,9,10], 1);
+			this.renderable.addAnimation ("jumpattack",  [9,10],1);
+			this.renderable.addAnimation ("crouchattack",  [11,12,13,14],1);
+			this.renderable.addAnimation ("hurt",  [17]);
+    	}
     },
 
 	/* -----
@@ -393,7 +411,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 			if (me.input.isKeyPressed('jump')) {
 
-				if (this.vel.y < 0)this.renderable.setCurrentAnimation("jumpdown");
+				if (this.vel.y < 0)this.renderable.setCurrentAnimation("jumpup");
 			    // make sure we are not already jumping or falling
 			    if (!this.jumping && !this.falling) {
 			        // set the current jump force to the maximum defined value
@@ -417,7 +435,6 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 			// If crouching
 			if (me.input.isKeyPressed('down') && !me.input.isKeyPressed('right') && !me.input.isKeyPressed('left') && !this.renderable.isCurrentAnimation('crouchattack')) {
-	
 				this.renderable.setCurrentAnimation("crouch");
 			}
 
