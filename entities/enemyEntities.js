@@ -117,8 +117,8 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 			//create vector based on player's postion
 	        var xDir = player.pos.x - this.pos.x; 
 
-	        var radiusMin = player.collisionBox.pos.x - 150;
-	        var radiusMax = player.collisionBox.pos.x + 150; 
+	        var radiusMin = player.collisionBox.pos.x - 80;
+	        var radiusMax = player.collisionBox.pos.x + 80; 
 
 	        if (this.pos.x > radiusMin && this.pos.x < radiusMax) {
 

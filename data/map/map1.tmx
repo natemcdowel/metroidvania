@@ -44,6 +44,9 @@
  </tileset>
  <imagelayer name="gradient_background_back" width="120" height="40">
   <image source="Z:/metroidvania/data/gfx/background/GraveyardBackgroundBack.png"/>
+  <properties>
+   <property name="ratio" value=".5"/>
+  </properties>
  </imagelayer>
  <imagelayer name="gradient_background" width="120" height="40">
   <image source="../gfx/background/GraveyardBackground.png"/>
@@ -208,15 +211,6 @@
     <property name="spriteheight" value="120"/>
     <property name="spritewidth" value="120"/>
     <property name="velX" value="5"/>
-   </properties>
-  </object>
-  <object name="PickupEntity" x="340" y="1225" width="70" height="35">
-   <properties>
-    <property name="" value=""/>
-    <property name="image" value="twohandedsword"/>
-    <property name="mainweapon" value="twohandedsword"/>
-    <property name="spriteheight" value="120"/>
-    <property name="spritewidth" value="120"/>
    </properties>
   </object>
  </objectgroup>

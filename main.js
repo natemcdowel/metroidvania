@@ -83,7 +83,8 @@ var game = {
 
 		// Weapons
 		{name: "throwingweapons",		type:"image",	src: "data/gfx/weapons and items/Throwing Weapons@4x.png"}, 
-		{name: "twohandedsword",		type:"image",	src: "data/gfx/weapons and items/Twohandedswordsprite@4x.png"}, 
+		{name: "twohandedsword",		type:"image",	src: "data/gfx/weapons and items/Invtwohandedsword@4x.png"}, 
+		{name: "whip",		type:"image",	src: "data/gfx/weapons and items/InvWhip@4x.png"}, 
 
 		// NPCs
 		{name: "Shopkeeper",		type:"image",	src: "data/gfx/shops and npcs/Shop@4x.png"}, 
@@ -210,7 +211,7 @@ var PlayScreen = me.ScreenObject.extend( {
 	// no need to do somehting else
 	onResetEvent: function() {
 		// load a level
-		me.levelDirector.loadLevel("map1");
+		me.levelDirector.loadLevel("map1-2");
 
 		// add a default HUD to the game mngr
 		me.game.addHUD(0,0,1280, 720);

@@ -99,6 +99,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		me.game.lvl = playerInfo.lvl;
 		me.game.strength = playerInfo.strength; 
 		this.secWeapon = 'axe';
+		if (!this.mainweapon) this.mainweapon = 'whip';
 
 		console.log(me.game.strength)
 
@@ -117,6 +118,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		this.menuDelay = false;
 		this.weaponDelay = false;
 		this.jumpDelay = false;
+		this.mainweaponDelay = false;
 		
 		// set the display around our position 
 		me.game.viewport.follow(this, me.game.viewport.AXIS.BOTH);
@@ -130,6 +132,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		me.input.bindKey(me.input.KEY.X,	"attack"); 
 		me.input.bindKey(me.input.KEY.DOWN,	"down");
 		me.input.bindKey(me.input.KEY.ENTER, "menu");
+		me.input.bindKey(me.input.KEY.Q, "weaponchange");
 		
 		// Animations
 		this.changeimage();
@@ -167,26 +170,27 @@ var PlayerEntity = me.ObjectEntity.extend({
     	
     	if (this.mainweapon == 'twohandedsword') {
 	    	this.renderable.image = me.loader.getImage('simontwohandedsword');
-	    	this.renderable.addAnimation ("walk",  [0,1,2,3,4,2], 2); 
-			this.renderable.addAnimation ("stand",  [6]); 
-			this.renderable.addAnimation ("crouch",  [7]);
-			this.renderable.addAnimation ("secondattack",  [22,23,24],1);
-			this.renderable.addAnimation ("jumpdown", [16]);
-			this.renderable.addAnimation ("jumpup", [18]);
-			this.renderable.addAnimation ("turnright", [34,33]);
-			this.renderable.addAnimation ("turnleft", [32,31]);
-			this.renderable.addAnimation ("attack",  [7,8,9,10], 1);
-			this.renderable.addAnimation ("jumpattack",  [9,10],1);
-			this.renderable.addAnimation ("crouchattack",  [13,14,15,16],1);
-			this.renderable.addAnimation ("hurt",  [17]);
-    	}
-    	else if (this.mainweapon == 'whip' || !this.mainweapon) {
 			this.renderable.addAnimation ("walk",  [0,1,2,3,4,2], 2); 
 			this.renderable.addAnimation ("stand",  [5]); 
 			this.renderable.addAnimation ("crouch",  [6]);
 			this.renderable.addAnimation ("secondattack",  [22,23,24],1);
 			this.renderable.addAnimation ("jumpdown", [14]);
-			this.renderable.addAnimation ("jumpup", [14]);
+			this.renderable.addAnimation ("jumpup", [17]);
+			this.renderable.addAnimation ("turnright", [34,33]);
+			this.renderable.addAnimation ("turnleft", [32,31]);
+			this.renderable.addAnimation ("attack",  [7,8,9,10], 1);
+			this.renderable.addAnimation ("jumpattack",  [9,10],1);
+			this.renderable.addAnimation ("crouchattack",  [11,12,13,14],1);
+			this.renderable.addAnimation ("hurt",  [17]);
+    	}
+    	else if (this.mainweapon == 'whip' || !this.mainweapon) {
+    		this.renderable.image = me.loader.getImage('simon');
+			this.renderable.addAnimation ("walk",  [0,1,2,3,4,2], 2); 
+			this.renderable.addAnimation ("stand",  [5]); 
+			this.renderable.addAnimation ("crouch",  [6]);
+			this.renderable.addAnimation ("secondattack",  [22,23,24],1);
+			this.renderable.addAnimation ("jumpdown", [14]);
+			this.renderable.addAnimation ("jumpup", [17]);
 			this.renderable.addAnimation ("turnright", [34,33]);
 			this.renderable.addAnimation ("turnleft", [32,31]);
 			this.renderable.addAnimation ("attack",  [7,8,9,10], 1);
@@ -270,6 +274,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 				me.audio.play("18", false);
 				this.mainMenuPosition = 1;
 				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU', this.mainMenuPosition)); 
+				me.game.HUD.z = Infinity;
 				me.game.sort();
 				setTimeout(function(){ self.menuDelay = false; },100);
 			}
@@ -366,6 +371,32 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 			///////// Movements /////////
 		if (this.renderable.flickerTimer < 85 && (!me.game.HUD.HUDItems.mainmenu) && (!me.game.HUD.HUDItems.dialogueShopBox) && (!me.game.HUD.HUDItems.dialogueBlockerBox)) {
+
+			// Change main weapon
+			if (me.input.isKeyPressed('weaponchange') && this.mainweaponDelay == false) {
+
+				this.mainweaponDelay = true;
+				for(i=0; i < playerInfo.weapons.length; i++) { 
+
+					console.log(playerInfo.weapons)
+					if (this.mainweapon == playerInfo.weapons[i]) {
+
+						if (i == playerInfo.weapons.length-1) i = 0;
+						else i++
+
+						this.mainweapon = playerInfo.weapons[i];
+						this.changeimage();
+						me.game.HUD.removeItem("primaryWeapon");
+						me.game.HUD.addItem("primaryWeapon", new InventoryDisplay(0,0, {width: 100, height: 100, type:'primaryweapons'}));  
+						break;
+
+					}
+				}
+				setTimeout(function(){ 
+				    self.mainweaponDelay = false;
+				},370);
+
+			}
 			// If pressing left and not attacking
 			if (me.input.isKeyPressed('left') && (!this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack')))	{ 
 				// Walk animation if not jumping

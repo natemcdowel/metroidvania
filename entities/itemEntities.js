@@ -116,7 +116,11 @@ var PickupEntity = me.ObjectEntity.extend({
 			}
 			else if (this.mainweapon) {
 				mainPlayer.mainweapon = this.mainweapon;
+				playerInfo.weapons.push(this.mainweapon);
+				console.log(playerInfo.weapons)
 				mainPlayer.changeimage();
+				me.game.HUD.removeItem("primaryWeapon");
+				me.game.HUD.addItem("primaryWeapon", new InventoryDisplay(0,0, {width: 100, height: 100, type:'primaryweapons'}));  
 			}
 
 			me.game.remove(self) 
@@ -365,7 +369,7 @@ var InventoryDisplay = me.HUD_Item.extend( {
 		if (settings.type == 'primaryweapons') {
 	        // Weapon images
 	        this.image = me.loader.getImage("secweaponoverlayleft"); 
-			this.image2 = me.loader.getImage("twohandedsword"); 
+			this.image2 = me.loader.getImage("whip"); 
 		}
 		if (settings.type == 'middleui') {
 	        // Weapon images
@@ -443,7 +447,10 @@ var InventoryDisplay = me.HUD_Item.extend( {
     	if (this.type == 'primaryweapons') {
 			// Which weapon does player have?
 			var mainPlayer = me.game.getEntityByName('mainPlayer')[0]
-			if (mainPlayer.mainweapon == 'whip') this.imageXOffset = 240;
+			
+			if (mainPlayer.mainweapon == 'whip') {
+				this.image2 = me.loader.getImage("whip");
+			}
 			else if (mainPlayer.mainweapon == 'twohandedsword') {
 				this.image2 = me.loader.getImage("twohandedsword");
 			}
@@ -452,22 +459,10 @@ var InventoryDisplay = me.HUD_Item.extend( {
 			this.context.fillStyle = "black";
 			this.context.fillRect(this.x, this.y, this.width, this.height); 
 
-						// // Main box 
-			this.context.fillStyle = "black";
-			this.context.fillRect(this.x, this.y, this.width, this.height); 
 
-		 //    this.context.beginPath();
-	  //       this.context.rect(this.x, this.y, this.width, this.height);
 	        this.context.drawImage(this.image,this.x,this.y);
 	        this.context.drawImage(this.image2,this.x,this.y);
-	        // this.context.drawImage(this.image2,this.imageXOffset,0,120,60,this.x+70,this.y+10,120,60);
 
-		    // this.context.beginPath();
-	     //    this.context.rect(this.x, this.y, this.width, this.height);
-	     //    this.context.drawImage(this.image,this.x+10,this.y-15);
-	     //    this.context.lineWidth = 7;
-	     //    this.context.strokeStyle = '#8B0000';
-	     //    this.context.stroke();
     	}
     }
 });

@@ -41,11 +41,18 @@
 	var capHP = 25;
 	var lastLevelHeight = '';
 	var playerInfo = new Object();
+
+	// Info
 	playerInfo.xp = 0;
 	playerInfo.lvl = 1;
 	playerInfo.strength = 3;
 	playerInfo.hitpoints = 50;
 	playerInfo.hearts = 10;
+
+	// Weapons
+	playerInfo.weapons = new Array();
+	playerInfo.weapons = ['whip'];
+
 
 	var lvlcap = Array(); 
 	for(i=1; i<50; i++) { 

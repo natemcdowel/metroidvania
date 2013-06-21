@@ -216,6 +216,25 @@
     <property name="to" value="map2-2"/>
    </properties>
   </object>
+  <object name="PickupEntity" x="2338" y="708" width="70" height="35">
+   <properties>
+    <property name="" value=""/>
+    <property name="image" value="twohandedsword"/>
+    <property name="mainweapon" value="twohandedsword"/>
+    <property name="spriteheight" value="120"/>
+    <property name="spritewidth" value="120"/>
+   </properties>
+  </object>
+  <object name="EnemyFactory" x="5794" y="741" width="350" height="35">
+   <properties>
+    <property name="animationspeed" value="5"/>
+    <property name="delay" value="5000"/>
+    <property name="enemyClass" value="SkullEnemyEntity"/>
+    <property name="image" value="flyingdemon"/>
+    <property name="spriteheight" value="120"/>
+    <property name="spritewidth" value="120"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer name="collision" width="200" height="75" opacity="0.53">
   <data encoding="base64">
