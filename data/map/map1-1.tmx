@@ -73,6 +73,14 @@
     <property name="spritewidth" value="240"/>
    </properties>
   </object>
+  <object name="PickupEntity" x="2697" y="718" width="70" height="35">
+   <properties>
+    <property name="image" value="throwingweapons"/>
+    <property name="spriteheight" value="60"/>
+    <property name="spritewidth" value="120"/>
+    <property name="weapon" value="axe"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup color="#55ff00" name="player" width="120" height="40">
   <object name="mainPlayer" x="1225" y="700" width="70" height="70">

@@ -201,14 +201,6 @@
     <property name="spritewidth" value="120"/>
    </properties>
   </object>
-  <object name="PickupEntity" x="5723" y="2083" width="70" height="35">
-   <properties>
-    <property name="" value=""/>
-    <property name="image" value="twohandedsword"/>
-    <property name="spriteheight" value="60"/>
-    <property name="spritewidth" value="60"/>
-   </properties>
-  </object>
   <object name="levelHelper" x="6969" y="933" width="35" height="490">
    <properties>
     <property name="" value=""/>
@@ -233,6 +225,30 @@
     <property name="image" value="flyingdemon"/>
     <property name="spriteheight" value="120"/>
     <property name="spritewidth" value="120"/>
+   </properties>
+  </object>
+  <object name="PickupEntity" x="5723" y="2058" width="70" height="35">
+   <properties>
+    <property name="image" value="throwingweapons"/>
+    <property name="spriteheight" value="60"/>
+    <property name="spritewidth" value="120"/>
+    <property name="weapon" value="axe"/>
+   </properties>
+  </object>
+  <object name="PickupEntity" x="2762" y="2513" width="70" height="35">
+   <properties>
+    <property name="image" value="throwingweapons"/>
+    <property name="spriteheight" value="60"/>
+    <property name="spritewidth" value="120"/>
+    <property name="weapon" value="dagger"/>
+   </properties>
+  </object>
+  <object name="PickupEntity" x="2538" y="746" width="70" height="35">
+   <properties>
+    <property name="image" value="throwingweapons"/>
+    <property name="spriteheight" value="60"/>
+    <property name="spritewidth" value="120"/>
+    <property name="weapon" value="axe"/>
    </properties>
   </object>
  </objectgroup>
