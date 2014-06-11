@@ -3,12 +3,14 @@
  * follow a horizontal path defined by the box size in Tiled
  */
 
-var AllEnemyEntity = me.ObjectEntity.extend({	
+var AllEnemyEntity = me.ObjectEntity.extend({
 	/**
 	 * constructor
 	 */
 	init: function (x, y, settings) {
 
+		settings.sendSocket = true;
+		settings.entityName = SkeletonEnemyEntity;
 		// call the parent constructor
 		this.parent(x, y , settings);
 
@@ -27,45 +29,38 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		this.timer = me.timer.getTime();
 		this.i = 0;
 		this.enemy = new Object();
-
-		
-			
-		
-		
-		// console.log(this.GUID)
-
 	},
 
 	draw : function(context) {
         this.parent(context);
-
         // if (this.inViewport)
-        // console.log(this.pos.x)
         if (this.alive && this.pos) {
-
         	var self = this;
-
         	this.context = context;
 	        this.tag = new me.Font("Verdana", this.fontsize, "yellow");
 	        this.tag.draw(this.context, this.takendamage , this.pos.x + 80, this.pos.y+150+this.hpY);
-
-
-	        this.socket(self);
+	        // this.socket(self);
     	}
+
+    	if (this.pos && this.pos.x <= 0){
+    		console.log(this.pos.x);
+			me.game.remove(this)
+		}
     },
 
     socket : function (self) {
 
 		// Sending information to SOCKET.io
-
-		if (this.alive && this.pos) {
-			this.enemy.GUID = this.GUID; 
+		if (self.alive && this.pos) {
+			this.enemy.GUID = this.GUID;
 			this.enemy.x = this.pos.x;
 			this.enemy.y = this.pos.y;
 			this.enemy.velx = this.vel.x;
 			this.enemy.vely = this.vel.y;
-			this.enemy.animation = this.renderable.current.name;  
-			socketResponse('enemymove',this.enemy); 
+			this.enemy.animation = this.renderable.current.name;
+			// if (samemap == true && clientid == 0) {
+			// 	socketResponse('enemymove',this.enemy);
+			// }
 		}
 
 	},
@@ -75,85 +70,28 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 
 		// Go to specified position
 		if (typeof x != 'undefined') {
-	        var xDir = x - this.pos.x; 
+	        var xDir = x - this.pos.x;
 	        var yDir = y - this.pos.y;
 		}
 		else {
-	
+		//get player entity
 			var player = me.game.getEntityByName("mainPlayer")[0];
 
 			if (player.pos.x > this.pos.x) this.flipX(true);
 			else this.flipX(false);
 			//create vector based on player's postion
-	        var xDir = player.pos.x - this.pos.x; 
+	        var xDir = player.pos.x - this.pos.x;
 	        var yDir = (player.pos.y+140) - this.pos.y;
     	}
 
         //Decide distance
         xDir = (Math.abs(xDir) < 8) ? 0 : xDir.clamp(-1,1);
         yDir = (Math.abs(yDir) < 8) ? 0 : yDir.clamp(-1,1);
-        
+
         this.vel.x = this.accel.x * xDir;
         this.vel.y = this.accel.y * yDir;
 
 	},
-
-	followPlayerWalk : function (x, y) {
-
-		var self = this;
-
-		// Go to specified position
-		if (typeof x != 'undefined') {
-	        var xDir = x - this.pos.x; 
-	        var yDir = y - this.pos.y;
-		}
-		else {
-	
-			var player = me.game.getEntityByName("mainPlayer")[0];
-
-			if (player.pos.x > this.pos.x) this.flipX(false);
-			else this.flipX(true);
-
-			//create vector based on player's postion
-	        var xDir = player.pos.x - this.pos.x; 
-
-	        var radiusMin = player.collisionBox.pos.x - 80;
-	        var radiusMax = player.collisionBox.pos.x + 80; 
-
-	        if (this.pos.x > radiusMin && this.pos.x < radiusMax) {
-
-				this.vel.x = 0;
-				self.attack();
-				return;
-			// setTimeout(function(){
-				// self.attack()
-			// },500);
-			}
-    	}
-
-        //Decide distance
-        xDir = (Math.abs(xDir) < 8) ? 0 : xDir.clamp(-1,1);
-        
-        this.vel.x = this.accel.x * xDir;
-
-	},
-
-	attack : function (x, y) {
-
-		console.log(this.image)
-		if (this.image == 'skeletonsword') {
-			this.renderable.setCurrentAnimation("attack","walk");
-
-		}
-		if (this.image == 'lavaman') {
-			this.renderable.setCurrentAnimation("attack","walk");
-			var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240, direction: 'right', animframe: 5 }); 
-	        me.game.add(shot, this.z); 
-	        me.game.sort();
-		} 
-
-	},
-
 	/**
 	 * collision handle
 	 */
@@ -174,12 +112,10 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 	hurting : function () {
 
 		if (!this.renderable.flickering)
-		{	
-
-			var self = this;
+		{
 
 			// Animates hitpoints above player
-			var tween = new me.Tween(this).to({fontsize: 25, hpY: -160}, 700).onComplete(function(){		   
+			var tween = new me.Tween(this).to({fontsize: 40, hpY: -160}, 700).onComplete(function(){
 				var tween = new me.Tween(this)
 			    .to({
 			    	globalAlpha: 0,
@@ -194,31 +130,28 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 			this.takendamage = Math.ceil(me.game.strength * 1);
 			this.hitpoints -= Math.ceil(me.game.strength * 1);
 			this.hurt = true;
-			this.i++; 
+			this.i++;
 			setTimeout(function(){self.hurt = false;},1000);
 
 
 			// flash the screen
 			if (this.hitpoints <= 0) {
-				
+
 				playerInfo.xp += this.xp;
-				self.alive = false; 
-				self.collidable = false;
-				me.game.HUD.updateItemValue("experience", self.xp);
-				self.renderable.flicker(5, function(){me.game.remove(self)});
-				var firedeath = new fireDeathEntity( self.pos.x, self.pos.y+40, { image: "firedeath", spritewidth: 120, spriteheight: 120 }); 
-				 me.game.add(firedeath, self.z-1);
-			    me.game.sort();
+				this.alive = false;
+				this.collidable = false;
+				me.game.HUD.updateItemValue("experience", this.xp);
+				this.renderable.flicker(5, function(){me.game.remove(self)});
 				me.audio.play("04", false);
 
 				// Drop item
-				var pickup = new PickupEntity( self.pos.x, self.pos.y-20, { image: "pickups", spritewidth: 60, spriteheight: 60 }, true); 
+				var pickup = new PickupEntity( self.pos.x, self.pos.y-20, { image: "pickups", spritewidth: 110, spriteheight: 65 }, true);
 			    me.game.add(pickup, self.z-1);
 			    me.game.sort();
-		
+
 			}
 			else {
-				
+
 				this.renderable.flicker(25);
 				me.audio.play("06", false);
 			}
@@ -226,221 +159,12 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 	},
 });
 
-var FollowEntity = AllEnemyEntity.extend({
-
-	init: function (x, y, settings) {
-		// parent constructor
-		this.parent(x, y, settings);
-
-		// custom animation speed ?
-		if (settings.animationspeed) {
-			this.renderable.animationspeed = settings.animationspeed; 
-		}
-		
-		// apply gravity setting if specified
-		this.gravity = settings.gravity || me.sys.gravity;
-		this.image = settings.image;
-		
-		//set start/end position
-		this.startX = x;
-		this.endX   = x + settings.width - settings.spritewidth
-		this.pos.x  = x + settings.width - settings.spritewidth;
-	
-		this.hitpoints = 9;
-
-		this.velX = settings.velX;
-		this.setVelocity(settings.velX || 1, settings.velY || 6);
-
-		if (settings.customcollision == true) {
-			this.updateColRect(80,80, 70,100);
-		}
-
-		// Determine animation from image
-		if (settings.image == 'skeletonsword') {
-			this.renderable.addAnimation ("walk", [0,1,2]);
-			this.renderable.addAnimation ("attack", [3,4,5],5);
-			this.renderable.setCurrentAnimation("walk");
-		}
-		if (settings.image == 'lavaman') {
-			this.renderable.addAnimation ("walk", [0,1,2,3,4,5]);
-			this.renderable.addAnimation ("attack", [3,4,5],5);
-			this.renderable.setCurrentAnimation("walk");
-		}
-
-		// set the renderable position to bottom center
-		// this.anchorPoint.set(0.5, 1.0);		
-
-	},
-
-		/**
-	 * manage the enemy movement
-	 */
-	update : function () {
-
-		var self = this;
-		// do nothing if not visible
-		if (!this.inViewport) {
-			return false;
-		}
-		
-		this.followPlayerWalk(); 
-		
-		// check & update movement
-		this.updateMovement();
-		this.parent()
-		return true;
-
-	},
-
-	// attack : function (x, y) {
-
-	// 	this.renderable.setCurrentAnimation("attack","walk");
-
-	// },
-});
-
-
-var fireDeathEntity = me.ObjectEntity.extend({	
-
-	init: function (x, y, settings) {
-	// parent constructor
-	this.parent(x, y, settings);
-	this.renderable.addAnimation ("fire", [0,1,2,3],1);
-
-
-	},
-
-	update : function () {
-		var self = this;
-		this.renderable.setCurrentAnimation("fire", function () {
-			me.game.remove(self);
-		});
-
-		this.parent()
-		return true;
-	}
-
-});
 
 /**
- * A Crow enemy entity
- * 
- */
-var CrowEnemyEntity = AllEnemyEntity.extend({	
-	/** 
-	 * constructor
-	 */
-	init: function (x, y, settings) {
-		// parent constructor
-		this.parent(x, y, settings);
-
-		// custom animation speed ?
-		if (settings.animationspeed) {
-			this.renderable.animationspeed = settings.animationspeed; 
-		}
-		
-		// apply gravity setting if specified
-		this.gravity = settings.gravity || me.sys.gravity;
-		
-		//set start/end position
-		this.startX = x;
-		this.endX   = x + settings.width - settings.spritewidth
-		this.pos.x  = x + settings.width - settings.spritewidth;
-	
-		this.hitpoints = 9;
-		// walking & jumping speed
-		this.setVelocity(settings.velX || 1, settings.velY || 6);
-
-		if (settings.customcollision == true) {
-			this.updateColRect(80,80, 70,100);
-		}
-
-		// walking animation
-		this.renderable.addAnimation ("walk", [0,1,2]);
-		// dead animatin
-		this.renderable.addAnimation ("dead", [2]);
-		
-		// set default one
-		this.renderable.setCurrentAnimation("walk");
-
-		// set the renderable position to bottom center
-		this.anchorPoint.set(0.5, 1.0);		
-	},
-
-		/**
-	 * manage the enemy movement
-	 */
-	update : function () {
-
-		var self = this;
-		// do nothing if not visible
-		if (!this.inViewport) {
-			return false;
-		}
-		
-		if (this.alive)	{
-			if (this.hurt) {
-				// this.pos.x = 0;
-				// this.pos.y = 0;
-			}
-    		else if (me.timer.getTime() > self.timer+2000) {
-    			self.moveTo();
-    		}
-		} else {
-			this.vel.x = 0;
-		}
-
-		
-		// check & update movement
-		this.computeVelocity(this.vel);
-		this.pos.add(this.vel);
-		this.parent()
-		return true;
-		// return true if we moved of if flickering
-		// return (this.parent() || this.vel.x != 0 || this.vel.y != 0);
-	},
-
-});
-
-/**
- * A Crow enemy entity
- * 
- */
-var BatEnemyEntity = AllEnemyEntity.extend({	
-	/**
-	 * constructor
-	 */
-	init: function (x, y, settings) {
-		// parent constructor
-		this.parent(x, y, settings);
-
-		// custom animation speed ?
-		if (settings.animationspeed) {
-			this.renderable.animationspeed = settings.animationspeed; 
-		}
-
-		// walking animatin
-		this.renderable.addAnimation ("walk", [0,1,2]);
-		// dead animatin
-		this.renderable.addAnimation ("dead", [2]);
-		
-		// set default one
-		this.renderable.setCurrentAnimation("walk");
-
-		// set the renderable position to bottom center
-		this.anchorPoint.set(0.5, 1.0);		
-	},
-
-});
-
-var PathEnemyEntity = AllEnemyEntity.extend({	
-
-});
-/**
- * An Fly enemy entity
+ * A Skeleton enemy
  * follow a horizontal path defined by the box size in Tiled
  */
-var SkeletonEnemyEntity = AllEnemyEntity.extend({	
+var SkeletonEnemyEntity = AllEnemyEntity.extend({
 	/**
 	 * constructor
 	 */
@@ -448,25 +172,22 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 
 		this.checkplayers();
 
-
 		// call the parent constructor
 		this.parent(x, y , settings);
 
 		// apply gravity setting if specified
 		this.gravity = settings.gravity || me.sys.gravity;
-		// settings.width = 550;
+		settings.width = 550;
 
 		// set start/end position
 		this.startX = x;
 		this.endX   = x + settings.width - settings.spritewidth
 		this.pos.x  = x + settings.width - settings.spritewidth;
-		
+
 		// walking & jumping speed
 		this.setVelocity(settings.velX || 4, settings.velY || 6);
 
-		this.renderable.addAnimation ("rat", [0,1]);
 		this.renderable.addAnimation ("skeleton", [0,1,2]);
-		this.renderable.addAnimation ("skeletonsword", [0,1,2,3,4,5]);
 		this.renderable.addAnimation ("throwhead", [3,4]);
 		this.renderable.addAnimation ("dead", [6,7,8]);
 		this.renderable.addAnimation ("zombie", [0,1,2,3,4,5]);
@@ -479,8 +200,8 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		this.renderable.setCurrentAnimation(settings.image);
 
 		// set the renderable position to bottom center
-		this.anchorPoint.set(0.5, 1.0);		
-		
+		this.anchorPoint.set(0.5, 1.0);
+
 		// make it collidable
 		this.collidable = true;
 		this.hitpoints = 6;
@@ -501,47 +222,44 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 
 		var self = this;
 
-		socketResponse('checkmapserver',clientid);   
-		socket.on('checkmapclient', function (users) {	 
+		socketResponse('checkmapserver',clientid);
+		socket.on('checkmapclient', function (users) {
 
 			if (typeof users[1] != 'undefined') {
 				if(users[0][4] != users[1][4]) {
 					samemap = false;
 					// console.log(samemap)
-				} 
+				}
 				else {
 					samemap = true;
 					// console.log(samemap)
-				}  
+				}
 			}
-		});   
+		});
 
 	},
 
 	update : function () {
 
-		var self = this;	
-
+		var self = this;
 
 		// Setting enemy position through SOCKET if 2nd to map
-		if (samemap == true && clientid == 1) {
-			socket.on('updateenemies', function (enemies) {	
-				self.vel.x = 0;
-				self.pos.x = enemies.x
-			});
-		}
+		// if (samemap == true && clientid == 1) {
+		// 	// socket.on('updateenemies', function (enemy) {
+		// 	// 	self.pos.x = enemy.x
+		// 	// });
+		// }
 
-		else { 
+		// else {
 
 			if (this.walkLeft && this.pos.x <= this.startX) {
-				// console.log(this.hurt)
 				if (this.vel.x == 0) this.vel.x = 4;
 				this.vel.x = this.accel.x * me.timer.tick;
 				// this.renderable.setCurrentAnimation("throwhead","walk");
 
 				if (this.shot == true) {
-					var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240, direction: 'left', animframe: 5 }); 
-			        me.game.add(shot, this.z); 
+					var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240, direction: 'left', animframe: 5 });
+			        me.game.add(shot, this.z);
 			        me.game.sort();
 		    	}
 
@@ -553,19 +271,16 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 				// this.renderable.setCurrentAnimation("throwhead","walk");
 
 				if (this.shot == true) {
-					var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240, direction: 'right', animframe: 5 }); 
-			        me.game.add(shot, this.z); 
+					var shot = new ShotEntity( this.pos.x, this.pos.y-10, { image: "skeleton", spritewidth: 240, spriteheight: 240, direction: 'right', animframe: 5 });
+			        me.game.add(shot, this.z);
 			        me.game.sort();
 		    	}
 
 				this.walkLeft = true;
 				this.flipX(true);
 			}
-		} 
-		// else {
-		// 	this.renderable.setCurrentAnimation("dead");
 		// }
-		
+
 		// check & update movement
 		this.updateMovement();
 		this.parent()
@@ -575,12 +290,119 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 });
 
 
+/**
+ * A Crow enemy entity
+ *
+ */
+var CrowEnemyEntity = AllEnemyEntity.extend({
+	/**
+	 * constructor
+	 */
+	init: function (x, y, settings) {
+		// parent constructor
+		this.parent(x, y, settings);
+
+		// custom animation speed ?
+		if (settings.animationspeed) {
+			this.renderable.animationspeed = settings.animationspeed;
+		}
+
+		// apply gravity setting if specified
+		this.gravity = settings.gravity || me.sys.gravity;
+
+		//set start/end position
+		this.startX = x;
+		this.endX   = x + settings.width - settings.spritewidth
+		this.pos.x  = x + settings.width - settings.spritewidth;
+
+		this.hitpoints = 9;
+		// walking & jumping speed
+		this.setVelocity(settings.velX || 1, settings.velY || 6);
+		this.updateColRect(80,80, 70,100);
+
+		// walking animation
+		this.renderable.addAnimation ("walk", [0,1,2]);
+		// dead animatin
+		this.renderable.addAnimation ("dead", [2]);
+
+		// set default one
+		this.renderable.setCurrentAnimation("walk");
+
+		// set the renderable position to bottom center
+		this.anchorPoint.set(0.5, 1.0);
+	},
+
+		/**
+	 * manage the enemy movement
+	 */
+	update : function () {
+
+		var self = this;
+		// do nothing if not visible
+		if (!this.inViewport) {
+			return false;
+		}
+
+		if (this.alive)	{
+			if (this.hurt) {
+				// this.pos.x = 0;
+				// this.pos.y = 0;
+			}
+    		else if (me.timer.getTime() > self.timer+2000) {
+    			self.moveTo();
+    		}
+		} else {
+			this.vel.x = 0;
+		}
+
+
+		// check & update movement
+		this.updateMovement();
+		this.parent()
+		return true;
+		// return true if we moved of if flickering
+		// return (this.parent() || this.vel.x != 0 || this.vel.y != 0);
+	},
+
+});
+
+/**
+ * A Crow enemy entity
+ *
+ */
+var BatEnemyEntity = AllEnemyEntity.extend({
+	/**
+	 * constructor
+	 */
+	init: function (x, y, settings) {
+		// parent constructor
+		this.parent(x, y, settings);
+
+		// custom animation speed ?
+		if (settings.animationspeed) {
+			this.renderable.animationspeed = settings.animationspeed;
+		}
+
+		// walking animatin
+		this.renderable.addAnimation ("walk", [0,1,2]);
+		// dead animatin
+		this.renderable.addAnimation ("dead", [2]);
+
+		// set default one
+		this.renderable.setCurrentAnimation("walk");
+
+		// set the renderable position to bottom center
+		this.anchorPoint.set(0.5, 1.0);
+	},
+
+});
+
 var ShotEntity = AllEnemyEntity.extend({
 
     init: function(x, y, settings) {
 
     	this.rotate = 1;
-		
+
 		// call the constructor
 	    this.parent(x, y, settings);
 
@@ -611,11 +433,11 @@ var ShotEntity = AllEnemyEntity.extend({
 
 		this.updateMovement();
 
-		if (!this.inViewport || this.vel.x == 0){ 
+		if (!this.inViewport || this.vel.x == 0){
 			this.alive = false;
 			me.game.remove(this)
 		}
-		
+
 		this.parent()
 		return true;
 	},
@@ -624,11 +446,12 @@ var ShotEntity = AllEnemyEntity.extend({
 
 /**
  * A Skull enemy entity
- * 
+ *
  */
-var SkullEnemyEntity = AllEnemyEntity.extend({	
+var SkullEnemyEntity = AllEnemyEntity.extend({
     init: function(x, y, settings, direction) {
 
+    	settings.className =
     	this.rotate = 3;
 		this.hitpoints = 10;
 
@@ -638,14 +461,12 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 	     // apply gravity setting if specified
 		this.gravity = settings.gravity || me.sys.gravity;
 		this.renderable.animationspeed = 2;
-
-		// this.renderable.addAnimation ("head", [2,3,4]); 
-		this.renderable.addAnimation ("head", [0,1,2],2); 
+		this.renderable.addAnimation ("head", [3,4,5]);
 
 		this.renderable.setCurrentAnimation("head");
 
 		// walking & jumping speed
-		this.vel.x = -9; 
+		this.vel.x = -9;
 	    this.collidable = true;
 
 	    this.timer = me.timer.getTime();
@@ -662,11 +483,11 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 		var self = this;
 
 		if (me.timer.getTime() > self.timer+1200) {
-			
+
 			self.i++
 			self.timer = me.timer.getTime()
 
-		} 
+		}
 
 		if (!this.hurt ) {
 
@@ -677,7 +498,7 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 				self.vel.y -= .13;
 			}
 			if (self.i % 2 == 1) {
-				self.vel.y += .1;  
+				self.vel.y += .1;
 			}
 		}
 		else if (this.hurt) {
@@ -690,7 +511,7 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 
 		if (this.pos.x <= 0){
 			me.game.remove(this)
-		} 
+		}
 
 		if (this.renderable.flickerTimer < 30) {
 			me.game.HUD.removeItem("hit");
@@ -709,10 +530,10 @@ var CoffinEntity = AllEnemyEntity.extend({
 
 		this.hitpoints = 1;
 
-		this.renderable.addAnimation ("rise",  [10,9,8,7,6,5], 2); 
-		this.renderable.addAnimation ("risen",  [5], 2); 
-		this.renderable.addAnimation ("dooroffempty",  [0], 2); 
-		this.renderable.addAnimation ("dooroffskeleton",  [3], 2); 
+		this.renderable.addAnimation ("rise",  [10,9,8,7,6,5], 2);
+		this.renderable.addAnimation ("risen",  [5], 2);
+		this.renderable.addAnimation ("dooroffempty",  [0], 2);
+		this.renderable.addAnimation ("dooroffskeleton",  [3], 2);
 
 		this.renderable.setCurrentAnimation("rise","risen");
 		this.vel.x = .1;
@@ -740,18 +561,18 @@ var CoffinEntity = AllEnemyEntity.extend({
 			else this.direction = 'left';
 
 			// Coffin Door flies off
-			var shot = new ShotEntity( this.pos.x, this.pos.y, { image: "coffin", spritewidth: 240, spriteheight: 240, direction: this.direction, animframe: 2}); 
+			var shot = new ShotEntity( this.pos.x, this.pos.y, { image: "coffin", spritewidth: 240, spriteheight: 240, direction: this.direction, animframe: 2});
 			me.game.add(shot, this.z-1);
 		    me.game.sort();
 		    this.shot = true;
 
 		    // Skeleton comes out
 		    this.renderable.setCurrentAnimation("dooroffempty");
-		    var skeleton = new SkeletonEnemyEntity( this.pos.x-330, this.pos.y, { image: "skeleton", spritewidth: 240, spriteheight: 240, animationspeed: 10, gravity: 0, customcollision:true, width: 600}); 
-		    me.game.add(skeleton, this.z-1);
+		    var skeleton = new SkeletonEnemyEntity( this.pos.x-330, this.pos.y, { image: "skeleton", spritewidth: 240, spriteheight: 240, animationspeed: 10, gravity: 0 });
+		    me.game.add(skeleton, this.z+1);
 		    me.game.sort();
 
-		    setTimeout(function(){me.game.remove(self);},5000);
+		     setTimeout(function(){me.game.remove(self);},5000);
 		}
 
 		if (this.vel.x == 0) me.game.remove(this)
@@ -763,10 +584,10 @@ var CoffinEntity = AllEnemyEntity.extend({
 });
 
 
-var BossFactoryEntity = AllEnemyEntity.extend({	
+var BossFactoryEntity = AllEnemyEntity.extend({
 
 	init: function(x, y, settings, direction) {
-		
+
 		this.timer = me.timer.getTime();
 		this.risen = false;
 
@@ -781,23 +602,23 @@ var BossFactoryEntity = AllEnemyEntity.extend({
 			this.maxX = player.pos.x+700
 			if (this.minX < 100) this.minX=100;
 
-			
-			var coffin = new CoffinEntity( Math.floor(Math.random() * (this.maxX - this.minX + 1)) + this.minX, 1090, { image: "coffin", spritewidth: 240, spriteheight: 240 }); 
+			var coffin = new CoffinEntity( Math.floor(Math.random() * (this.maxX - this.minX + 1)) + this.minX, 1090, { image: "coffin", spritewidth: 240, spriteheight: 240 });
 		    me.game.add(coffin, this.z-1);
 		    me.game.sort();
 		    this.timer = me.timer.getTime();
 
 		}
-	}, 
-}); 
+	},
+});
 
 
 // Abstracted Factory for all enemies
-var EnemyFactoryEntity = AllEnemyEntity.extend({	
+var EnemyFactoryEntity = AllEnemyEntity.extend({
 
 	init: function(x, y, settings, direction) {
 		this.timer = me.timer.getTime();
 		this.enemyClass = settings.enemyClass;
+		settings.entityName = this.enemyClass;
 		this.objectName = window[this.enemyClass]
 		this.image = settings.image;
 		this.delay = settings.delay;
@@ -809,16 +630,16 @@ var EnemyFactoryEntity = AllEnemyEntity.extend({
 
 		if (me.timer.getTime() > this.timer+this.delay) {
 			var player = me.game.getEntityByName("mainPlayer")[0];
-			var enemy = new this.objectName( player.pos.x+1000, player.pos.y, { image: this.image, spritewidth: this.spritewidth, spriteheight: this.spriteheight }); 
+			var enemy = new this.objectName( player.pos.x+1000, player.pos.y, { image: this.image, spritewidth: this.spritewidth, spriteheight: this.spriteheight });
 		    me.game.add(enemy, this.z-1);
 		    me.game.sort();
 		    this.timer = me.timer.getTime();
 		}
-	}, 
-}); 
+	},
+});
 
 
-var WeatherFactoryEntity = AllEnemyEntity.extend({	
+var WeatherFactoryEntity = AllEnemyEntity.extend({
 
 	init: function() {
 		this.min = 0;
@@ -839,9 +660,9 @@ var WeatherFactoryEntity = AllEnemyEntity.extend({
 		}
 		me.game.sort();
 		return false;
-	}, 
+	},
 
-}); 
+});
 
 
 

@@ -3,21 +3,22 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js'></script>
+<script type='text/javascript' src="//rawgit.com/WebReflection/circular-json/master/build/circular-json.js"></script>
 <script>
-	
+
 	var clientid = '';
 	var clientData = new Array();
 	var globalClientIndex;
 	var users;
 	var usersClient;
-	var userName = '';  
+	var userName = '';
     var playerX = '';
 	var playerY = '';
 	var playerVelX = '';
 	var playerVelY = '';
 	var userlist = '';
-	var currentAnim = ''; 
-	var usernumber; 
+	var currentAnim = '';
+	var usernumber;
 	var moveLeft = false;
 	var moveRight = false;
 	var left = false;
@@ -27,8 +28,8 @@
 	var coinid = null;
 	var levelDirection = '';
 	var levelDirectionY = '';
-	var playerMap = ''; 
-	var visiblePlayer = '';  
+	var playerMap = '';
+	var visiblePlayer = '';
 	var socketUpdated = '';
 	var playerXlast = '';
 	var playerYlast = '';
@@ -41,6 +42,7 @@
 	var capHP = 25;
 	var lastLevelHeight = '';
 	var playerInfo = new Object();
+	var socketObjects = [];
 
 	// Info
 	playerInfo.xp = 0;
@@ -54,34 +56,47 @@
 	playerInfo.weapons = ['whip'];
 
 
-	var lvlcap = Array(); 
-	for(i=1; i<50; i++) { 
+	var lvlcap = Array();
+	for(i=1; i<50; i++) {
 		capXP += 30;
-		lvlcap[i] = capXP; 
+		lvlcap[i] = capXP;
 	}
-	
+
 	var lvlMaxHealth = Array();
-	for(i=1; i<50; i++) { 
+	for(i=1; i<50; i++) {
 		capHP += 20;
-		lvlMaxHealth[i] = capHP;  
+		lvlMaxHealth[i] = capHP;
 	}
 
-	var socket = io.connect('10.10.10.100:80');
+	var socketHost = location.host;
+	var socket = io.connect(socketHost);
 
-	socket.on('assignid', function (id) { 
+	socket.on('assignid', function (id) {
 		clientid = id;
-	});   
+	});
 
-    socket.on('removeplayer', function (clientid) { 
+    socket.on('removeplayer', function (clientid) {
     	playerX.splice(clientid, 1);
-    	playerY.splice(clientid, 1);   
+    	playerY.splice(clientid, 1);
+    });
+
+    socket.on('updateobjects', function (objects) {
+    	socketObjects = objects;
+    	// console.log(objects);
     });
 
     // Passing input from browser to socket.io server
 	function socketResponse(type, data) {
-			var socket = io.connect('10.10.10.100:80');
-		 	socket.emit(type, data);
+		var socket = io.connect(socketHost);
+	 	socket.emit(type, data);
 	}
+
+	setInterval(function(){
+		if (socketObjects.length > 0 && clientid == 0) {
+			socketResponse('updateobjects', socketObjects);
+		}
+  	}, 10);
+
 </script>
 <html>
 <head>
@@ -93,18 +108,18 @@
    icon = "path_to_icon.ico"
    innerborder = "no"
    scroll = "no"
-   singleinstance = "yes" 
+   singleinstance = "yes"
    resizable = "no"
    windowState = "maximize"
 >
   <title>MetroidVania</title>
   <meta name="description" content="melonJS homepage" />
   <meta name="keywords" content="melonJS, HTML5, javascript, game, engine, framework" />
-  <link rel="stylesheet" type="text/css" href="http://nsjof.org/game/melonEx/melonJS/examples/platformer//style/style.css" title="style" />
+  <!-- <link rel="stylesheet" type="text/css" href="http://nsjof.org/game/melonEx/melonJS/examples/platformer//style/style.css" title="style" /> -->
 	<style type="text/css">
 		canvas {
 			display: block;
-			tabindex:1; 
+			tabindex:1;
 			image-rendering: optimizeSpeed;
 			image-rendering: -moz-crisp-edges;
 			image-rendering: -o-crisp-edges;
@@ -117,10 +132,10 @@
 
  <!--  <div id="main">
     <div id="site_content"> -->
-<!-- 		<center> 
+<!-- 		<center>
 		<div id="content"> -->
 			<!-- Canvas -->
-			<div id="screen" style=""></div> 
+			<div id="screen" style=""></div>
 
 			<!-- Right Login Screen -->
 		<!-- 	<div id="signin" style="float:left; width:15%; margin:15px;">
@@ -131,7 +146,7 @@
 
 			<div id="userhead" style="float:left; width:15%; margin:15px;"><h1>User List: id#<script>document.write(clientid)</script></h1><hr>
 				<div id="leave"><button onclick='socketResponse("leave", userName); window.location = "http://www.google.com/";'>Leave</button></div>
-				<div id="userlist" style=""></div> 
+				<div id="userlist" style=""></div>
 			</div> -->
 
 
@@ -144,12 +159,12 @@
 	         <script type="text/javascript" src="entities/itemEntities.js"></script>
 	         <script type="text/javascript" src="entities/weaponEntity.js"></script>
 	         <script type="text/javascript" src="entities/npcEntity.js"></script>
-	         <script type="text/javascript" src="main.js"></script> 
+	         <script type="text/javascript" src="main.js"></script>
 
 
 <!-- 			</div>
 		</center> -->
 <!--     </div>
   </div> -->
-</body> 
+</body>
 </html>

@@ -6,11 +6,11 @@
 /*																					*/
 /************************************************************************************/
 
-var PlayerEntity = me.ObjectEntity.extend({	
-	init: function(x, y, settings) { 
+var PlayerEntity = me.ObjectEntity.extend({
+	init: function(x, y, settings) {
 
-		
-		// Set position from Tiled if first 
+
+		// Set position from Tiled if first
 		if (levelDirection == '' && nextScreenY == '') y = settings.startX;
 		else y = nextScreenY;
 
@@ -48,7 +48,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 				// if (lastLevelHeight != me.game.currentLevel.height) y = nextScreenY + mapHeightOffset;
 				//else
 				y = nextScreenY;
-				x = 100; 
+				x = 100;
 			}
 			if (levelDirectionY == 'south' ) {
 				y = 40;
@@ -62,33 +62,33 @@ var PlayerEntity = me.ObjectEntity.extend({
 		}
 
 		// call the constructor
-		this.parent(x, y , settings); 
+		this.parent(x, y , settings);
 
-	 
+
 
 		// Weapon delay
 		this.cooldown = true;
-		
-		var socketArray = Array(); 
+
+		var socketArray = Array();
 		socketArray[0] = clientid;
 		socketArray[1] = me.levelDirector.getCurrentLevelId();
 
 		me.audio.stopTrack();
 
 		// Song logic
-		// me.audio.playTrack("riff4"); 
-		// setTimeout(function(){ 
+		// me.audio.playTrack("riff4");
+		// setTimeout(function(){
 		// 	if (me.levelDirector.getCurrentLevelId() == 'map1-1') { me.audio.stopTrack(); me.audio.playTrack("cave1"); }
 		// 	if (me.levelDirector.getCurrentLevelId() == 'map3') { me.audio.stopTrack(); me.audio.playTrack("distant_thunder_and_light_rain"); }
 		// 	if (me.levelDirector.getCurrentLevelId() == 'map1') {  me.audio.stopTrack(); me.audio.playTrack("battle1"); }
 		// },500);
 
-		// Setting our map in server 
-		socketResponse('changemapserver', socketArray);  
+		// Setting our map in server
+		socketResponse('changemapserver', socketArray);
 
-		// walking & jumping speed 
+		// walking & jumping speed
 		this.setVelocity(12, 34);
-		this.setFriction(1.2,0); 
+		this.setFriction(1.2,0);
 		this.gravity = 2.2
 		this.collidable = false;
 
@@ -97,7 +97,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 		this.hitpoints = playerInfo.hitpoints;
 		me.game.xp = playerInfo.xp;
 		me.game.lvl = playerInfo.lvl;
-		me.game.strength = playerInfo.strength; 
+		me.game.strength = playerInfo.strength;
 		this.secWeapon = 'axe';
 		if (!this.mainweapon) this.mainweapon = 'whip';
 
@@ -119,21 +119,21 @@ var PlayerEntity = me.ObjectEntity.extend({
 		this.weaponDelay = false;
 		this.jumpDelay = false;
 		this.mainweaponDelay = false;
-		
-		// set the display around our position 
+
+		// set the display around our position
 		me.game.viewport.follow(this, me.game.viewport.AXIS.BOTH);
 		this.renderable.animationspeed = 2;
-		
+
 		// enable keyboard
 		me.input.bindKey(me.input.KEY.LEFT,	 "left");
-		me.input.bindKey(me.input.KEY.RIGHT, "right"); 
-		me.input.bindKey(me.input.KEY.Z,	"jump"); 
-		me.input.bindKey(me.input.KEY.UP,	"up"); 
-		me.input.bindKey(me.input.KEY.X,	"attack"); 
+		me.input.bindKey(me.input.KEY.RIGHT, "right");
+		me.input.bindKey(me.input.KEY.Z,	"jump");
+		me.input.bindKey(me.input.KEY.UP,	"up");
+		me.input.bindKey(me.input.KEY.X,	"attack");
 		me.input.bindKey(me.input.KEY.DOWN,	"down");
 		me.input.bindKey(me.input.KEY.ENTER, "menu");
 		me.input.bindKey(me.input.KEY.Q, "weaponchange");
-		
+
 		// Animations
 		this.changeimage();
 
@@ -141,10 +141,10 @@ var PlayerEntity = me.ObjectEntity.extend({
 		this.renderable.addAnimation ("twohandedswordattack",  [0,1,2,3], 2);
 
 		// set as default
-		this.renderable.setCurrentAnimation("walk"); 
-		this.anchorPoint.set(0.5, 1.0); 
+		this.renderable.setCurrentAnimation("walk");
+		this.anchorPoint.set(0.5, 1.0);
 		this.updateColRect(110,60, 130,100);
-		
+
 
 		if (typeof settings.velY != 'undefined') this.vel.y = settings.velY;
 		if (typeof nextScreenVelX != '') this.vel.x = nextScreenVelX;
@@ -155,7 +155,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 	/* -----
 
 		Draw HP and other information
-		
+
 	------			*/
     draw : function(context) {
         this.parent(context);
@@ -167,11 +167,11 @@ var PlayerEntity = me.ObjectEntity.extend({
     },
 
     changeimage : function() {
-    	
+
     	if (this.mainweapon == 'twohandedsword') {
 	    	this.renderable.image = me.loader.getImage('simontwohandedsword');
-			this.renderable.addAnimation ("walk",  [0,1,2,3,4,2], 2); 
-			this.renderable.addAnimation ("stand",  [5]); 
+			this.renderable.addAnimation ("walk",  [0,1,2,3,4,2], 2);
+			this.renderable.addAnimation ("stand",  [5]);
 			this.renderable.addAnimation ("crouch",  [6]);
 			this.renderable.addAnimation ("secondattack",  [22,23,24],1);
 			this.renderable.addAnimation ("jumpdown", [14]);
@@ -185,8 +185,8 @@ var PlayerEntity = me.ObjectEntity.extend({
     	}
     	else if (this.mainweapon == 'whip' || !this.mainweapon) {
     		this.renderable.image = me.loader.getImage('simon');
-			this.renderable.addAnimation ("walk",  [0,1,2,3,4,2], 2); 
-			this.renderable.addAnimation ("stand",  [5]); 
+			this.renderable.addAnimation ("walk",  [0,1,2,3,4,2], 2);
+			this.renderable.addAnimation ("stand",  [5]);
 			this.renderable.addAnimation ("crouch",  [6]);
 			this.renderable.addAnimation ("secondattack",  [22,23,24],1);
 			this.renderable.addAnimation ("jumpdown", [14]);
@@ -203,14 +203,14 @@ var PlayerEntity = me.ObjectEntity.extend({
 	/* -----
 
 		update the player pos
-		
+
 	------			*/
-	update : function () { 
+	update : function () {
 
 		var self = this;
 		// console.log(this.pos.x + ' -- ' + this.pos.y)
 		// this.changeimage('simontwohandedsword','twohandedswordattack')
-		
+
 		this.menu(self);
 
 		this.move(self)
@@ -220,10 +220,10 @@ var PlayerEntity = me.ObjectEntity.extend({
 		// Setting which way we want to go if map is changing
 		if (this.pos.y > me.game.currentLevel.height - 300 ) {
 			levelDirectionY = 'south';
-		} 
+		}
 		else if (this.pos.y < 150 ) {
-			levelDirectionY = 'north'; 
-		} 
+			levelDirectionY = 'north';
+		}
 		else {
 			levelDirectionY = '';
 		}
@@ -245,35 +245,35 @@ var PlayerEntity = me.ObjectEntity.extend({
 		if (clientData[0] == 'left') {
 			// Smaller box for crouching
 			if (this.renderable.isCurrentAnimation('crouchattack') || this.renderable.isCurrentAnimation('crouch')) this.updateColRect(130,60, 170,70);
-			else this.updateColRect(130,60, 140,100); 
+			else this.updateColRect(130,60, 140,100);
 		}
 		else if (clientData[0] == 'right') {
 			if (this.renderable.isCurrentAnimation('crouchattack') || this.renderable.isCurrentAnimation('crouch')) this.updateColRect(50,60, 170,70);
-		    else this.updateColRect(50,60, 140,100);  
+		    else this.updateColRect(50,60, 140,100);
 		}
 
 		// check for collision with environment
 		this.updateMovement();
 		this.collision();
-		
+
 		// Check for LEVEL UP!
 		if (playerInfo.xp > lvlcap[playerInfo.lvl]) {
 			this.level();
 		}
 
 		this.parent();
-		return true; 
+		return true;
 
-	}, 
+	},
 
 	menu : function (self) {
 
-		if (me.input.isKeyPressed('menu') && (!me.game.HUD.HUDItems.dialogueShopBox) && (!me.game.HUD.HUDItems.dialogueBlockerBox)) {	
+		if (me.input.isKeyPressed('menu') && (!me.game.HUD.HUDItems.dialogueShopBox) && (!me.game.HUD.HUDItems.dialogueBlockerBox)) {
 			// Create menu
 			if (this.mainMenuPosition == -1) {
 				me.audio.play("18", false);
 				this.mainMenuPosition = 1;
-				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU', this.mainMenuPosition)); 
+				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU', this.mainMenuPosition));
 				me.game.HUD.z = Infinity;
 				me.game.sort();
 				setTimeout(function(){ self.menuDelay = false; },100);
@@ -288,31 +288,31 @@ var PlayerEntity = me.ObjectEntity.extend({
 				if (this.mainMenuPosition >= 1) this.mainMenuPosition--
 				self.menuDelay = true;
 				me.game.HUD.removeItem("mainmenu");
-				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU',this.mainMenuPosition)); 
+				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU',this.mainMenuPosition));
 				setTimeout(function(){ self.menuDelay = false; },100);
-			} 
+			}
 			// Down Key
 			else if(me.input.isKeyPressed('down') && !self.menuDelay) {
 				if ( this.mainMenuPosition < this.mainMenuPositionLength && this.mainMenuPosition >= 0) this.mainMenuPosition++
 				self.menuDelay = true;
 				me.game.HUD.removeItem("mainmenu");
-				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU',this.mainMenuPosition)); 
+				me.game.HUD.addItem("mainmenu", new MenuObject(600,600,'MENU',this.mainMenuPosition));
 				setTimeout(function(){ self.menuDelay = false; },100);
-			}	
+			}
 
 			// Exit Menu
 			else if(me.input.isKeyPressed('menu') && !self.menuDelay) {
 
 				if (this.mainMenuPosition == 0) {
 					me.game.HUD.removeItem("mainmenu");
-					setTimeout(function(){ self.mainMenuPosition = -1; },200); 
+					setTimeout(function(){ self.mainMenuPosition = -1; },200);
 				}
 				// Close game
 				else if (this.mainMenuPosition == 4) {
-					JavaScript:window.open('', '_self', '');window.close(); 
+					JavaScript:window.open('', '_self', '');window.close();
 				}
 			}
-		} 
+		}
 		///////// End Menu //////////
 	},
 
@@ -329,20 +329,20 @@ var PlayerEntity = me.ObjectEntity.extend({
 			});
 			return true;
 		}
-		
+
 		// COLLISIONS with various objects
 		var res = me.game.collide(this);
-		
+
 
 
 		if (res) {
-			switch (res.obj.type) {	
+			switch (res.obj.type) {
 				case me.game.ENEMY_OBJECT : {
 					if ((res.y>0) && this.falling && !this.renderable.flickering) {
 						// jump
 						this.vel.y -= this.maxVel.y * me.timer.tick;
 					} else {
-		
+
 						this.hurt(res);
 					}
 					break;
@@ -355,13 +355,13 @@ var PlayerEntity = me.ObjectEntity.extend({
 	socket : function () {
 
 		// Sending information to SOCKET.io
-		clientData[1] = clientid; 
+		clientData[1] = clientid;
 		clientData[2] = this.pos.x;
 		clientData[3] = this.pos.y;
 		clientData[5] = this.vel.x;
 		clientData[6] = this.vel.y;
-		clientData[7] = this.renderable.current.name;  
-		socketResponse('keypress',clientData); 
+		clientData[7] = this.renderable.current.name;
+		socketResponse('keypress',clientData);
 
 	},
 
@@ -376,7 +376,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 			if (me.input.isKeyPressed('weaponchange') && this.mainweaponDelay == false) {
 
 				this.mainweaponDelay = true;
-				for(i=0; i < playerInfo.weapons.length; i++) { 
+				for(i=0; i < playerInfo.weapons.length; i++) {
 
 					console.log(playerInfo.weapons)
 					if (this.mainweapon == playerInfo.weapons[i]) {
@@ -387,18 +387,18 @@ var PlayerEntity = me.ObjectEntity.extend({
 						this.mainweapon = playerInfo.weapons[i];
 						this.changeimage();
 						me.game.HUD.removeItem("primaryWeapon");
-						me.game.HUD.addItem("primaryWeapon", new InventoryDisplay(0,0, {width: 100, height: 100, type:'primaryweapons'}));  
+						me.game.HUD.addItem("primaryWeapon", new InventoryDisplay(0,0, {width: 100, height: 100, type:'primaryweapons'}));
 						break;
 
 					}
 				}
-				setTimeout(function(){ 
+				setTimeout(function(){
 				    self.mainweaponDelay = false;
 				},370);
 
 			}
 			// If pressing left and not attacking
-			if (me.input.isKeyPressed('left') && (!this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack')))	{ 
+			if (me.input.isKeyPressed('left') && (!this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack')))	{
 				// Walk animation if not jumping
 				if (!this.vel.y > 0 || !this.vel.y < 0) self.renderable.setCurrentAnimation("walk")
 				this.vel.x -= this.accel.x * me.timer.tick;
@@ -409,9 +409,9 @@ var PlayerEntity = me.ObjectEntity.extend({
 				}
 				clientData[0] = 'left';
 			}
-			
+
 			// If pressing right and not attacking
-			if (me.input.isKeyPressed('right') && (!this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack'))) {	
+			if (me.input.isKeyPressed('right') && (!this.renderable.isCurrentAnimation('attack') && !this.renderable.isCurrentAnimation('crouchattack'))) {
 				// Walk animation if not jumping
 				if (!this.vel.y > 0 || !this.vel.y < 0) self.renderable.setCurrentAnimation("walk")
 				this.vel.x += this.accel.x * me.timer.tick;
@@ -424,15 +424,15 @@ var PlayerEntity = me.ObjectEntity.extend({
 			}
 
 			// // If pressed jump
-			// if (me.input.isKeyPressed('jump') && self.jumpDelay == false) { 
-				
+			// if (me.input.isKeyPressed('jump') && self.jumpDelay == false) {
+
 			// 	if (this.vel.y < 0)this.renderable.setCurrentAnimation("jumpdown");
 			// 	this.mutipleJump = (this.vel.y === 0)?1:this.mutipleJump;
 			// 	if (this.mutipleJump<=1) {  // 2 for double jump
 			// 		this.vel.y -= (this.maxVel.y * this.mutipleJump++) * me.timer.tick;
 			// 		self.jumpDelay = true;
 			// 	}
-			// 	setTimeout(function(){ 
+			// 	setTimeout(function(){
 			//         self.jumpDelay = false;
 			// 	},250);
 			// }
@@ -487,11 +487,11 @@ var PlayerEntity = me.ObjectEntity.extend({
 				else if (me.input.isKeyPressed('up') && this.weaponDelay == false && playerInfo.hearts > 0) {
 
 					self.weaponDelay = true;
-					var secondWeapon = new secondWeaponEntity( self.pos.x, self.pos.y+120, { image: "throwingweapons", spritewidth: 120, spriteheight: 120 }, clientData[0]); 
-				    me.game.add(secondWeapon, self.z);  
-				    me.game.sort();  
+					var secondWeapon = new secondWeaponEntity( self.pos.x, self.pos.y+120, { image: "throwingweapons", spritewidth: 120, spriteheight: 120 }, clientData[0]);
+				    me.game.add(secondWeapon, self.z);
+				    me.game.sort();
 				    this.renderable.setCurrentAnimation("secondattack","stand");
-					setTimeout(function(){ 
+					setTimeout(function(){
 				        self.weaponDelay = false;
 					},370);
 
@@ -530,7 +530,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 		this.fontsize = 0;
 		// Animates hitpoints above player
-		var tween = new me.Tween(this).to({fontsize: 20, hpY: -50}, 1600).onComplete(function(){		   
+		var tween = new me.Tween(this).to({fontsize: 20, hpY: -50}, 1600).onComplete(function(){
 			var tween = new me.Tween(this)
 		    .to({
 		        fontsize: 0,
@@ -541,8 +541,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 
 	    this.headmessage = 'Level Up!';
 
-		playerInfo.lvl += 1; 
-		playerInfo.strength += .6; 
+		playerInfo.lvl += 1;
+		playerInfo.strength += .6;
 		playerInfo.hitpoints += 20;
 		me.game.HUD.updateItemValue("lvl", 1);
 		me.game.HUD.updateItemValue("experience", 0);
@@ -555,7 +555,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 	 */
 	hurt : function (res) {
 		if (!this.renderable.flickering)
-		{	
+		{
 			this.renderable.setCurrentAnimation("hurt", "walk");
 			this.renderable.flicker(100);
 
@@ -571,7 +571,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 			}
 
 			// Animates hitpoints above player
-			var tween = new me.Tween(this).to({fontsize: 25, hpY: -160}, 1600).onComplete(function(){		   
+			var tween = new me.Tween(this).to({fontsize: 25, hpY: -160}, 1600).onComplete(function(){
 				var tween = new me.Tween(this)
 			    .to({
 			        fontsize: 0,
@@ -580,14 +580,14 @@ var PlayerEntity = me.ObjectEntity.extend({
 			    .start();})
 		    .start();
 
-		    this.headmessage = res.obj.strength;    
+		    this.headmessage = res.obj.strength;
 			playerInfo.hitpoints -= res.obj.strength;
 			me.game.HUD.setItemValue("score", playerInfo.hitpoints);
 
 			// DEATH!
 			if (playerInfo.hitpoints <= 1) {
 
-				playerInfo.hitpoints = lvlMaxHealth[playerInfo.lvl]; 
+				playerInfo.hitpoints = lvlMaxHealth[playerInfo.lvl];
 				me.game.HUD.updateItemValue("score", playerInfo.hitpoints+20);
 				nextScreenY = '';
 				me.game.HUD.removeItem("mainmenu");
