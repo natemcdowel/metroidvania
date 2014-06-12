@@ -4102,7 +4102,8 @@ var me = me || {};
 			this.settings = settings;
 
 			// call the parent constructor
-			this.parent(new me.Vector2d(x, y),
+			this.parent(new me.Vector2d(x,
+				y),
 						~~settings.spritewidth  || ~~settings.width,
 						~~settings.spriteheight || ~~settings.height);
 
@@ -4121,7 +4122,7 @@ var me = me || {};
 			}
 
 			// set the object GUID value
-			this.GUID = me.utils.createGUID();
+			this.GUID = settings.GUID || me.utils.createGUID();
 
 			// set the object entity name
 			this.name = settings.name?settings.name.toLowerCase():"";
@@ -4589,32 +4590,6 @@ var me = me || {};
 		 * var updated = (this.vel.x!=0 || this.vel.y!=0);
 		 */
 		updateMovement : function() {
-			if (clientid > 0) {
-				for(var i = 0; i < socketObjects.length; ++i) {
-					//  If the object has already been created from host
-			 		if (socketObjects[i].GUID == this.GUID) {
-			 			if (this.pos) {
-				 			this.pos.x = socketObjects[i].pos.x;
-				 			this.pos.y = socketObjects[i].pos.y;
-				 			this.vel = socketObjects[i].vel;
-			 			}
-			 		} // If the object needs to be instantiated
-			 		else {
-			 			if (this.settings && this.settings.entityName) {
-			 				// console.log(this.settings.entityName);
-			 				var hostedEntity = new SkeletonEnemyEntity( this.pos.x, this.pos.y, { image: "skeleton", spritewidth: 240, spriteheight: 240, animationspeed: 10, gravity: 0 });
-				 			// var hostedEntity = new SkeletonEnemyEntity( this.pos.x, this.pos.y, { image: this.settings.image, spritewidth: this.settings.spritewidth, spriteheight: this.settings.spriteheight });
-				 			me.game.add(hostedEntity, this.z-1);
-			    			me.game.sort();
-		    			}
-			 		}
-		 		}
-			}
-			// If hosting game
-			else if (clientid == 0 && this.settings.sendSocket) {
-				this.socketPrep();
-			}
-
 			this.computeVelocity(this.vel);
 
 			// check for collision
@@ -4826,7 +4801,6 @@ var me = me || {};
 			if (clientid == 0) {
 				var i = this.checkGUID(this);
 				socketObjects.splice(i,1);
-				console.log(i);
 			}
 		},
 
@@ -4836,55 +4810,6 @@ var me = me || {};
 		 */
 		onDestroyEvent : function() {
 			;// to be extended !
-		},
-
-
-		/**
-		 * Socket function - Adds object to socketObjects <br>
-		 * MOVE TO INTERVAL OUT OF LOOP
-		 *
-		 */
-		socketPrep: function() {
-		 	var GUIDInSocketObject = false;
-		 	var socketObject = {};
-		 	socketObject.pos = {};
-		 	socketObject.GUID = this.GUID;
-
-		 	if (this.pos && this.pos.x != null) {
-		 		socketObject.pos.x = this.pos.x;
-		 	}
-		 	if (this.pos && this.pos.y != null) {
-		 		socketObject.pos.y = this.pos.y;
-		 	}
-		 	if (this.vel) {
-		 		socketObject.vel = this.vel;
-		 	}
-		 	if (this.settings) {
-		 		socketObject.settings = this.settings;
-		 	}
-		 	if (this.renderable.current.name) {
-		 		socketObject.currentAnim = this.renderable.current.name;
-		 	}
-			var foundGUID = this.checkGUID(socketObject);
-	 		if (!foundGUID) {
-	 			socketObjects.push(socketObject);
-	 		}
-		 	return false;
-		},
-
-		/**
-		 * Socket function - returns key of socketObjects <br>
-		 * MOVE TO INTERVAL OUT OF LOOP
-		 *
-		 */
-		checkGUID: function(thisEntity) {
-			for(var i = 0; i < socketObjects.length; ++i) {
-		 		if (socketObjects[i].GUID == thisEntity.GUID) {
-		 			socketObjects[i] = thisEntity;
-		 			return i;
-		 		}
-		 	}
-		 	return false;
 		}
 	});
 

@@ -198,6 +198,7 @@ var game = {
 		// set the fade transition effect
 		me.state.transition("fade","#FFFFFF", 250);
 
+		setTimeout(function(){ 	me.state.ready = true; },5000);
 		// switch to PLAY state
 		me.state.change(me.state.PLAY);
 

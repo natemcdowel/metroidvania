@@ -10,7 +10,7 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 	init: function (x, y, settings) {
 
 		settings.sendSocket = true;
-		settings.entityName = SkeletonEnemyEntity;
+		settings.entityName = 'SkeletonEnemyEntity';
 		// call the parent constructor
 		this.parent(x, y , settings);
 
@@ -29,6 +29,9 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		this.timer = me.timer.getTime();
 		this.i = 0;
 		this.enemy = new Object();
+		if (clientid == 0) {
+			this.socketInit();
+		}
 	},
 
 	draw : function(context) {
@@ -43,13 +46,11 @@ var AllEnemyEntity = me.ObjectEntity.extend({
     	}
 
     	if (this.pos && this.pos.x <= 0){
-    		console.log(this.pos.x);
 			me.game.remove(this)
 		}
     },
 
     socket : function (self) {
-
 		// Sending information to SOCKET.io
 		if (self.alive && this.pos) {
 			this.enemy.GUID = this.GUID;
@@ -64,7 +65,6 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		}
 
 	},
-
 
 	moveTo : function (x, y) {
 
@@ -157,8 +157,186 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 			}
 		}
 	},
+
+	/**
+	 * Socket function<br>
+	 * socketObjects is sent in an interval in index.html
+	 *
+	 */
+	updateSocketEntity : function () {
+		var foundGUID = false;
+		// If not host
+		if (clientid > 0) {
+			for(var i = 0; i < socketObjects.length; i++) {
+				//  If the object has already been created from host
+		 		if (socketObjects[i].GUID == this.GUID) {
+		 			if (this.pos) {
+			 			this.pos.x = socketObjects[i].pos.x;
+			 			this.pos.y = socketObjects[i].pos.y;
+			 			this.vel = socketObjects[i].vel;
+			 			// this.renderable.setCurrentAnimation(socketObjects[i].currentAnim);
+			 			foundGUID = true;
+			 			return;
+		 			}
+		 		}
+	 		}
+		}
+		// If hosting game
+		else if (clientid == 0 && this.settings.sendSocket) {
+			this.socketPrepSend();
+		}
+	},
+
+	/**
+	 * Socket function - Updates this object information to socketObjects <br>
+	 * socketObjects is sent in an interval in index.html
+	 *
+	 */
+	socketPrepSend: function() {
+		// Find matching GUID from socketObjects
+	 	var i = this.checkGUID(this);
+
+	 	if (i) {
+		 	if (this.pos && this.pos) {
+		 		socketObjects[i].pos = this.pos;
+		 	}
+		 	if (this.vel) {
+		 		socketObjects[i].vel = this.vel;
+		 	}
+		 	if (this.settings) {
+		 		socketObjects[i].settings = this.settings;
+		 	}
+		 	if (this.renderable.current.name) {
+		 		// socketObjects[i].currentAnim = this.renderable.current.name;
+		 	}
+	 	}
+	},
+
+	/**
+	 * Socket function - Initializes this object information to socketObjects <br>
+	 * Only used for host (clientid == 0)
+	 *
+	 */
+	socketInit: function() {
+		var GUIDInSocketObject = false;
+	 	var socketObject = {};
+	 	socketObject.pos = {};
+	 	socketObject.GUID = this.GUID;
+
+	 	if (this.pos && this.pos) {
+	 		socketObject.pos = this.pos;
+	 	}
+	 	if (this.vel) {
+	 		socketObject.vel = this.vel;
+	 	}
+	 	if (this.settings) {
+	 		socketObject.settings = this.settings;
+	 	}
+	 	if (this.renderable.current.name) {
+	 		// socketObject.currentAnim = this.renderable.current.name;
+	 	}
+
+ 		socketObjects.push(socketObject);
+	},
+	/**
+	 * Socket function - returns key of socketObjects <br>
+	 * MOVE TO INTERVAL OUT OF LOOP
+	 *
+	 */
+	checkGUID: function(thisEntity) {
+		for(var i = 0; i < socketObjects.length; i++) {
+	 		if (socketObjects[i].GUID == thisEntity.GUID) {
+	 			return i;
+	 		}
+	 	}
+	 	return false;
+	}
 });
 
+
+/**
+ * A Skull enemy entity
+ *
+ */
+var SkullEnemyEntity = AllEnemyEntity.extend({
+    init: function(x, y, settings, direction) {
+    	this.rotate = 3;
+		this.hitpoints = 10;
+
+		// call the constructor
+	    this.parent(x, y, settings);
+
+	     // apply gravity setting if specified
+		this.gravity = settings.gravity || me.sys.gravity;
+		this.renderable.animationspeed = 2;
+		this.renderable.addAnimation ("head", [3,4,5]);
+
+		this.renderable.setCurrentAnimation("head");
+
+		// walking & jumping speed
+		this.vel.x = -9;
+	    this.collidable = true;
+
+		this.timer = me.timer.getTime();
+		this.i = 1;
+
+
+	},
+
+	update : function () {
+
+		// this.rotate += 10;
+		// this.renderable.angle = Number.prototype.degToRad (this.rotate);
+
+		var self = this;
+		if (clientid == 0) {
+			if (me.timer.getTime() > self.timer+1200) {
+				self.i++
+				self.timer = me.timer.getTime()
+			}
+
+			if (!this.hurt ) {
+
+				if (this.vel.x == 0) {
+					this.vel.x = -9;
+				}
+				if (self.i % 2 == 0) {
+					self.vel.y -= .13;
+				}
+				if (self.i % 2 == 1) {
+					self.vel.y += .1;
+				}
+			}
+			else if (this.hurt) {
+				this.vel.x = 0;
+				this.vel.y = 0;
+			}
+
+			this.computeVelocity(this.vel);
+			this.pos.add(this.vel);
+
+			if (this.pos.x <= 0){
+				me.game.remove(this)
+			}
+
+			if (this.renderable.flickerTimer < 30) {
+				me.game.HUD.removeItem("hit");
+			}
+		}
+		else {
+			this.computeVelocity(this.vel);
+			this.pos.add(this.vel);
+
+			if (this.pos.x <= 0){
+				me.game.remove(this)
+			}
+		}
+		this.updateSocketEntity();
+		this.updateMovement();
+		this.parent();
+		return true;
+	},
+});
 
 /**
  * A Skeleton enemy
@@ -243,14 +421,14 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 
 		var self = this;
 
-		// Setting enemy position through SOCKET if 2nd to map
-		// if (samemap == true && clientid == 1) {
-		// 	// socket.on('updateenemies', function (enemy) {
-		// 	// 	self.pos.x = enemy.x
-		// 	// });
-		// }
+		//Setting enemy position through SOCKET if 2nd to map
+		if (samemap == true && clientid == 1) {
+			// socket.on('updateenemies', function (enemy) {
+			// 	self.pos.x = enemy.x
+			// });
+		}
 
-		// else {
+		else {
 
 			if (this.walkLeft && this.pos.x <= this.startX) {
 				if (this.vel.x == 0) this.vel.x = 4;
@@ -279,11 +457,11 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 				this.walkLeft = true;
 				this.flipX(true);
 			}
-		// }
+		}
 
 		// check & update movement
 		this.updateMovement();
-		this.parent()
+		// this.parent()
 		return true;
 	},
 
@@ -443,84 +621,6 @@ var ShotEntity = AllEnemyEntity.extend({
 	},
 });
 
-
-/**
- * A Skull enemy entity
- *
- */
-var SkullEnemyEntity = AllEnemyEntity.extend({
-    init: function(x, y, settings, direction) {
-
-    	settings.className =
-    	this.rotate = 3;
-		this.hitpoints = 10;
-
-		// call the constructor
-	    this.parent(x, y, settings);
-
-	     // apply gravity setting if specified
-		this.gravity = settings.gravity || me.sys.gravity;
-		this.renderable.animationspeed = 2;
-		this.renderable.addAnimation ("head", [3,4,5]);
-
-		this.renderable.setCurrentAnimation("head");
-
-		// walking & jumping speed
-		this.vel.x = -9;
-	    this.collidable = true;
-
-	    this.timer = me.timer.getTime();
-		this.i = 1;
-
-
-	},
-
-	update : function () {
-
-		// this.rotate += 10;
-		// this.renderable.angle = Number.prototype.degToRad (this.rotate);
-
-		var self = this;
-
-		if (me.timer.getTime() > self.timer+1200) {
-
-			self.i++
-			self.timer = me.timer.getTime()
-
-		}
-
-		if (!this.hurt ) {
-
-			if (this.vel.x == 0) {
-				this.vel.x = -9;
-			}
-			if (self.i % 2 == 0) {
-				self.vel.y -= .13;
-			}
-			if (self.i % 2 == 1) {
-				self.vel.y += .1;
-			}
-		}
-		else if (this.hurt) {
-			this.vel.x = 0;
-			this.vel.y = 0;
-		}
-
-		this.computeVelocity(this.vel);
-		this.pos.add(this.vel);
-
-		if (this.pos.x <= 0){
-			me.game.remove(this)
-		}
-
-		if (this.renderable.flickerTimer < 30) {
-			me.game.HUD.removeItem("hit");
-		}
-		this.parent()
-		return true;
-	},
-});
-
 var CoffinEntity = AllEnemyEntity.extend({
 
     init: function(x, y, settings, direction) {
@@ -616,14 +716,16 @@ var BossFactoryEntity = AllEnemyEntity.extend({
 var EnemyFactoryEntity = AllEnemyEntity.extend({
 
 	init: function(x, y, settings, direction) {
-		this.timer = me.timer.getTime();
-		this.enemyClass = settings.enemyClass;
-		settings.entityName = this.enemyClass;
-		this.objectName = window[this.enemyClass]
-		this.image = settings.image;
-		this.delay = settings.delay;
-		this.spritewidth = settings.spritewidth;
-		this.spriteheight = settings.spriteheight;
+		if (clientid == 0) {
+			this.timer = me.timer.getTime();
+			this.enemyClass = settings.enemyClass;
+			settings.entityName = this.enemyClass;
+			this.objectName = window[this.enemyClass]
+			this.image = settings.image;
+			this.delay = settings.delay;
+			this.spritewidth = settings.spritewidth;
+			this.spriteheight = settings.spriteheight;
+		}
 	},
 
 	update : function () {

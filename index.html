@@ -1,7 +1,67 @@
 <!DOCTYPE HTML>
+<html>
+<head>
+	<hta:application
+   showintaskbar = "no"
+   caption = "no"
+   border = "thick"
+   contextmenu = "no"
+   icon = "path_to_icon.ico"
+   innerborder = "no"
+   scroll = "no"
+   singleinstance = "yes"
+   resizable = "no"
+   windowState = "maximize"
+>
+  <title>MetroidVania</title>
+  <meta name="description" content="melonJS homepage" />
+  <meta name="keywords" content="melonJS, HTML5, javascript, game, engine, framework" />
+  <!-- <link rel="stylesheet" type="text/css" href="http://nsjof.org/game/melonEx/melonJS/examples/platformer//style/style.css" title="style" /> -->
+	<style type="text/css">
+		canvas {
+			display: block;
+			tabindex:1;
+			image-rendering: optimizeSpeed;
+			image-rendering: -moz-crisp-edges;
+			image-rendering: -o-crisp-edges;
+			image-rendering: -webkit-optimize-contrast;
+			image-rendering: optimize-contrast;
+			-ms-interpolation-mode: nearest-neighbor;
+		}
+	</style>
+  </head>
+
+ <!--  <div id="main">
+    <div id="site_content"> -->
+<!-- 		<center>
+		<div id="content"> -->
+			<!-- Canvas -->
+			<div id="screen" style=""></div>
+
+			<!-- Right Login Screen -->
+		<!-- 	<div id="signin" style="float:left; width:15%; margin:15px;">
+				<h1>Please enter your name</h1>
+				<input type='text' id='userNameField'>
+				<button value='Start' onclick='userName = $("#userNameField").val(); socketResponse("setname", $("#userNameField").val()); $("#signin").hide();'>Start</button>
+			</div>
+
+			<div id="userhead" style="float:left; width:15%; margin:15px;"><h1>User List: id#<script>document.write(clientid)</script></h1><hr>
+				<div id="leave"><button onclick='socketResponse("leave", userName); window.location = "http://www.google.com/";'>Leave</button></div>
+				<div id="userlist" style=""></div>
+			</div> -->
 
 
-<script src="/socket.io/socket.io.js"></script>
+			 <script type="text/javascript" src="build/melonJS-0.9.7.js"></script>
+			 <script type="text/javascript" src="plugins/debug/debugPanel.js"></script>
+	         <script type="text/javascript" src="entities/screen.js"></script>
+	         <script type="text/javascript" src="entities/playerEntity.js"></script>
+	         <script type="text/javascript" src="entities/player2Entity.js"></script>
+	         <script type="text/javascript" src="entities/enemyEntities.js"></script>
+	         <script type="text/javascript" src="entities/itemEntities.js"></script>
+	         <script type="text/javascript" src="entities/weaponEntity.js"></script>
+	         <script type="text/javascript" src="entities/npcEntity.js"></script>
+	         <script type="text/javascript" src="main.js"></script>
+	         <script src="/socket.io/socket.io.js"></script>
 <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js'></script>
 <script type='text/javascript' src="//rawgit.com/WebReflection/circular-json/master/build/circular-json.js"></script>
 <script>
@@ -81,7 +141,9 @@
     });
 
     socket.on('updateobjects', function (objects) {
-    	socketObjects = objects;
+    	if (objects.length > 0 && clientid > 0) {
+    		socketObjects = objects;
+    	}
     	// console.log(objects);
     });
 
@@ -91,76 +153,34 @@
 	 	socket.emit(type, data);
 	}
 
+
+	// setInterval(function(){
+	// 	console.log(me.game);
+	// }, 25000);
+
 	setInterval(function(){
 		if (socketObjects.length > 0 && clientid == 0) {
 			socketResponse('updateobjects', socketObjects);
 		}
-  	}, 10);
+
+		if (socketObjects && clientid > 0 && me.state.ready) {
+			for(var i = 0; i < socketObjects.length; i++) {
+				var foundGameObj = false;
+				//console.log(me.game.getEntityByGUID(socketObjects[i].GUID));
+				if (me.game.getEntityByGUID(socketObjects[i].GUID) !== null) {
+					foundGameObj = true;
+				}
+				if (!foundGameObj) {
+					var hostedEntity = new SkullEnemyEntity( socketObjects[i].pos.x, socketObjects[i].pos.y, { image: "flyingdemon", spritewidth: 120, spriteheight: 120, GUID: socketObjects[i].GUID});
+					// var skeleton = new SkeletonEnemyEntity( socketObjects[i].pos.x, socketObjects[i].pos.y, { image: "skeleton", spritewidth: 240, spriteheight: 240, animationspeed: 10, gravity: 0 });
+		 			me.game.add(hostedEntity, this.z-1);
+					me.game.sort();
+				}
+			}
+	    }
+  	}, 25);
 
 </script>
-<html>
-<head>
-	<hta:application
-   showintaskbar = "no"
-   caption = "no"
-   border = "thick"
-   contextmenu = "no"
-   icon = "path_to_icon.ico"
-   innerborder = "no"
-   scroll = "no"
-   singleinstance = "yes"
-   resizable = "no"
-   windowState = "maximize"
->
-  <title>MetroidVania</title>
-  <meta name="description" content="melonJS homepage" />
-  <meta name="keywords" content="melonJS, HTML5, javascript, game, engine, framework" />
-  <!-- <link rel="stylesheet" type="text/css" href="http://nsjof.org/game/melonEx/melonJS/examples/platformer//style/style.css" title="style" /> -->
-	<style type="text/css">
-		canvas {
-			display: block;
-			tabindex:1;
-			image-rendering: optimizeSpeed;
-			image-rendering: -moz-crisp-edges;
-			image-rendering: -o-crisp-edges;
-			image-rendering: -webkit-optimize-contrast;
-			image-rendering: optimize-contrast;
-			-ms-interpolation-mode: nearest-neighbor;
-		}
-	</style>
-  </head>
-
- <!--  <div id="main">
-    <div id="site_content"> -->
-<!-- 		<center>
-		<div id="content"> -->
-			<!-- Canvas -->
-			<div id="screen" style=""></div>
-
-			<!-- Right Login Screen -->
-		<!-- 	<div id="signin" style="float:left; width:15%; margin:15px;">
-				<h1>Please enter your name</h1>
-				<input type='text' id='userNameField'>
-				<button value='Start' onclick='userName = $("#userNameField").val(); socketResponse("setname", $("#userNameField").val()); $("#signin").hide();'>Start</button>
-			</div>
-
-			<div id="userhead" style="float:left; width:15%; margin:15px;"><h1>User List: id#<script>document.write(clientid)</script></h1><hr>
-				<div id="leave"><button onclick='socketResponse("leave", userName); window.location = "http://www.google.com/";'>Leave</button></div>
-				<div id="userlist" style=""></div>
-			</div> -->
-
-
-			 <script type="text/javascript" src="build/melonJS-0.9.7.js"></script>
-			 <script type="text/javascript" src="plugins/debug/debugPanel.js"></script>
-	         <script type="text/javascript" src="entities/screen.js"></script>
-	         <script type="text/javascript" src="entities/playerEntity.js"></script>
-	         <script type="text/javascript" src="entities/player2Entity.js"></script>
-	         <script type="text/javascript" src="entities/enemyEntities.js"></script>
-	         <script type="text/javascript" src="entities/itemEntities.js"></script>
-	         <script type="text/javascript" src="entities/weaponEntity.js"></script>
-	         <script type="text/javascript" src="entities/npcEntity.js"></script>
-	         <script type="text/javascript" src="main.js"></script>
-
 
 <!-- 			</div>
 		</center> -->
