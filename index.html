@@ -171,6 +171,7 @@
 					foundGameObj = true;
 				}
 				if (!foundGameObj) {
+					console.log('created');
 					var hostedEntity = new SkullEnemyEntity( socketObjects[i].pos.x, socketObjects[i].pos.y, { image: "flyingdemon", spritewidth: 120, spriteheight: 120, GUID: socketObjects[i].GUID});
 					// var skeleton = new SkeletonEnemyEntity( socketObjects[i].pos.x, socketObjects[i].pos.y, { image: "skeleton", spritewidth: 240, spriteheight: 240, animationspeed: 10, gravity: 0 });
 		 			me.game.add(hostedEntity, this.z-1);
