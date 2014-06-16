@@ -51,17 +51,18 @@
 			</div> -->
 
 
-			 <script type="text/javascript" src="build/melonJS-0.9.7.js"></script>
-			 <script type="text/javascript" src="plugins/debug/debugPanel.js"></script>
-	         <script type="text/javascript" src="entities/screen.js"></script>
-	         <script type="text/javascript" src="entities/playerEntity.js"></script>
-	         <script type="text/javascript" src="entities/player2Entity.js"></script>
-	         <script type="text/javascript" src="entities/enemyEntities.js"></script>
-	         <script type="text/javascript" src="entities/itemEntities.js"></script>
-	         <script type="text/javascript" src="entities/weaponEntity.js"></script>
-	         <script type="text/javascript" src="entities/npcEntity.js"></script>
-	         <script type="text/javascript" src="main.js"></script>
-	         <script src="/socket.io/socket.io.js"></script>
+ <script type="text/javascript" src="build/melonJS-0.9.7.js"></script>
+ <script type="text/javascript" src="plugins/debug/debugPanel.js"></script>
+ <script type="text/javascript" src="entities/screen.js"></script>
+ <script type="text/javascript" src="entities/playerEntity.js"></script>
+ <script type="text/javascript" src="entities/player2Entity.js"></script>
+ <script type="text/javascript" src="entities/enemyEntities.js"></script>
+ <script type="text/javascript" src="entities/itemEntities.js"></script>
+ <script type="text/javascript" src="entities/weaponEntity.js"></script>
+ <script type="text/javascript" src="entities/npcEntity.js"></script>
+ <script src="tools/Iuppiter.js"></script>
+ <script type="text/javascript" src="main.js"></script>
+ <script src="/socket.io/socket.io.js"></script>
 <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js'></script>
 <script type='text/javascript' src="//rawgit.com/WebReflection/circular-json/master/build/circular-json.js"></script>
 <script>
@@ -142,7 +143,8 @@
 
     socket.on('updateobjects', function (objects) {
     	if (objects.length > 0 && clientid > 0) {
-    		socketObjects = objects;
+    		compressedObjects = JSON.parse(objects);
+    		socketObjects = compressedObjects;
     	}
     	// console.log(objects);
     });
@@ -154,10 +156,17 @@
 	}
 
 	setInterval(function(){
+		console.log(socketObjects);
+	}, 2500);
+
+	setInterval(function(){
+		// If Host, update all socketObjects to server
 		if (socketObjects.length > 0 && clientid == 0) {
-			socketResponse('updateobjects', socketObjects);
+			var stringSocketObjects = JSON.stringify(socketObjects);
+			socketResponse('updateobjects', stringSocketObjects);
 		}
 
+		// If not Host, read objects from Server and add to game if not added yet
 		if (socketObjects && clientid > 0 && me.state.ready) {
 			for(var i = 0; i < socketObjects.length; i++) {
 				var foundGameObj = false;
@@ -171,16 +180,12 @@
 					var hostedEntity = new SkullEnemyEntity( socketObjects[i].pos.x, socketObjects[i].pos.y, { image: "flyingdemon", spritewidth: 120, spriteheight: 120, GUID: socketObjects[i].GUID});
 		 			me.game.add(hostedEntity, 100);
 					me.game.sort();
+					break;
 				}
 			}
 	    }
   	}, 25);
 
 </script>
-
-<!-- 			</div>
-		</center> -->
-<!--     </div>
-  </div> -->
 </body>
 </html>

@@ -1,3 +1,4 @@
+
 var express = require('express')
   , http = require('http');
 
@@ -10,7 +11,7 @@ server.listen(8080);
 
 var clientid = '';
 var users = Array();
-socketObjects = [];
+socketObjects = '';
 var i = 0;
 io.sockets.on('connection', function (socket) {
 
