@@ -174,7 +174,7 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 			 			this.pos.x = socketObjects[i].pos.x;
 			 			this.pos.y = socketObjects[i].pos.y;
 			 			this.vel = socketObjects[i].vel;
-			 			// this.renderable.setCurrentAnimation(socketObjects[i].currentAnim);
+			 			this.renderable.setCurrentAnimation(socketObjects[i].currentAnim);
 			 			foundGUID = true;
 			 			return;
 		 			}
@@ -207,7 +207,7 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 		 		socketObjects[i].settings = this.settings;
 		 	}
 		 	if (this.renderable.current.name) {
-		 		// socketObjects[i].currentAnim = this.renderable.current.name;
+		 		socketObjects[i].currentAnim = this.renderable.current.name;
 		 	}
 	 	}
 	},
@@ -233,7 +233,7 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 	 		socketObject.settings = this.settings;
 	 	}
 	 	if (this.renderable.current.name) {
-	 		// socketObject.currentAnim = this.renderable.current.name;
+	 		socketObject.currentAnim = this.renderable.current.name;
 	 	}
 
  		socketObjects.push(socketObject);
@@ -269,7 +269,7 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 	     // apply gravity setting if specified
 		this.gravity = settings.gravity || me.sys.gravity;
 		this.renderable.animationspeed = 2;
-		this.renderable.addAnimation ("head", [3,4,5]);
+		this.renderable.addAnimation ("head", [0,1,2]);
 
 		this.renderable.setCurrentAnimation("head");
 
