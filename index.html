@@ -155,9 +155,9 @@
 	 	socket.emit(type, data);
 	}
 
-	setInterval(function(){
-		console.log(socketObjects);
-	}, 2500);
+	// setInterval(function(){
+	// 	console.log(socketObjects);
+	// }, 2500);
 
 	setInterval(function(){
 		// If Host, update all socketObjects to server
@@ -175,7 +175,7 @@
 					foundGameObj = true;
 				}
 				if (!foundGameObj) {
-					console.log('created');
+					// console.log('created');
 					// var skeleton = new SkeletonEnemyEntity( socketObjects[i].pos.x, socketObjects[i].pos.y, { image: "skeleton", spritewidth: 240, spriteheight: 240, animationspeed: 10, gravity: 0 });
 					var hostedEntity = new SkullEnemyEntity( socketObjects[i].pos.x, socketObjects[i].pos.y, { image: "flyingdemon", spritewidth: 120, spriteheight: 120, GUID: socketObjects[i].GUID});
 		 			me.game.add(hostedEntity, 100);
@@ -184,7 +184,7 @@
 				}
 			}
 	    }
-  	}, 10);
+  	}, 50);
 
 </script>
 </body>
