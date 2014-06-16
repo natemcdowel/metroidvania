@@ -166,7 +166,7 @@
 			socketResponse('updateobjects', stringSocketObjects);
 		}
 
-		// If not Host, read objects from Server and add to game if not added yet
+		// If not Host, read objects from Server and add to game if  added yet
 		if (socketObjects && clientid > 0 && me.state.ready) {
 			for(var i = 0; i < socketObjects.length; i++) {
 				var foundGameObj = false;
@@ -184,7 +184,7 @@
 				}
 			}
 	    }
-  	}, 25);
+  	}, 10);
 
 </script>
 </body>
