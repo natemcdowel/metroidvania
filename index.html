@@ -60,7 +60,7 @@
 <script type="text/javascript" src="entities/itemEntities.js"></script>
 <script type="text/javascript" src="entities/weaponEntity.js"></script>
 <script type="text/javascript" src="entities/npcEntity.js"></script>
-<script src="tools/Iuppiter.js"></script>
+<script src="tools/bison.js"></script>
 <script type="text/javascript" src="main.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js'></script>
@@ -146,8 +146,7 @@
   // Updates ALL socketObjects with each server loop iteration
   socket.on('updateobjects', function (objects) {
   	if (objects.length > 0 && clientid > 0) {
-  		compressedObjects = JSON.parse(objects);
-  		socketObjects = compressedObjects;
+  		socketObjects = JSON.parse(objects);
   	}
   });
 
@@ -187,15 +186,14 @@
 	};
 
 	// For logging socketObjects
-	setInterval(function(){
-	}, 2500);
+	// setInterval(function(){
+	// }, 2500);
 
 	setInterval(function(){
 		var foundGameObj = [];
 		// If Host, update all socketObjects to server
 		if (socketObjects.length > 0 && clientid == 0) {
-			var stringSocketObjects = JSON.stringify(socketObjects);
-			socketResponse('updateobjects', stringSocketObjects);
+			socketResponse('updateobjects', JSON.stringify(socketObjects));
 
 			// Check if we should remove from host
 			for(var i = 0; i < socketObjects.length; i++) {
@@ -223,7 +221,7 @@
 				}
 			}
 	    }
-  	}, 50);
+  	}, 80);
 
 </script>
 </body>

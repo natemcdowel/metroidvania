@@ -99,7 +99,7 @@ var me = me || {};
 		 * @type Int
 		 * @memberOf me.sys
 		 */
-		fps : 30,
+		fps : 23,
 
 		/**
 		 * enable/disable frame interpolation (default disable)<br>
