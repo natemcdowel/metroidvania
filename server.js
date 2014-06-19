@@ -63,7 +63,6 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('slaveupdateobjects', function (object) {
     var i = checkGUID(object);
-    // updateSocketObjectKeys(object, i);
     io.sockets.emit('updatehostobject', object);
   });
 
@@ -97,5 +96,5 @@ io.sockets.on('connection', function (socket) {
   setInterval(function(){
     io.sockets.emit('updateclientpos',users);
     io.sockets.emit('updateobjects',socketObjects);
-  }, 50);
+  }, 70);
 });
