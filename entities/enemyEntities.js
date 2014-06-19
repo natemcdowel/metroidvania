@@ -1,22 +1,110 @@
+me.socketObjectEntity = me.ObjectEntity.extend({
+	/**
+	 * Socket function<br>
+	 * socketObjects is sent in an interval in index.html
+	 *
+	 */
+	updateSocketEntity : function () {
+		var foundGUID = false;
+		// If not host
+		if (clientid > 0) {
+			for(var i = 0; i < socketObjects.length; i++) {
+				//  If the object has already been created from host
+		 		if (socketObjects[i].GUID == this.GUID) {
+		 			if (socketObjects[i].dead) {
+		 				me.game.remove(this);
+		 			}
+		 			if (this.pos) {
+			 			this.pos.x = socketObjects[i].pos.x;
+			 			this.pos.y = socketObjects[i].pos.y;
+			 			this.vel = socketObjects[i].vel;
+			 			this.renderable.setCurrentAnimation(socketObjects[i].currentAnim);
+			 			foundGUID = true;
+			 			return;
+		 			}
+		 		}
+	 		}
+		}
+		// If hosting game
+		else if (clientid == 0 && this.settings.sendSocket) {
+			if (this.dead == true) {
+				console.log('removedHost');
+				me.game.remove(this);
+			}
+			this.socketPrepSend();
+		}
+	},
+
+	/**
+	 * Socket function - Updates this object information to socketObjects <br>
+	 * socketObjects is sent in an interval in index.html
+	 *
+	 */
+	socketPrepSend: function() {
+		// Find matching GUID from socketObjects
+	 	var i = this.checkGUID(this);
+
+	 	if (i) {
+		 	if (this.pos && this.pos) {
+		 		socketObjects[i].pos = this.pos;
+		 	}
+		 	if (this.vel) {
+		 		socketObjects[i].vel = this.vel;
+		 	}
+		 	if (this.settings) {
+		 		socketObjects[i].settings = this.settings;
+		 	}
+		 	if (this.renderable.current.name) {
+		 		socketObjects[i].currentAnim = this.renderable.current.name;
+		 	}
+	 	}
+	},
+
+	/**
+	 * Socket function - Initializes this object information to socketObjects <br>
+	 * Only used for host (clientid == 0)
+	 *
+	 */
+	socketInit: function() {
+	 	var socketObject = {};
+	 	socketObject.pos = {};
+	 	socketObject.GUID = this.GUID;
+
+	 	if (this.pos && this.pos) {
+	 		socketObject.pos = this.pos;
+	 	}
+	 	if (this.vel) {
+	 		socketObject.vel = this.vel;
+	 	}
+	 	if (this.settings) {
+	 		socketObject.settings = this.settings;
+	 	}
+	 	if (this.renderable.current.name) {
+	 		socketObject.currentAnim = this.renderable.current.name;
+	 	}
+
+ 		socketObjects.push(socketObject);
+	}
+});
+
 /**
  * An enemy entity
  * follow a horizontal path defined by the box size in Tiled
  */
 
-var AllEnemyEntity = me.ObjectEntity.extend({
+var AllEnemyEntity = me.socketObjectEntity.extend({
 	/**
 	 * constructor
 	 */
 	init: function (x, y, settings) {
 
 		settings.sendSocket = true;
-		settings.entityName = 'SkeletonEnemyEntity';
 		// call the parent constructor
 		this.parent(x, y , settings);
 
 		// make it collidable
 		this.collidable = true;
-		this.hitpoints = 8;
+		this.hitpoints = 2;
 		this.strength = 5;
 		this.xp = 10;
 
@@ -42,29 +130,12 @@ var AllEnemyEntity = me.ObjectEntity.extend({
         	this.context = context;
 	        this.tag = new me.Font("Verdana", this.fontsize, "yellow");
 	        this.tag.draw(this.context, this.takendamage , this.pos.x + 80, this.pos.y+150+this.hpY);
-	        // this.socket(self);
     	}
 
     	if (this.pos && this.pos.x <= 0){
 			me.game.remove(this)
 		}
     },
-
-    socket : function (self) {
-		// Sending information to SOCKET.io
-		if (self.alive && this.pos) {
-			this.enemy.GUID = this.GUID;
-			this.enemy.x = this.pos.x;
-			this.enemy.y = this.pos.y;
-			this.enemy.velx = this.vel.x;
-			this.enemy.vely = this.vel.y;
-			this.enemy.animation = this.renderable.current.name;
-			// if (samemap == true && clientid == 0) {
-			// 	socketResponse('enemymove',this.enemy);
-			// }
-		}
-
-	},
 
 	moveTo : function (x, y) {
 
@@ -113,7 +184,6 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 
 		if (!this.renderable.flickering)
 		{
-
 			// Animates hitpoints above player
 			var tween = new me.Tween(this).to({fontsize: 40, hpY: -160}, 700).onComplete(function(){
 				var tween = new me.Tween(this)
@@ -132,11 +202,10 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 			this.hurt = true;
 			this.i++;
 			setTimeout(function(){self.hurt = false;},1000);
-
-
 			// flash the screen
 			if (this.hitpoints <= 0) {
-
+				console.log(this.GUID);
+				socketResponse('slaveupdateobjects',{dead:true, GUID:this.GUID});
 				playerInfo.xp += this.xp;
 				this.alive = false;
 				this.collidable = false;
@@ -156,100 +225,6 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 				me.audio.play("06", false);
 			}
 		}
-	},
-
-	/**
-	 * Socket function<br>
-	 * socketObjects is sent in an interval in index.html
-	 *
-	 */
-	updateSocketEntity : function () {
-		var foundGUID = false;
-		// If not host
-		if (clientid > 0) {
-			for(var i = 0; i < socketObjects.length; i++) {
-				//  If the object has already been created from host
-		 		if (socketObjects[i].GUID == this.GUID) {
-		 			if (this.pos) {
-			 			this.pos.x = socketObjects[i].pos.x;
-			 			this.pos.y = socketObjects[i].pos.y;
-			 			this.vel = socketObjects[i].vel;
-			 			this.renderable.setCurrentAnimation(socketObjects[i].currentAnim);
-			 			foundGUID = true;
-			 			return;
-		 			}
-		 		}
-	 		}
-		}
-		// If hosting game
-		else if (clientid == 0 && this.settings.sendSocket) {
-			this.socketPrepSend();
-		}
-	},
-
-	/**
-	 * Socket function - Updates this object information to socketObjects <br>
-	 * socketObjects is sent in an interval in index.html
-	 *
-	 */
-	socketPrepSend: function() {
-		// Find matching GUID from socketObjects
-	 	var i = this.checkGUID(this);
-
-	 	if (i) {
-		 	if (this.pos && this.pos) {
-		 		socketObjects[i].pos = this.pos;
-		 	}
-		 	if (this.vel) {
-		 		socketObjects[i].vel = this.vel;
-		 	}
-		 	if (this.settings) {
-		 		socketObjects[i].settings = this.settings;
-		 	}
-		 	if (this.renderable.current.name) {
-		 		socketObjects[i].currentAnim = this.renderable.current.name;
-		 	}
-	 	}
-	},
-
-	/**
-	 * Socket function - Initializes this object information to socketObjects <br>
-	 * Only used for host (clientid == 0)
-	 *
-	 */
-	socketInit: function() {
-		var GUIDInSocketObject = false;
-	 	var socketObject = {};
-	 	socketObject.pos = {};
-	 	socketObject.GUID = this.GUID;
-
-	 	if (this.pos && this.pos) {
-	 		socketObject.pos = this.pos;
-	 	}
-	 	if (this.vel) {
-	 		socketObject.vel = this.vel;
-	 	}
-	 	if (this.settings) {
-	 		socketObject.settings = this.settings;
-	 	}
-	 	if (this.renderable.current.name) {
-	 		socketObject.currentAnim = this.renderable.current.name;
-	 	}
-
- 		socketObjects.push(socketObject);
-	},
-	/**
-	 * Socket function - returns key of socketObjects <br>
-	 * MOVE TO INTERVAL OUT OF LOOP
-	 *
-	 */
-	checkGUID: function(thisEntity) {
-		for(var i = 0; i < socketObjects.length; i++) {
-	 		if (socketObjects[i].GUID == thisEntity.GUID) {
-	 			return i;
-	 		}
-	 	}
-	 	return false;
 	}
 });
 
@@ -261,7 +236,8 @@ var AllEnemyEntity = me.ObjectEntity.extend({
 var SkullEnemyEntity = AllEnemyEntity.extend({
     init: function(x, y, settings, direction) {
     	this.rotate = 3;
-		this.hitpoints = 10;
+		this.hitpoints = 2;
+		settings.entityName = 'SkullEnemyEntity';
 
 		// call the constructor
 	    this.parent(x, y, settings);
@@ -270,17 +246,13 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 		this.gravity = settings.gravity || me.sys.gravity;
 		this.renderable.animationspeed = 2;
 		this.renderable.addAnimation ("head", [0,1,2]);
-
 		this.renderable.setCurrentAnimation("head");
 
 		// walking & jumping speed
 		this.vel.x = -9;
 	    this.collidable = true;
-
 		this.timer = me.timer.getTime();
 		this.i = 1;
-
-
 	},
 
 	update : function () {
@@ -477,37 +449,40 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
 	 * constructor
 	 */
 	init: function (x, y, settings) {
-		// parent constructor
-		this.parent(x, y, settings);
+		// if (clientid == 0 || settings.GUID) {
+			settings.entityName = 'CrowEnemyEntity'
+			// parent constructor
+			this.parent(x, y, settings);
 
-		// custom animation speed ?
-		if (settings.animationspeed) {
-			this.renderable.animationspeed = settings.animationspeed;
-		}
+			// custom animation speed ?
+			if (settings.animationspeed) {
+				this.renderable.animationspeed = settings.animationspeed;
+			}
 
-		// apply gravity setting if specified
-		this.gravity = settings.gravity || me.sys.gravity;
+			// apply gravity setting if specified
+			this.gravity = settings.gravity || me.sys.gravity;
 
-		//set start/end position
-		this.startX = x;
-		this.endX   = x + settings.width - settings.spritewidth
-		this.pos.x  = x + settings.width - settings.spritewidth;
+			//set start/end position
+			this.startX = x;
+			this.endX   = x + settings.width - settings.spritewidth
+			this.pos.x  = x + settings.width - settings.spritewidth;
 
-		this.hitpoints = 9;
-		// walking & jumping speed
-		this.setVelocity(settings.velX || 1, settings.velY || 6);
-		this.updateColRect(80,80, 70,100);
+			this.hitpoints = 9;
+			// walking & jumping speed
+			this.setVelocity(settings.velX || 1, settings.velY || 6);
+			this.updateColRect(80,80, 70,100);
 
-		// walking animation
-		this.renderable.addAnimation ("walk", [0,1,2]);
-		// dead animatin
-		this.renderable.addAnimation ("dead", [2]);
+			// walking animation
+			this.renderable.addAnimation ("walk", [0,1,2]);
+			// dead animatin
+			this.renderable.addAnimation ("dead", [2]);
 
-		// set default one
-		this.renderable.setCurrentAnimation("walk");
+			// set default one
+			this.renderable.setCurrentAnimation("walk");
 
-		// set the renderable position to bottom center
-		this.anchorPoint.set(0.5, 1.0);
+			// set the renderable position to bottom center
+			this.anchorPoint.set(0.5, 1.0);
+		// }
 	},
 
 		/**
@@ -516,27 +491,36 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
 	update : function () {
 
 		var self = this;
-		// do nothing if not visible
-		if (!this.inViewport) {
-			return false;
-		}
-
-		if (this.alive)	{
-			if (this.hurt) {
-				// this.pos.x = 0;
-				// this.pos.y = 0;
+		if (clientid == 0) {
+			// do nothing if not visible
+			if (!this.inViewport) {
+				return false;
 			}
-    		else if (me.timer.getTime() > self.timer+2000) {
-    			self.moveTo();
-    		}
-		} else {
-			this.vel.x = 0;
+
+			if (this.alive)	{
+				if (this.hurt) {
+					// this.pos.x = 0;
+					// this.pos.y = 0;
+				}
+	    		else if (me.timer.getTime() > self.timer+2000) {
+	    			self.moveTo();
+	    		}
+			} else {
+				this.vel.x = 0;
+			}
 		}
+		// else {
+		// 	this.computeVelocity(this.vel);
+		// 	this.pos.add(this.vel);
 
-
-		// check & update movement
-		this.updateMovement();
-		this.parent()
+		// 	if (this.pos.x <= 0){
+		// 		me.game.remove(this)
+		// 	}
+		// }
+		this.updateSocketEntity();
+		this.computeVelocity(this.vel);
+		this.pos.add(this.vel);
+		this.parent();
 		return true;
 		// return true if we moved of if flickering
 		// return (this.parent() || this.vel.x != 0 || this.vel.y != 0);
@@ -553,24 +537,29 @@ var BatEnemyEntity = AllEnemyEntity.extend({
 	 * constructor
 	 */
 	init: function (x, y, settings) {
-		// parent constructor
-		this.parent(x, y, settings);
 
-		// custom animation speed ?
-		if (settings.animationspeed) {
-			this.renderable.animationspeed = settings.animationspeed;
+		// If client is Hosting or GUID has been sent (Retrieved from)
+		if (client == 0 || settings.GUID) {
+			settings.entityName = 'BatEnemyEntity';
+			// parent constructor
+			this.parent(x, y, settings);
+
+			// custom animation speed ?
+			if (settings.animationspeed) {
+				this.renderable.animationspeed = settings.animationspeed;
+			}
+
+			// walking animatin
+			this.renderable.addAnimation ("walk", [0,1,2]);
+			// dead animatin
+			this.renderable.addAnimation ("dead", [2]);
+
+			// set default one
+			this.renderable.setCurrentAnimation("walk");
+
+			// set the renderable position to bottom center
+			this.anchorPoint.set(0.5, 1.0);
 		}
-
-		// walking animatin
-		this.renderable.addAnimation ("walk", [0,1,2]);
-		// dead animatin
-		this.renderable.addAnimation ("dead", [2]);
-
-		// set default one
-		this.renderable.setCurrentAnimation("walk");
-
-		// set the renderable position to bottom center
-		this.anchorPoint.set(0.5, 1.0);
 	},
 
 });
@@ -657,7 +646,7 @@ var CoffinEntity = AllEnemyEntity.extend({
 			var self = this;
 			var player = me.game.getEntityByName("mainPlayer")[0];
 
-			if (this.pos.x < player.pos.x) this.direction = 'right'
+			if (this.pos.x < player.pos.x) this.direction = 'right';
 			else this.direction = 'left';
 
 			// Coffin Door flies off
@@ -729,7 +718,6 @@ var EnemyFactoryEntity = AllEnemyEntity.extend({
 	},
 
 	update : function () {
-
 		if (me.timer.getTime() > this.timer+this.delay) {
 			var player = me.game.getEntityByName("mainPlayer")[0];
 			var enemy = new this.objectName( player.pos.x+1000, player.pos.y, { image: this.image, spritewidth: this.spritewidth, spriteheight: this.spriteheight });
@@ -746,7 +734,6 @@ var WeatherFactoryEntity = AllEnemyEntity.extend({
 	init: function() {
 		this.min = 0;
 		this.max = 4200;
-
 		this.minY = 200;
 		this.maxY = 500;
 		this.timer = me.timer.getTime();

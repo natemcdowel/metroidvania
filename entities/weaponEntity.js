@@ -4,7 +4,7 @@
 /*																					*/
 /************************************************************************************/
 
-var weaponEntity = me.ObjectEntity.extend({	
+var weaponEntity = me.ObjectEntity.extend({
 
 
 	init: function (x, y, settings) {
@@ -12,33 +12,33 @@ var weaponEntity = me.ObjectEntity.extend({
 		mainPlayer = me.game.getEntityByName('mainPlayer')
 
 		this.parent(mainPlayer[0].pos.x+10, mainPlayer[0].pos.y, settings);
-		
+
 		// make it collidable
 		this.collidable = false;
 		this.weapon = 'sword';
 		this.cooldown = true;
-		
+
 	},
 
 	attack : function () {
 
 			var self = this;
 
-			// Which side is the player attacking?	
+			// Which side is the player attacking?
 			if (clientData[0] == 'left') {
-				
+
 				if (mainPlayer[0].renderable.isCurrentAnimation('crouchattack')) {
 					this.updateColRect(-13,145, 185,25);
-				} 	
+				}
 				else if (mainPlayer[0].renderable.isCurrentAnimation('attack')) {
 					this.updateColRect(-13,145, 150,25);
-				} 	
+				}
 			}
 			if (clientData[0] == 'right') {
 
 				if (mainPlayer[0].renderable.isCurrentAnimation('crouchattack')) {
 					this.updateColRect(103,145, 185,25);
-				} 	 	
+				}
 				else if (mainPlayer[0].renderable.isCurrentAnimation('attack')) {
 					this.updateColRect(103,145, 150,25);
 				}
@@ -56,8 +56,8 @@ var weaponEntity = me.ObjectEntity.extend({
 		this.pos.x = mainPlayer[0].pos.x;
 		this.pos.y = mainPlayer[0].pos.y;
 
-		if (mainPlayer[0].attack == true) { 
-			this.attack(); 
+		if (mainPlayer[0].attack == true) {
+			this.attack();
 		}
 
 
@@ -72,11 +72,12 @@ var weaponEntity = me.ObjectEntity.extend({
 /*		Secondary weapon entity														*/
 /*																					*/
 /************************************************************************************/
-var secondWeaponEntity = me.ObjectEntity.extend({	
+var secondWeaponEntity = me.socketObjectEntity.extend({
 
     init: function(x, y, settings, direction) {
 
-		
+    	settings.sendSocket = true;
+    	settings.entityName = 'secondWeaponEntity';
 		// call the constructor
 	    this.parent(x, y, settings);
 
@@ -86,11 +87,10 @@ var secondWeaponEntity = me.ObjectEntity.extend({
 		this.gravity = settings.gravity || me.sys.gravity;
 		this.collidable = true;
 		this.weapon = 'sword';
-
-		this.renderable.addAnimation ("dagger", [0]); 
-		this.renderable.addAnimation ("axe", [2]);  
-
-		this.renderable.setCurrentAnimation(mainPlayer.secWeapon);
+		this.renderable.addAnimation ("dagger", [0]);
+		this.renderable.addAnimation ("axe", [2]);
+		this.renderable.setCurrentAnimation('axe');
+		this.socketInit();
 
 		if (mainPlayer.secWeapon == 'dagger') {
 
@@ -98,11 +98,11 @@ var secondWeaponEntity = me.ObjectEntity.extend({
 
 			// walking & jumping speed
 			if (direction == 'right') {
-				this.vel.x = 35; 
+				this.vel.x = 35;
 				this.flipX(false);
 			}
 			else {
-				this.pos.x += 100; 
+				this.pos.x += 100;
 				this.vel.x = -35;
 				this.flipX(true);
 			}
@@ -115,12 +115,12 @@ var secondWeaponEntity = me.ObjectEntity.extend({
 
 			// walking & jumping speed
 			if (direction == 'right') {
-				this.vel.x = 18; 
+				this.vel.x = 18;
 				this.vel.y = -38;
 				this.flipX(false);
 			}
 			else {
-				this.pos.x += 100; 
+				this.pos.x += 100;
 				this.vel.y = -38;
 				this.vel.x = -18;
 				this.flipX(true);
@@ -128,32 +128,38 @@ var secondWeaponEntity = me.ObjectEntity.extend({
 		}
 	    this.rotate = 10;
 
-	    // Deducting heerts 
+	    // Deducting heerts
 	    playerInfo.hearts--
 		me.game.HUD.setItemValue("hearts", playerInfo.hearts);
-		
-	     // this.updateColRect(20,32, 100,0);  
-
-
+	     // this.updateColRect(20,32, 100,0);
 	},
 
 	update : function () {
 
-		this.rotate += 35;
-		this.renderable.angle = Number.prototype.degToRad (this.rotate);
+		if (this.pos) {
+			this.rotate += 35;
+			this.renderable.angle = Number.prototype.degToRad (this.rotate);
 
-		var res = me.game.collide(this);
-		if (res) {
-			if (res.obj.type == me.game.ENEMY_OBJECT)
-			me.game.remove(this)
+			var res = me.game.collide(this);
+			if (res) {
+				if (res.obj.type == me.game.ENEMY_OBJECT)
+				me.game.remove(this)
+			}
+
+
+			if (this.vel.x == 0 || this.pos.x < 40 || this.pos.x > (me.game.currentLevel.width - 80))  {
+				me.game.remove(this)
+			}
+
+			this.updateSocketEntity();
+			this.computeVelocity(this.vel);
+			this.pos.add(this.vel);
 		}
-
-		this.computeVelocity(this.vel);
-		this.pos.add(this.vel);
 		// this.updateMovement();
 
-		if (this.vel.x == 0 || this.pos.x < 40 || this.pos.x > (me.game.currentLevel.width - 80)) me.game.remove(this)
-		return false;
+
+		this.parent();
+		return true;
 	},
 });
 

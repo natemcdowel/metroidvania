@@ -13,23 +13,23 @@
    resizable = "no"
    windowState = "maximize"
 >
-  <title>MetroidVania</title>
-  <meta name="description" content="melonJS homepage" />
-  <meta name="keywords" content="melonJS, HTML5, javascript, game, engine, framework" />
-  <!-- <link rel="stylesheet" type="text/css" href="http://nsjof.org/game/melonEx/melonJS/examples/platformer//style/style.css" title="style" /> -->
-	<style type="text/css">
-		canvas {
-			display: block;
-			tabindex:1;
-			image-rendering: optimizeSpeed;
-			image-rendering: -moz-crisp-edges;
-			image-rendering: -o-crisp-edges;
-			image-rendering: -webkit-optimize-contrast;
-			image-rendering: optimize-contrast;
-			-ms-interpolation-mode: nearest-neighbor;
-		}
-	</style>
-  </head>
+<title>MetroidVania</title>
+<meta name="description" content="melonJS homepage" />
+<meta name="keywords" content="melonJS, HTML5, javascript, game, engine, framework" />
+<!-- <link rel="stylesheet" type="text/css" href="http://nsjof.org/game/melonEx/melonJS/examples/platformer//style/style.css" title="style" /> -->
+<style type="text/css">
+	canvas {
+		display: block;
+		tabindex:1;
+		image-rendering: optimizeSpeed;
+		image-rendering: -moz-crisp-edges;
+		image-rendering: -o-crisp-edges;
+		image-rendering: -webkit-optimize-contrast;
+		image-rendering: optimize-contrast;
+		-ms-interpolation-mode: nearest-neighbor;
+	}
+</style>
+</head>
 
  <!--  <div id="main">
     <div id="site_content"> -->
@@ -51,18 +51,18 @@
 			</div> -->
 
 
- <script type="text/javascript" src="build/melonJS-0.9.7.js"></script>
- <script type="text/javascript" src="plugins/debug/debugPanel.js"></script>
- <script type="text/javascript" src="entities/screen.js"></script>
- <script type="text/javascript" src="entities/playerEntity.js"></script>
- <script type="text/javascript" src="entities/player2Entity.js"></script>
- <script type="text/javascript" src="entities/enemyEntities.js"></script>
- <script type="text/javascript" src="entities/itemEntities.js"></script>
- <script type="text/javascript" src="entities/weaponEntity.js"></script>
- <script type="text/javascript" src="entities/npcEntity.js"></script>
- <script src="tools/Iuppiter.js"></script>
- <script type="text/javascript" src="main.js"></script>
- <script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="build/melonJS-0.9.7.js"></script>
+<script type="text/javascript" src="plugins/debug/debugPanel.js"></script>
+<script type="text/javascript" src="entities/screen.js"></script>
+<script type="text/javascript" src="entities/playerEntity.js"></script>
+<script type="text/javascript" src="entities/player2Entity.js"></script>
+<script type="text/javascript" src="entities/enemyEntities.js"></script>
+<script type="text/javascript" src="entities/itemEntities.js"></script>
+<script type="text/javascript" src="entities/weaponEntity.js"></script>
+<script type="text/javascript" src="entities/npcEntity.js"></script>
+<script src="tools/Iuppiter.js"></script>
+<script type="text/javascript" src="main.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js'></script>
 <script type='text/javascript' src="//rawgit.com/WebReflection/circular-json/master/build/circular-json.js"></script>
 <script>
@@ -104,6 +104,8 @@
 	var lastLevelHeight = '';
 	var playerInfo = new Object();
 	var socketObjects = [];
+	var enemyZ = 100;
+	var hostObject = {};
 
 	// Info
 	playerInfo.xp = 0;
@@ -136,51 +138,88 @@
 		clientid = id;
 	});
 
-    socket.on('removeplayer', function (clientid) {
-    	playerX.splice(clientid, 1);
-    	playerY.splice(clientid, 1);
-    });
+  socket.on('removeplayer', function (clientid) {
+  	playerX.splice(clientid, 1);
+  	playerY.splice(clientid, 1);
+  });
 
-    socket.on('updateobjects', function (objects) {
-    	if (objects.length > 0 && clientid > 0) {
-    		compressedObjects = JSON.parse(objects);
-    		socketObjects = compressedObjects;
-    	}
-    	// console.log(objects);
-    });
+  // Updates ALL socketObjects with each server loop iteration
+  socket.on('updateobjects', function (objects) {
+  	if (objects.length > 0 && clientid > 0) {
+  		compressedObjects = JSON.parse(objects);
+  		socketObjects = compressedObjects;
+  	}
+  });
 
-    // Passing input from browser to socket.io server
-	function socketResponse(type, data) {
+  // Updates Host object directly
+  socket.on('updatehostobject', function (serverObject) {
+  	if (clientid == 0) {
+	  	console.log(serverObject);
+			var hostObject = me.game.editEntityByGUID(serverObject.GUID, serverObject);
+		}
+  });
+
+   // Passing input from browser to socket.io server
+	var socketResponse = function(type, data) {
 		var socket = io.connect(socketHost);
 	 	socket.emit(type, data);
-	}
+	};
 
-	// setInterval(function(){
-	// 	console.log(socketObjects);
-	// }, 2500);
+	// Updates some socketObjects keys
+	var updateSocketObjectKeys = function(object, i) {
+	  for (key in object) {
+	    if (socketObjects[i][key]) {
+	      socketObjects[i][key] = object[key];
+	    }
+	  }
+	  return true;
+	};
+
+	// Updates some Entity keys
+	var updateHostEntityKeys = function(serverObject) {
+		for (key in serverObject) {
+	    if (hostObject) {
+	      hostObject[key] = serverObject[key];
+	    }
+	    console.log(hostObject);
+	  }
+	  return true;
+	};
+
+	// For logging socketObjects
+	setInterval(function(){
+	}, 2500);
 
 	setInterval(function(){
+		var foundGameObj = [];
 		// If Host, update all socketObjects to server
 		if (socketObjects.length > 0 && clientid == 0) {
 			var stringSocketObjects = JSON.stringify(socketObjects);
 			socketResponse('updateobjects', stringSocketObjects);
+
+			// Check if we should remove from host
+			for(var i = 0; i < socketObjects.length; i++) {
+				if (socketObjects[i].dead == true) {
+					socketObjects.splice(i,1);
+				}
+			}
 		}
 
-		// If not Host, read objects from Server and add to game if  added yet
+		// If not Host, read objects from Server and add to game if not added yet
 		if (socketObjects && clientid > 0 && me.state.ready) {
 			for(var i = 0; i < socketObjects.length; i++) {
-				var foundGameObj = false;
-				//console.log(me.game.getEntityByGUID(socketObjects[i].GUID));
+
+				foundGameObj[i] = false;
 				if (me.game.getEntityByGUID(socketObjects[i].GUID) !== null) {
-					foundGameObj = true;
+					foundGameObj[i] = true;
 				}
-				if (!foundGameObj) {
-					// console.log('created');
-					// var skeleton = new SkeletonEnemyEntity( socketObjects[i].pos.x, socketObjects[i].pos.y, { image: "skeleton", spritewidth: 240, spriteheight: 240, animationspeed: 10, gravity: 0 });
-					var hostedEntity = new SkullEnemyEntity( socketObjects[i].pos.x, socketObjects[i].pos.y, { image: "flyingdemon", spritewidth: 120, spriteheight: 120, GUID: socketObjects[i].GUID});
-		 			me.game.add(hostedEntity, 100);
+
+				// If the object has not been added to non-host client
+				if (foundGameObj[i] == false && socketObjects[i].settings.entityName) {
+					var hostedEntity = new window[socketObjects[i].settings.entityName]( socketObjects[i].pos.x, socketObjects[i].pos.y, { image: socketObjects[i].settings.image, spritewidth: socketObjects[i].settings.spritewidth, spriteheight: socketObjects[i].settings.spriteheight, GUID: socketObjects[i].GUID});
+
+		 			me.game.add(hostedEntity, enemyZ++);
 					me.game.sort();
-					break;
 				}
 			}
 	    }

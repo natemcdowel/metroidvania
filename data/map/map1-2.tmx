@@ -70,7 +70,7 @@
     <property name="spritewidth" value="240"/>
    </properties>
   </object>
-  <object name="npcEntity" x="1749" y="814" width="70" height="70">
+  <object name="npcEntity" x="553" y="2070" width="70" height="70">
    <properties>
     <property name="" value=""/>
     <property name="animationspeed" value="5"/>
@@ -81,7 +81,7 @@
     <property name="text" value="Hello, young traveller. &lt;br&gt;You need passage to another realm?&lt;br&gt;You'll need a sword.. &lt;br&gt;Bring me this and I'll allow passage.. "/>
    </properties>
   </object>
-  <object name="npcEntity" x="1928" y="810" width="70" height="70">
+  <object name="npcEntity" x="732" y="2066" width="70" height="70">
    <properties>
     <property name="animationspeed" value="5"/>
     <property name="image" value="teleport"/>
@@ -136,7 +136,7 @@
     <property name="velX" value="4"/>
    </properties>
   </object>
-  <object name="CrowEntity" x="1380" y="1498" width="70" height="70">
+  <object name="CrowEntity" x="2788" y="182" width="70" height="70">
    <properties>
     <property name="animationspeed" value="5"/>
     <property name="gravity" value="0"/>
@@ -217,7 +217,7 @@
     <property name="spritewidth" value="120"/>
    </properties>
   </object>
-  <object name="EnemyFactory" x="5794" y="741" width="350" height="35">
+  <object name="EnemyFactory" x="4598" y="1997" width="350" height="35">
    <properties>
     <property name="animationspeed" value="5"/>
     <property name="delay" value="5000"/>
@@ -249,6 +249,14 @@
     <property name="spriteheight" value="60"/>
     <property name="spritewidth" value="120"/>
     <property name="weapon" value="axe"/>
+   </properties>
+  </object>
+  <object name="BreakableEntity" x="875" y="1065" width="70" height="35">
+   <properties>
+    <property name="image" value="torches"/>
+    <property name="item" value="knife"/>
+    <property name="spriteheight" value="120"/>
+    <property name="spritewidth" value="120"/>
    </properties>
   </object>
  </objectgroup>

@@ -1,18 +1,36 @@
 
 var express = require('express')
   , http = require('http');
-
 var app = express();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 app.use(express.static(__dirname + '/'));
-
-server.listen(8080);
-
+server.listen(8081);
 var clientid = '';
 var users = Array();
 socketObjects = '';
 var i = 0;
+
+// Server utility functions
+var checkGUID = function(object, destroy) {
+  for(var i = 0; i < socketObjects.length; i++) {
+    if (socketObjects[i].GUID == object.GUID) {
+      return i;
+    }
+  }
+  return false;
+};
+
+// Update some socketObjects keys
+var updateSocketObjectKeys = function(object, i) {
+  for (key in object) {
+    if (socketObjects[i][key]) {
+      socketObjects[i][key] = object[key];
+    }
+  }
+  return true;
+};
+
 io.sockets.on('connection', function (socket) {
 
   // Creating player array
@@ -37,17 +55,16 @@ io.sockets.on('connection', function (socket) {
     users[data[1]][7]=data[7];
   });
 
-    // Enemy Data stored in server
+  // Enemy Data stored in server
+  // Storing users current map screen
   socket.on('updateobjects', function (objects) {
-    console.log(objects);
-    // Storing users current map screen
-    socketObjects = objects
+    socketObjects = objects;
   });
 
-  // Listens for destroy and sends back to client
-  socket.on('destroy', function (data) {
-    io.sockets.emit('destroys', data);
-    //console.log(data); // X position
+  socket.on('slaveupdateobjects', function (object) {
+    var i = checkGUID(object);
+    // updateSocketObjectKeys(object, i);
+    io.sockets.emit('updatehostobject', object);
   });
 
   // Checks for players on current map screen
@@ -63,7 +80,6 @@ io.sockets.on('connection', function (socket) {
 
   // Listens for clients leaving game
   socket.on('leave', function (userName) {
-
     var l = users.length;
     for (var i = 0; i < l; i++) {
       if (users[i][3] == userName) {
@@ -77,6 +93,7 @@ io.sockets.on('connection', function (socket) {
   });
 
   // Updates player positions to client every so often
+  // MAIN LOOP
   setInterval(function(){
     io.sockets.emit('updateclientpos',users);
     io.sockets.emit('updateobjects',socketObjects);

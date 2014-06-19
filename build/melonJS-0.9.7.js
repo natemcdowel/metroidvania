@@ -1343,6 +1343,22 @@ var me = me || {};
 			return null;
 		};
 
+
+		api.editEntityByGUID = function(guid, serverObject)
+		{
+			for (var i = gameObjects.length, obj; i--, obj = gameObjects[i];) {
+				if(obj.isEntity && obj.GUID == guid) {
+					for (key in serverObject) {
+				    if (gameObjects[i]) {
+				      gameObjects[i][key] = serverObject[key];
+				      console.log(gameObjects[i]);
+				    }
+				  }0
+				}
+			}
+			return null;
+		};
+
 		/**
 		 * add a HUD obj to the game manager
 		 * @name me.game#addHUD
@@ -4799,9 +4815,20 @@ var me = me || {};
 			this.pos = null;
 			this.collisionBox = null;
 			if (clientid == 0) {
-				var i = this.checkGUID(this);
-				socketObjects.splice(i,1);
+				var i = this.checkGUID(this, true);
+				if (socketObjects[i]) {
+					socketObjects[i].dead = true;
+				}
 			}
+		},
+
+		checkGUID: function(thisEntity, destroy) {
+			for(var i = 0; i < socketObjects.length; i++) {
+		 		if (socketObjects[i].GUID == thisEntity.GUID) {
+		 			return i;
+		 		}
+		 	}
+		 	return false;
 		},
 
 		/**
