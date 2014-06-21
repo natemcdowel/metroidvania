@@ -37,12 +37,13 @@ var Player2Entity = me.ObjectEntity.extend({
 		// define a basic walking animatin
 		this.renderable.addAnimation ("walk",  [0,1,2]);
 		this.renderable.addAnimation ("stand",  [0]);
-		this.renderable.addAnimation ("crouch",  [3]);
+		this.renderable.addAnimation ("crouch",  [6]);
 		this.renderable.addAnimation ("jumpup",  [4]);
 		this.renderable.addAnimation ("jumpdown", [5]);
 		this.renderable.addAnimation ("attack",  [7,8,9,10], 1);
 		this.renderable.addAnimation ("jumpattack",  [9,10],1);
 		this.renderable.addAnimation ("crouchattack",  [11,12,13,14],1);
+		this.renderable.addAnimation ("secondattack",  [22,23,24],1);
 		this.renderable.addAnimation ("hurt",  [16,17,18]);
 
 		this.renderable.animationspeed = 2;

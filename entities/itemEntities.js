@@ -2,19 +2,19 @@
 /**
  * Lamps and Such, Break for hearts
  */
-var BreakableEntity = me.ObjectEntity.extend({
+var BreakableEntity = me.socketObjectEntity.extend({
 
 	init: function(x, y, settings, direction) {
-
+		settings.sendSocket = true;
+		settings.entityName = 'BreakableEntity';
 		this.parent(x, y, settings);
-		console.log(this.GUID);
 		this.renderable.addAnimation ("burn", [0,1,2],2);
 		this.renderable.addAnimation ("break", [3,4],2);
 		this.renderable.setCurrentAnimation("burn");
 		this.collidable = true;
 		this.destroyed = false;
 		this.item = settings.item
-
+		this.socketInit();
 	},
 
 	onCollision : function (res, obj) {
@@ -25,17 +25,18 @@ var BreakableEntity = me.ObjectEntity.extend({
 		var self = this;
 
 		if (this.alive && obj.weapon == 'sword') {
-
 			me.audio.play("06", false);
 			this.renderable.setCurrentAnimation("break",function() { me.game.remove(self)});
 
 			// Spawning Pickup
 			if (!this.destroyed) {
-
 				// If specific drop set from Tiled
-				if (this.item) var pickup = new PickupEntity( self.pos.x, self.pos.y-50, { image: "throwingweapons", spritewidth: 100, spriteheight: 100 },false,this.item);
-				else var pickup = new PickupEntity( self.pos.x, self.pos.y-50, { image: "pickups", spritewidth: 60, spriteheight: 60 });
-
+				if (this.item) {
+					var pickup = new PickupEntity( self.pos.x, self.pos.y-50, { image: "throwingweapons", spritewidth: 100, spriteheight: 100 },false,this.item);
+				}
+				else {
+				 	var pickup = new PickupEntity( self.pos.x, self.pos.y-50, { image: "pickups", spritewidth: 60, spriteheight: 60 });
+				}
 			    me.game.add(pickup, self.z-1);
 			    me.game.sort();
 			    this.destroyed = true;
@@ -44,8 +45,8 @@ var BreakableEntity = me.ObjectEntity.extend({
 	},
 
 	update : function () {
-
 		// this.updateMovement();
+		this.updateSocketEntity();
 		this.parent()
 		return true;
 
@@ -56,10 +57,12 @@ var BreakableEntity = me.ObjectEntity.extend({
 /**
  * Lamps and Such, Break for hearts
  */
-var PickupEntity = me.ObjectEntity.extend({
+var PickupEntity = me.socketObjectEntity.extend({
 
 	init: function(x, y, settings, enemy,item) {
 
+		settings.sendSocket = true;
+		settings.entityName = 'PickupEntity';
 		this.parent(x, y, settings);
 		this.alive = true;
 		this.collidable = true;
@@ -92,6 +95,8 @@ var PickupEntity = me.ObjectEntity.extend({
 			// if (item)
 			else this.renderable.setCurrentAnimation("largeheart");
 		}
+		this.socketInit();
+
 	},
 
 	onCollision : function (res, obj) {
@@ -102,7 +107,6 @@ var PickupEntity = me.ObjectEntity.extend({
 		if (obj.type == 'player' && this.alive) {
 
 			if (this.weapon) {
-
 				mainPlayer.secWeapon = this.weapon;
 				me.game.HUD.removeItem("secondWeapon");
 				me.game.HUD.addItem("secondWeapon", new InventoryDisplay(1100,0, {width: 100, height: 100, type:'secweapons'}));
@@ -118,7 +122,6 @@ var PickupEntity = me.ObjectEntity.extend({
 			else if (this.mainweapon) {
 				mainPlayer.mainweapon = this.mainweapon;
 				playerInfo.weapons.push(this.mainweapon);
-				console.log(playerInfo.weapons)
 				mainPlayer.changeimage();
 				me.game.HUD.removeItem("primaryWeapon");
 				me.game.HUD.addItem("primaryWeapon", new InventoryDisplay(0,0, {width: 100, height: 100, type:'primaryweapons'}));
@@ -132,6 +135,7 @@ var PickupEntity = me.ObjectEntity.extend({
 	},
 
 	update : function () {
+		this.updateSocketEntity();
 		this.updateMovement();
 		this.parent()
 		return true;

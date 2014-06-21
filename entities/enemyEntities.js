@@ -28,7 +28,6 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 		// If hosting game
 		else if (clientid == 0 && this.settings.sendSocket) {
 			if (this.dead == true) {
-				console.log('removedHost');
 				me.game.remove(this);
 			}
 			this.socketPrepSend();
@@ -54,7 +53,7 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 		 	if (this.settings) {
 		 		socketObjects[i].settings = this.settings;
 		 	}
-		 	if (this.renderable.current.name) {
+		 	if (this.renderable && this.renderable.current && this.renderable.current.name) {
 		 		socketObjects[i].currentAnim = this.renderable.current.name;
 		 	}
 	 	}
@@ -70,20 +69,30 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 	 	socketObject.pos = {};
 	 	socketObject.GUID = this.GUID;
 
-	 	if (this.pos && this.pos) {
-	 		socketObject.pos = this.pos;
-	 	}
-	 	if (this.vel) {
-	 		socketObject.vel = this.vel;
-	 	}
-	 	if (this.settings) {
-	 		socketObject.settings = this.settings;
-	 	}
-	 	if (this.renderable.current.name) {
-	 		socketObject.currentAnim = this.renderable.current.name;
-	 	}
+	 	// If this GUID is not in socketObjects yet (From any other clients)
+	 	if (!this.checkGUID(socketObject)) {
+	 		if (this.pos && this.pos) {
+		 		socketObject.pos = this.pos;
+		 	}
+		 	if (this.vel) {
+		 		socketObject.vel = this.vel;
+		 	}
+		 	if (this.settings) {
+		 		socketObject.settings = this.settings;
+		 	}
+		 	if (this.renderable.current.name) {
+		 		socketObject.currentAnim = this.renderable.current.name;
+		 	}
 
- 		socketObjects.push(socketObject);
+		 	// If host, object will be passed by Interval Loop
+		 	if (clientid == 0) {
+		 		socketObjects.push(socketObject);
+		 	}
+		 	// If client, obejct will be added immediately
+		 	else {
+		 		socketResponse('slaveaddobject',socketObject);
+		 	}
+ 		}
 	}
 });
 
@@ -204,7 +213,6 @@ var AllEnemyEntity = me.socketObjectEntity.extend({
 			setTimeout(function(){self.hurt = false;},1000);
 			// flash the screen
 			if (this.hitpoints <= 0) {
-				console.log(this.GUID);
 				socketResponse('slaveupdateobjects',{dead:true, GUID:this.GUID});
 				playerInfo.xp += this.xp;
 				this.alive = false;
@@ -320,8 +328,9 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 	 */
 	init: function (x, y, settings) {
 
-		this.checkplayers();
-
+		// this.checkplayers();
+		settings.sendSocket = true;
+		settings.entityName = 'SkeletonEnemyEntity';
 		// call the parent constructor
 		this.parent(x, y , settings);
 
@@ -394,14 +403,14 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		var self = this;
 
 		//Setting enemy position through SOCKET if 2nd to map
-		if (samemap == true && clientid == 1) {
+		// if (samemap == true && clientid == 1) {
 			// socket.on('updateenemies', function (enemy) {
 			// 	self.pos.x = enemy.x
 			// });
-		}
+		// }
 
-		else {
 
+		if (clientid == 0) {
 			if (this.walkLeft && this.pos.x <= this.startX) {
 				if (this.vel.x == 0) this.vel.x = 4;
 				this.vel.x = this.accel.x * me.timer.tick;
@@ -432,8 +441,9 @@ var SkeletonEnemyEntity = AllEnemyEntity.extend({
 		}
 
 		// check & update movement
+		this.updateSocketEntity();
 		this.updateMovement();
-		// this.parent()
+		this.parent();
 		return true;
 	},
 

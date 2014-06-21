@@ -8,9 +8,7 @@ var weaponEntity = me.ObjectEntity.extend({
 
 
 	init: function (x, y, settings) {
-
 		mainPlayer = me.game.getEntityByName('mainPlayer')
-
 		this.parent(mainPlayer[0].pos.x+10, mainPlayer[0].pos.y, settings);
 
 		// make it collidable

@@ -5,7 +5,7 @@ var app = express();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 app.use(express.static(__dirname + '/'));
-server.listen(8081);
+server.listen(3000, '0.0.0.0');
 var clientid = '';
 var users = Array();
 socketObjects = '';
@@ -55,15 +55,27 @@ io.sockets.on('connection', function (socket) {
     users[data[1]][7]=data[7];
   });
 
-  // Enemy Data stored in server
-  // Storing users current map screen
+  // Enemy Data stored in server from Host client
   socket.on('updateobjects', function (objects) {
     socketObjects = objects;
   });
 
+  // Updates an object sent from a slave client
   socket.on('slaveupdateobjects', function (object) {
     var i = checkGUID(object);
     io.sockets.emit('updatehostobject', object);
+  });
+
+  // Adds an object sent from a slave client
+  socket.on('slaveaddobject', function (object) {
+    io.sockets.emit('addhostobject', object);
+    // var i = checkGUID(object);
+    // if (!i) {
+    //   var tempSocketObjects = JSON.parse(socketObjects);
+    //   tempSocketObjects.push(object);
+    //   socketObjects = JSON.stringify(tempSocketObjects);
+    //   // throw(console.log(tempSocketObjects));
+    // }
   });
 
   // Checks for players on current map screen
@@ -96,5 +108,5 @@ io.sockets.on('connection', function (socket) {
   setInterval(function(){
     io.sockets.emit('updateclientpos',users);
     io.sockets.emit('updateobjects',socketObjects);
-  }, 80);
+  }, 40);
 });
