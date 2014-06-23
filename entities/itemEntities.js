@@ -40,6 +40,7 @@ var BreakableEntity = me.socketObjectEntity.extend({
 			    me.game.add(pickup, self.z-1);
 			    me.game.sort();
 			    this.destroyed = true;
+			    this.socketRemoveObject();
 			}
 		}
 	},
@@ -127,9 +128,11 @@ var PickupEntity = me.socketObjectEntity.extend({
 				me.game.HUD.addItem("primaryWeapon", new InventoryDisplay(0,0, {width: 100, height: 100, type:'primaryweapons'}));
 			}
 
-			me.game.remove(self)
-			me.audio.play("12");
 			this.alive = false;
+			me.game.remove(self);
+			this.socketRemoveObject();
+			me.audio.play("12");
+
 		}
 
 	},

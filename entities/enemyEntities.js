@@ -12,6 +12,7 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 				//  If the object has already been created from host
 		 		if (socketObjects[i].GUID == this.GUID) {
 		 			if (socketObjects[i].dead) {
+						socketObjects.splice(i,1);
 		 				me.game.remove(this);
 		 			}
 		 			if (this.pos) {
@@ -28,6 +29,8 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 		// If hosting game
 		else if (clientid == 0 && this.settings.sendSocket) {
 			if (this.dead == true) {
+				var i = this.checkGUID(this);
+				socketObjects.splice(i,1);
 				me.game.remove(this);
 			}
 			this.socketPrepSend();
@@ -44,6 +47,9 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 	 	var i = this.checkGUID(this);
 
 	 	if (i) {
+	 		if (this.dead) {
+	 			socketObjects[i].dead = this.dead;
+	 		}
 		 	if (this.pos && this.pos) {
 		 		socketObjects[i].pos = this.pos;
 		 	}
@@ -70,7 +76,7 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 	 	socketObject.GUID = this.GUID;
 
 	 	// If this GUID is not in socketObjects yet (From any other clients)
-	 	if (!this.checkGUID(socketObject)) {
+	 	if (!this.checkGUID(socketObject) && !this.dead) {
 	 		if (this.pos && this.pos) {
 		 		socketObject.pos = this.pos;
 		 	}
@@ -93,6 +99,13 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 		 		socketResponse('slaveaddobject',socketObject);
 		 	}
  		}
+	},
+
+	socketRemoveObject: function() {
+		if (clientid > 0) {
+			this.dead = true;
+			socketResponse('slaveupdateobjects',{dead:true, GUID:this.GUID});
+		}
 	}
 });
 
@@ -213,7 +226,7 @@ var AllEnemyEntity = me.socketObjectEntity.extend({
 			setTimeout(function(){self.hurt = false;},1000);
 			// flash the screen
 			if (this.hitpoints <= 0) {
-				socketResponse('slaveupdateobjects',{dead:true, GUID:this.GUID});
+				this.socketRemoveObject();
 				playerInfo.xp += this.xp;
 				this.alive = false;
 				this.collidable = false;
@@ -299,7 +312,7 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 				me.game.remove(this)
 			}
 
-			if (this.renderable.flickerTimer < 30) {
+			if (this.renderable.flickerTimer != null && this.renderable.flickerTimer < 30) {
 				me.game.HUD.removeItem("hit");
 			}
 		}

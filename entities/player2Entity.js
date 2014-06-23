@@ -73,7 +73,7 @@ var Player2Entity = me.ObjectEntity.extend({
 					playerY = users[1][3];
 					playerVelX = users[1][5];
 					playerVelY = users[1][6];
-					currentAnim = users[1][7];
+					currentAnim = users[1][7] || 'stand';
 
 				}
 				if (clientid == 1) {
@@ -82,7 +82,7 @@ var Player2Entity = me.ObjectEntity.extend({
 					playerY = users[0][3];
 					playerVelX = users[0][5];
 					playerVelY = users[0][6];
-					currentAnim = users[0][7];
+					currentAnim = users[0][7] || 'stand';
 				}
 				users = users;
 			}

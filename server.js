@@ -24,7 +24,7 @@ var checkGUID = function(object, destroy) {
 // Update some socketObjects keys
 var updateSocketObjectKeys = function(object, i) {
   for (key in object) {
-    if (socketObjects[i][key]) {
+    if (socketObjects[i]) {
       socketObjects[i][key] = object[key];
     }
   }
@@ -62,20 +62,25 @@ io.sockets.on('connection', function (socket) {
 
   // Updates an object sent from a slave client
   socket.on('slaveupdateobjects', function (object) {
+    // Update socketObject Keys
     var i = checkGUID(object);
+    if (i) {
+      updateSocketObjectKeys(object,i);
+    }
+    // Send updated object to host
     io.sockets.emit('updatehostobject', object);
   });
 
   // Adds an object sent from a slave client
   socket.on('slaveaddobject', function (object) {
     io.sockets.emit('addhostobject', object);
-    // var i = checkGUID(object);
-    // if (!i) {
-    //   var tempSocketObjects = JSON.parse(socketObjects);
-    //   tempSocketObjects.push(object);
-    //   socketObjects = JSON.stringify(tempSocketObjects);
-    //   // throw(console.log(tempSocketObjects));
-    // }
+    var i = checkGUID(object);
+    if (!i) {
+      var tempSocketObjects = JSON.parse(socketObjects);
+      tempSocketObjects.push(object);
+      socketObjects = JSON.stringify(tempSocketObjects);
+      // throw(console.log(tempSocketObjects));
+    }
   });
 
   // Checks for players on current map screen
@@ -108,5 +113,5 @@ io.sockets.on('connection', function (socket) {
   setInterval(function(){
     io.sockets.emit('updateclientpos',users);
     io.sockets.emit('updateobjects',socketObjects);
-  }, 40);
+  }, 60);
 });

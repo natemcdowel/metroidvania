@@ -203,6 +203,7 @@
 
 	// For logging socketObjects
 	// setInterval(function(){
+	// 	console.log(socketObjects);
 	// }, 2500);
 
 	setInterval(function(){
@@ -230,7 +231,7 @@
 				}
 
 				// If the object has not been added to non-host client
-				if (foundGameObj[i] == false && socketObjects[i].settings.entityName) {
+				if (foundGameObj[i] == false && socketObjects[i].settings.entityName && !socketObjects[i].dead) {
 					var hostedEntity = new window[socketObjects[i].settings.entityName]( socketObjects[i].pos.x, socketObjects[i].pos.y, { image: socketObjects[i].settings.image, spritewidth: socketObjects[i].settings.spritewidth, spriteheight: socketObjects[i].settings.spriteheight, GUID: socketObjects[i].GUID});
 
 		 			me.game.add(hostedEntity, enemyZ++);
@@ -238,7 +239,7 @@
 				}
 			}
 	    }
-  	}, 40);
+  	}, 60);
 
 </script>
 </body>

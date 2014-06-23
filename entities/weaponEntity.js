@@ -144,14 +144,17 @@ var secondWeaponEntity = me.socketObjectEntity.extend({
 				me.game.remove(this)
 			}
 
-
-			if (this.vel.x == 0 || this.pos.x < 40 || this.pos.x > (me.game.currentLevel.width - 80))  {
-				me.game.remove(this)
+			if (this.vel && this.pos) {
+				if (this.vel.x == 0 || this.pos.x < 40 || this.pos.x > (me.game.currentLevel.width - 80))  {
+					me.game.remove(this)
+				}
 			}
 
 			this.updateSocketEntity();
-			this.computeVelocity(this.vel);
-			this.pos.add(this.vel);
+			if (this.vel) {
+				this.computeVelocity(this.vel);
+				this.pos.add(this.vel);
+			}
 		}
 		// this.updateMovement();
 
