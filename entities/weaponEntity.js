@@ -151,7 +151,7 @@ var secondWeaponEntity = me.socketObjectEntity.extend({
 			}
 
 			this.updateSocketEntity();
-			if (this.vel) {
+			if (this.vel && this.pos && clientid == 0) {
 				this.computeVelocity(this.vel);
 				this.pos.add(this.vel);
 			}

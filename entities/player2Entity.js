@@ -207,22 +207,22 @@ var Player2Entity = me.ObjectEntity.extend({
 
 
 		//Checking map against other player to see if they are in map
-		socketResponse('checkmapserver',clientid);
-		socket.on('checkmapclient', function (users) {
+		// socketResponse('checkmapserver',clientid);
+		// socket.on('checkmapclient', function (users) {
 
 
-			if (typeof users[1] != 'undefined') {
-				if(users[0][4] != users[1][4]) {
+		// 	if (typeof users[1] != 'undefined') {
+		// 		if(users[0][4] != users[1][4]) {
 
-					visiblePlayer = false;
+		// 			visiblePlayer = false;
 
-				}
-				else {visiblePlayer = true;}
-			}
-		});
+		// 		}
+		// 		else {visiblePlayer = true;}
+		// 	}
+		// });
 
-		this.visible = visiblePlayer;
-
+		// this.visible = visiblePlayer;
+		this.visible = true;
 
 		this.pos.x = playerX;
 		this.pos.y = playerY;

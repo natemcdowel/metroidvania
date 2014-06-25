@@ -146,7 +146,7 @@
   // Updates ALL socketObjects with each server loop iteration
   socket.on('updateobjects', function (objects) {
   	if (objects.length > 0 && clientid > 0) {
-  		socketObjects = JSON.parse(objects);
+  		socketObjects = objects;
   	}
   });
 
@@ -203,14 +203,14 @@
 
 	// For logging socketObjects
 	setInterval(function(){
-		console.log(BISON.encode([1]));
-	}, 2500);
+		console.log(socketObjects);
+	}, 5000);
 
 	setInterval(function(){
 		var foundGameObj = [];
 		// If Host, update all socketObjects to server
 		if (socketObjects.length > 0 && clientid == 0) {
-			socketResponse('updateobjects', JSON.stringify(socketObjects));
+			socketResponse('updateobjects', socketObjects);
 
 			// Check if we should remove from host
 			for(var i = 0; i < socketObjects.length; i++) {

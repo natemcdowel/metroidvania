@@ -81,7 +81,7 @@ io.sockets.on('connection', function (socket) {
     io.sockets.emit('addhostobject', object);
     var i = checkGUID(object);
     if (!i) {
-      var tempSocketObjects = JSON.parse(socketObjects);
+      var tempSocketObjects = socketObjects;
       tempSocketObjects.push(object);
       socketObjects = JSON.stringify(tempSocketObjects);
       // throw(console.log(tempSocketObjects));
