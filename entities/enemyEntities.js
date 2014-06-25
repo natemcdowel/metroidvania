@@ -19,7 +19,7 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 			 			this.pos.x = socketObjects[i].pos.x;
 			 			this.pos.y = socketObjects[i].pos.y;
 			 			this.vel = socketObjects[i].vel;
-			 			this.renderable.setCurrentAnimation(socketObjects[i].currentAnim);
+			 			// this.renderable.setCurrentAnimation(socketObjects[i].currentAnim);
 			 			foundGUID = true;
 			 			return;
 		 			}
@@ -56,12 +56,12 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 		 	if (this.vel) {
 		 		socketObjects[i].vel = this.vel;
 		 	}
-		 	if (this.settings) {
-		 		socketObjects[i].settings = this.settings;
-		 	}
-		 	if (this.renderable && this.renderable.current && this.renderable.current.name) {
-		 		socketObjects[i].currentAnim = this.renderable.current.name;
-		 	}
+		 	// if (this.settings) {
+		 	// 	socketObjects[i].settings = this.settings;
+		 	// }
+		 	// if (this.renderable && this.renderable.current && this.renderable.current.name) {
+		 	// 	socketObjects[i].currentAnim = this.renderable.current.name;
+		 	// }
 	 	}
 	},
 
