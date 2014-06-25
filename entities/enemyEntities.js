@@ -14,6 +14,7 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 		 			if (socketObjects[i].dead) {
 						socketObjects.splice(i,1);
 		 				me.game.remove(this);
+		 				return;
 		 			}
 		 			if (this.pos) {
 			 			this.pos.x = socketObjects[i].pos.x;

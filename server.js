@@ -25,7 +25,12 @@ var checkGUID = function(object, destroy) {
 var updateSocketObjectKeys = function(object, i) {
   for (key in object) {
     if (socketObjects[i]) {
-      socketObjects[i][key] = object[key];
+      if (socketObjects[i][key] == true && key === 'dead'){
+        return false;
+      }
+      else {
+       socketObjects[i][key] = object[key];
+      }
     }
   }
   return true;
