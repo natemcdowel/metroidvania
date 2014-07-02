@@ -147,7 +147,7 @@ var AllEnemyEntity = me.socketObjectEntity.extend({
 		this.xp = 10;
 
 		this.tag = new me.Font("Verdana", 14, "yellow");
-        this.tag.bold();
+    this.tag.bold();
 		this.fontsize = 0;
 		this.hpY = 0;
 

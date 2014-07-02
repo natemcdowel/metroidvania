@@ -1,15 +1,17 @@
 
 var express = require('express')
-  , http = require('http');
-var app = express();
-var server = http.createServer(app);
-var io = require('socket.io').listen(server);
+  , http = require('http')
+  , app = express()
+  , server = http.createServer(app)
+  , io = require('socket.io').listen(server);
+
 app.use(express.static(__dirname + '/'));
 server.listen(3000, '0.0.0.0');
-var clientid = '';
-var users = Array();
-socketObjects = [];
-var i = 0;
+
+var clientid = ''
+  , users = Array()
+  , socketObjects = []
+  , i = 0;
 
 // Server utility functions
 var checkGUID = function(object, destroy) {
