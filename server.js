@@ -8,7 +8,7 @@ app.use(express.static(__dirname + '/'));
 server.listen(3000, '0.0.0.0');
 var clientid = '';
 var users = Array();
-socketObjects = '';
+socketObjects = [];
 var i = 0;
 
 // Server utility functions
@@ -81,9 +81,11 @@ io.sockets.on('connection', function (socket) {
     io.sockets.emit('addhostobject', object);
     var i = checkGUID(object);
     if (!i) {
-      var tempSocketObjects = socketObjects;
-      tempSocketObjects.push(object);
-      socketObjects = JSON.stringify(tempSocketObjects);
+      if (typeof socketObjects === 'array') {
+        var tempSocketObjects = socketObjects;
+        tempSocketObjects.push(object);
+        socketObjects = JSON.stringify(tempSocketObjects);
+      }
       // throw(console.log(tempSocketObjects));
     }
   });

@@ -4,38 +4,53 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 	 * socketObjects is sent in an interval in index.html
 	 *
 	 */
-	updateSocketEntity : function () {
-		var foundGUID = false;
-		// If not host
+
+	updateSocketEntity : function() {
 		if (clientid > 0) {
-			for(var i = 0; i < socketObjects.length; i++) {
-				//  If the object has already been created from host
-		 		if (socketObjects[i].GUID == this.GUID) {
-		 			if (socketObjects[i].dead) {
-						socketObjects.splice(i,1);
-		 				me.game.remove(this);
-		 				return;
-		 			}
-		 			if (this.pos) {
-			 			this.pos.x = socketObjects[i].pos.x;
-			 			this.pos.y = socketObjects[i].pos.y;
-			 			this.vel = socketObjects[i].vel;
-			 			// this.renderable.setCurrentAnimation(socketObjects[i].currentAnim);
-			 			foundGUID = true;
-			 			return;
-		 			}
-		 		}
-	 		}
+			this.updateSocketObjectSlave();
 		}
-		// If hosting game
 		else if (clientid == 0 && this.settings.sendSocket) {
-			if (this.dead == true) {
-				var i = this.checkGUID(this);
-				socketObjects.splice(i,1);
-				me.game.remove(this);
-			}
-			this.socketPrepSend();
+			this.updateSocketObjectHost();
 		}
+	},
+
+	updateSocketObjectSlave : function () {
+		var foundGUID = false;
+		var i = false;
+		// If not host
+
+		var i = this.checkGUID(this);
+		//  If the object has already been created from host
+ 		if (i) {
+ 			if (socketObjects[i].dead) {
+				socketObjects.splice(i,1);
+ 				me.game.remove(this);
+ 				return;
+ 			}
+ 			if (this.pos) {
+	 			this.pos.x = socketObjects[i].pos.x;
+	 			this.pos.y = socketObjects[i].pos.y;
+	 			this.vel = socketObjects[i].vel;
+	 			// this.renderable.setCurrentAnimation(socketObjects[i].currentAnim);
+	 			foundGUID = true;
+	 			return;
+ 			}
+ 		}
+ 		else if (!i) {
+ 			me.game.remove(this);
+ 		}
+	},
+
+	updateSocketObjectHost : function() {
+		var i = this.checkGUID(this);
+		if (!i) {
+			me.game.remove(this);
+		}
+		if (this.dead == true) {
+			socketObjects.splice(i,1);
+			me.game.remove(this);
+		}
+		this.socketPrepSend();
 	},
 
 	/**
@@ -533,17 +548,12 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
 				this.vel.x = 0;
 			}
 		}
-		// else {
-		// 	this.computeVelocity(this.vel);
-		// 	this.pos.add(this.vel);
 
-		// 	if (this.pos.x <= 0){
-		// 		me.game.remove(this)
-		// 	}
-		// }
 		this.updateSocketEntity();
 		this.computeVelocity(this.vel);
-		this.pos.add(this.vel);
+		if (this.pos && this.vel) {
+			this.pos.add(this.vel);
+		}
 		this.parent();
 		return true;
 		// return true if we moved of if flickering
