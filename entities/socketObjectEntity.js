@@ -15,7 +15,7 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 			this.interpolatedFrame = true;
 			this.socketObjectsLateFrame = tickedSocketObjects[3];
 			this.socketObjectsEarlyFrame = tickedSocketObjects[4];
-			this.socketObjects = this.socketObjectsEarlyFrame;
+			this.socketObjects = this.socketObjectsLateFrame;
 
 			i = this.checkGUIDOverride(this, this.socketObjectsLateFrame);
 			z = this.checkGUIDOverride(this, this.socketObjectsEarlyFrame);
@@ -25,12 +25,23 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 				this.middleY = this.socketObjectsLateFrame[i].pos.y - this.socketObjectsEarlyFrame[z].pos.y;
 
 				if (this.socketObjects[z] && this.socketObjects[z].pos) {
-					this.socketObjects[z].pos.x = this.socketObjectsLateFrame[i].pos.x - this.middleX;
-					this.socketObjects[z].pos.y = this.socketObjectsLateFrame[i].pos.y - this.middleY;
+					 this.socketObjects[z].pos.x = this.socketObjectsLateFrame[i].pos.x - this.middleX;
+					 this.socketObjects[z].pos.y = this.socketObjectsLateFrame[i].pos.y - this.middleY;
 				}
 			}
 		}
 	},
+
+	// lerp : function(p, n) {
+	// 	// var _t = Number(t);
+	// 	// _t = (Math.max(0, Math.min(1, _t))).fixed();
+	// 	return (p * (n - p));
+	// },
+
+ //  //Simple linear interpolation between 2 vectors
+	// v_lerp : function(latePos, earlyPos) {
+	//  return { x: this.lerp(latePos.x, earlyPos.x), y:this.lerp(latePos.y, earlyPos.y) };
+	// },
 
 	updateSocketEntity : function() {
 		if (clientid > 0) {
