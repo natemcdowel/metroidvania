@@ -4822,13 +4822,21 @@ var me = me || {};
 			}
 		},
 
-		checkGUID: function(thisEntity, destroy) {
-			for(var i = 0; i < socketObjects.length; i++) {
+		checkGUID: function(thisEntity) {
+	 		for(var i = 0; i < socketObjects.length; i++) {
 		 		if (socketObjects[i].GUID == thisEntity.GUID) {
 		 			return i;
 		 		}
 		 	}
 		 	return false;
+		},
+
+		checkGUIDOverride: function(thisEntity, overriddenSocketObjects) {
+			for(var i = 0; i < overriddenSocketObjects.length; i++) {
+		 		if (overriddenSocketObjects[i].GUID == thisEntity.GUID) {
+		 			return i;
+		 		}
+		 	}
 		},
 
 		/**

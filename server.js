@@ -8,12 +8,18 @@ var express = require('express')
 app.use(express.static(__dirname + '/'));
 server.listen(3000, '0.0.0.0');
 
-var clientid = ''
+var serverLoopMilliseconds = 50
+  , clientid = ''
   , users = Array()
   , socketObjects = []
   , i = 0;
 
-// Server utility functions
+
+/**
+ * Server utility functions
+ *
+ *
+ */
 var checkGUID = function(object, destroy) {
   for(var i = 0; i < socketObjects.length; i++) {
     if (socketObjects[i].GUID == object.GUID) {
@@ -65,6 +71,7 @@ io.sockets.on('connection', function (socket) {
   // Enemy Data stored in server from Host client
   socket.on('updateobjects', function (objects) {
     socketObjects = objects;
+    socketObjects.timestamp = new Date();
   });
 
   // Updates an object sent from a slave client
@@ -122,5 +129,5 @@ io.sockets.on('connection', function (socket) {
   setInterval(function(){
     io.sockets.emit('updateclientpos',users);
     io.sockets.emit('updateobjects',socketObjects);
-  }, 35);
+  }, serverLoopMilliseconds);
 });
