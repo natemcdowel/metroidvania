@@ -90,7 +90,9 @@ var Player2Entity = me.ObjectEntity.extend({
 
 		if (typeof player2Action != 'undefined') {
 
-			if (currentAnim != '') this.renderable.setCurrentAnimation(currentAnim);
+			if (currentAnim != '') {
+				this.renderable.setCurrentAnimation(currentAnim);
+			}
 
 			// if (playerX == this.pos.x && playerY == this.pos.y) this.renderable.setCurrentAnimation("stand");
 			// else this.renderable.setCurrentAnimation("walk");

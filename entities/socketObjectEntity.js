@@ -7,10 +7,12 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 
 	interpolateSocketObject : function () {
 
+		// Even Frame
 		if (this.interpolatedFrame) {
 			this.interpolatedFrame = false;
 			this.socketObjects = tickedSocketObjects[4];
 		}
+		// Odd Frame
 		else {
 			this.interpolatedFrame = true;
 			this.socketObjectsLateFrame = tickedSocketObjects[3];
@@ -21,34 +23,24 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 			z = this.checkGUIDOverride(this, this.socketObjectsEarlyFrame);
 
 			if (i && z) {
-				this.middleX = this.socketObjectsLateFrame[i].pos.x - this.socketObjectsEarlyFrame[z].pos.x;
-				this.middleY = this.socketObjectsLateFrame[i].pos.y - this.socketObjectsEarlyFrame[z].pos.y;
+				this.middle = {};
+				this.middle.x = this.socketObjectsLateFrame[i].pos.x - this.socketObjectsEarlyFrame[z].pos.x;
+				this.middle.y = this.socketObjectsLateFrame[i].pos.y - this.socketObjectsEarlyFrame[z].pos.y;
 
 				if (this.socketObjects[z] && this.socketObjects[z].pos) {
-					 this.socketObjects[z].pos.x = this.socketObjectsLateFrame[i].pos.x - this.middleX;
-					 this.socketObjects[z].pos.y = this.socketObjectsLateFrame[i].pos.y - this.middleY;
+					 this.socketObjects[z].pos.x = this.socketObjectsLateFrame[i].pos.x - this.middle.x;
+					 this.socketObjects[z].pos.y = this.socketObjectsLateFrame[i].pos.y - this.middle.y;
 				}
 			}
 		}
 	},
 
-	// lerp : function(p, n) {
-	// 	// var _t = Number(t);
-	// 	// _t = (Math.max(0, Math.min(1, _t))).fixed();
-	// 	return (p * (n - p));
-	// },
-
- //  //Simple linear interpolation between 2 vectors
-	// v_lerp : function(latePos, earlyPos) {
-	//  return { x: this.lerp(latePos.x, earlyPos.x), y:this.lerp(latePos.y, earlyPos.y) };
-	// },
-
 	updateSocketEntity : function() {
-		if (clientid > 0) {
+		if (clientid != host) {
 			this.interpolateSocketObject();
 			this.updateSocketObjectSlave();
 		}
-		else if (clientid == 0 && this.settings.sendSocket) {
+		else if (clientid == host && this.settings.sendSocket) {
 			this.updateSocketObjectHost();
 		}
 	},
@@ -61,7 +53,7 @@ me.socketObjectEntity = me.ObjectEntity.extend({
  		if (i && this.socketObjects[i]) {
  			if (this.socketObjects[i].dead) {
 				this.socketObjects.splice(i,1);
- 				me.game.remove(this);
+ 				this.remove();
  				return;
  			}
  			if (this.pos) {
@@ -74,18 +66,18 @@ me.socketObjectEntity = me.ObjectEntity.extend({
  			}
  		}
  		else if (!i) {
- 			me.game.remove(this);
+ 			this.remove();
  		}
 	},
 
 	updateSocketObjectHost : function() {
 		var i = this.checkGUID(this);
 		if (!i) {
-			me.game.remove(this);
+			this.remove();
 		}
 		if (this.dead == true) {
 			socketObjects.splice(i,1);
-			me.game.remove(this);
+			this.remove();
 		}
 		this.socketPrepSend();
 	},
@@ -126,7 +118,6 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 	socketInit: function() {
 		this.interpolatedFrame = false;
 	 	var socketObject = {};
-			 	socketObject.pos = {};
 			 	socketObject.GUID = this.GUID;
 
 	 	// If this GUID is not in socketObjects yet (From any other clients)
@@ -145,7 +136,7 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 		 	}
 
 		 	// If host, object will be passed by Interval Loop
-		 	if (clientid == 0) {
+		 	if (clientid == host) {
 		 		socketObjects.push(socketObject);
 		 	}
 		 	// If client, obejct will be added immediately
@@ -156,9 +147,47 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 	},
 
 	socketRemoveObject: function() {
-		if (clientid > 0) {
+		if (clientid != host) {
 			this.dead = true;
 			socketResponse('slaveupdateobjects',{dead:true, GUID:this.GUID});
 		}
+	},
+
+	destroy : function() {
+		// free some property objects
+		if (this.renderable) {
+			this.renderable.destroy.apply(this.renderable, arguments);
+			this.renderable = null;
+		}
+		this.onDestroyEvent.apply(this, arguments);
+		this.pos = null;
+		this.collisionBox = null;
+		if (clientid == host && this.settings.sendSocket) {
+			var i = this.checkGUID(this, true);
+			if (socketObjects[i]) {
+				socketObjects[i].dead = true;
+			}
+		}
+	},
+
+	checkGUID: function(thisEntity) {
+ 		for(var i = 0; i < socketObjects.length; i++) {
+	 		if (socketObjects[i].GUID == thisEntity.GUID) {
+	 			return i;
+	 		}
+	 	}
+	 	return false;
+	},
+
+	checkGUIDOverride: function(thisEntity, overriddenSocketObjects) {
+		for(var i = 0; i < overriddenSocketObjects.length; i++) {
+	 		if (overriddenSocketObjects[i].GUID == thisEntity.GUID) {
+	 			return i;
+	 		}
+	 	}
+	},
+
+	remove : function() {
+		me.game.remove(this);
 	}
-});
+})

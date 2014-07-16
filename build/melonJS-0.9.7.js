@@ -4814,29 +4814,6 @@ var me = me || {};
 			this.onDestroyEvent.apply(this, arguments);
 			this.pos = null;
 			this.collisionBox = null;
-			if (clientid == 0) {
-				var i = this.checkGUID(this, true);
-				if (socketObjects[i]) {
-					socketObjects[i].dead = true;
-				}
-			}
-		},
-
-		checkGUID: function(thisEntity) {
-	 		for(var i = 0; i < socketObjects.length; i++) {
-		 		if (socketObjects[i].GUID == thisEntity.GUID) {
-		 			return i;
-		 		}
-		 	}
-		 	return false;
-		},
-
-		checkGUIDOverride: function(thisEntity, overriddenSocketObjects) {
-			for(var i = 0; i < overriddenSocketObjects.length; i++) {
-		 		if (overriddenSocketObjects[i].GUID == thisEntity.GUID) {
-		 			return i;
-		 		}
-		 	}
 		},
 
 		/**

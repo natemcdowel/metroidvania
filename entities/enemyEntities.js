@@ -28,7 +28,7 @@ var AllEnemyEntity = me.socketObjectEntity.extend({
 		this.timer = me.timer.getTime();
 		this.i = 0;
 		this.enemy = new Object();
-		if (clientid == 0) {
+		if (clientid == host) {
 			this.socketInit();
 		}
 	},
@@ -145,7 +145,7 @@ var AllEnemyEntity = me.socketObjectEntity.extend({
  */
 var SkullEnemyEntity = AllEnemyEntity.extend({
     init: function(x, y, settings, direction) {
-    	this.rotate = 3;
+    this.rotate = 3;
 		this.hitpoints = 2;
 		settings.entityName = 'SkullEnemyEntity';
 
@@ -171,7 +171,7 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 		// this.renderable.angle = Number.prototype.degToRad (this.rotate);
 
 		var self = this;
-		if (clientid == 0) {
+		if (clientid == host) {
 			if (me.timer.getTime() > self.timer+1200) {
 				self.i++
 				self.timer = me.timer.getTime()
@@ -206,11 +206,8 @@ var SkullEnemyEntity = AllEnemyEntity.extend({
 			}
 		}
 		else {
-			this.computeVelocity(this.vel);
-			this.pos.add(this.vel);
-
 			if (this.pos.x <= 0){
-				me.game.remove(this)
+				this.remove();
 			}
 		}
 		this.updateSocketEntity();
@@ -403,7 +400,7 @@ var CrowEnemyEntity = AllEnemyEntity.extend({
 	update : function () {
 
 		var self = this;
-		if (clientid == 0) {
+		if (clientid == host) {
 			// do nothing if not visible
 			if (!this.inViewport) {
 				return false;
