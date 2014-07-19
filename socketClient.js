@@ -50,11 +50,16 @@ socket.on('updateobjects', function (objects) {
 socket.on('updatehostobject', function (serverObject) {
 	if (clientid == host) {
 		// !!! Game Engine Logic !!! //
-		var hostObject = me.game.editEntityByGUID(serverObject.GUID, serverObject);
+		// console.log(serverObject);
+		if (serverObject.clientid != clientid  || !serverObject.clientid && serverObject.clientid !== 0) {
+			console.log(serverObject);
+			var hostObject = me.game.editEntityByGUID(serverObject.GUID, serverObject);
+		}
 	}
 });
 
 socket.on('addhostobject', function(serverObject) {
+	console.log(serverObject);
 	if (clientid == host) {
 		// Is the object already in the game?
 		var foundHostObj = false;
@@ -64,7 +69,10 @@ socket.on('addhostobject', function(serverObject) {
 
 		// If the object has not been added to non-host client
 		if (foundHostObj == false && serverObject.settings.entityName) {
+			if (serverObject.clientid && serverObject.clientid != clientid) {
+				console.log(serverObject);
 				addObjectToClient(serverObject);
+			}
 		}
 	}
 });
@@ -116,7 +124,6 @@ var addObjectToClient = function(serverObject) {
 	me.game.sort();
 }
 
-
 /**
  * Main client loop for updating engine objects from array of 'socketObjects'
  *
@@ -124,7 +131,7 @@ var addObjectToClient = function(serverObject) {
  */
 var initClientLoop = function(){
 	// setInterval(function(){
-	// 	console.log(tickedSocketObjects);
+	// 	console.log(socketObjects);
 	// },2500);
 
 	setInterval(function(){

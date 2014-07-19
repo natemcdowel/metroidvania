@@ -82,6 +82,30 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 		this.socketPrepSend();
 	},
 
+	updateSocketObjectPlayer : function() {
+		i = this.checkGUID(this);
+		//  If the object has already been created from host
+ 		if (i >= 0 && socketObjects[i] && socketObjects[i].clientid != clientid) {
+ 			console.log(socketObjects[i]);
+ 			if (socketObjects[i].dead) {
+				socketObjects.splice(i,1);
+ 				this.remove();
+ 				return;
+ 			}
+ 			if (this.pos) {
+	 			this.pos.x = socketObjects[i].pos.x;
+	 			this.pos.y = socketObjects[i].pos.y;
+	 			this.vel = socketObjects[i].vel;
+	 			// this.renderable.setCurrentAnimation(socketObjects[i].currentAnim);
+	 			return;
+ 			}
+ 		}
+ 		else if (!i && i !== 0) {
+ 			console.log('asdfasdf');
+ 			this.remove();
+ 		}
+	},
+
 	/**
 	 * Socket function - Updates this object information to socketObjects <br>
 	 * socketObjects is sent in an interval in index.html
@@ -95,7 +119,7 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 	 		if (this.dead) {
 	 			socketObjects[i].dead = this.dead;
 	 		}
-		 	if (this.pos && this.pos) {
+		 	if (this.pos) {
 		 		socketObjects[i].pos = this.pos;
 		 	}
 		 	if (this.vel) {
@@ -110,18 +134,45 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 	 	}
 	},
 
+	socketPrepSendPlayer: function() {
+		var i = this.checkUniqueGUID(this);
+
+	 	if (i || i === 0) {
+	 		if (this.dead) {
+	 			socketObjects[i].dead = this.dead;
+	 		}
+		 	if (this.pos) {
+		 		console.log(i)
+		 		socketObjects[i].pos = this.pos;
+		 	}
+		 	if (this.vel) {
+		 		socketObjects[i].vel = this.vel;
+		 	}
+			socketResponse('slaveupdateobjects',socketObjects[i]);
+		}
+	},
+
 	/**
 	 * Socket function - Initializes this object information to socketObjects <br>
 	 * Only used for host (clientid == 0)
 	 *
 	 */
-	socketInit: function() {
+	socketInit: function(player) {
 		this.interpolatedFrame = false;
 	 	var socketObject = {};
 			 	socketObject.GUID = this.GUID;
 
 	 	// If this GUID is not in socketObjects yet (From any other clients)
 	 	if (!this.checkGUID(socketObject) && !this.dead) {
+
+	 		socketObject.clientid = clientid;
+
+	 		if (player) {
+	 			socketObject.player = true;
+	 			socketObject.GUID += '-'+clientid;
+	 			this.uniqueGUID = socketObject.GUID;
+	 		}
+
 	 		if (this.pos && this.pos) {
 		 		socketObject.pos = this.pos;
 		 	}
@@ -139,7 +190,7 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 		 	if (clientid == host) {
 		 		socketObjects.push(socketObject);
 		 	}
-		 	// If client, obejct will be added immediately
+		 	// If client, object will be added immediately
 		 	else {
 		 		socketResponse('slaveaddobject',socketObject);
 		 	}
@@ -173,6 +224,15 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 	checkGUID: function(thisEntity) {
  		for(var i = 0; i < socketObjects.length; i++) {
 	 		if (socketObjects[i].GUID == thisEntity.GUID) {
+	 			return i;
+	 		}
+	 	}
+	 	return false;
+	},
+
+	checkUniqueGUID: function(thisEntity) {
+ 		for(var i = 0; i < socketObjects.length; i++) {
+	 		if (socketObjects[i].GUID == thisEntity.uniqueGUID) {
 	 			return i;
 	 		}
 	 	}

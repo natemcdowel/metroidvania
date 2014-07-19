@@ -1351,9 +1351,8 @@ var me = me || {};
 					for (key in serverObject) {
 				    if (gameObjects[i]) {
 				      gameObjects[i][key] = serverObject[key];
-				      console.log(gameObjects[i]);
 				    }
-				  }0
+				  }
 				}
 			}
 			return null;

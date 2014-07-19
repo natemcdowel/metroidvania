@@ -4,7 +4,7 @@
 /*																					*/
 /************************************************************************************/
 
-var Player2Entity = me.ObjectEntity.extend({
+var Player2Entity = me.socketObjectEntity.extend({
 	init: function(x, y, settings) {
 
 		// call the constructor
@@ -63,51 +63,64 @@ var Player2Entity = me.ObjectEntity.extend({
 	------			*/
 	update : function () {
 
-		socket.on('updateclientpos', function (users) {
+		this.visible = true;
 
-			if (typeof users[1] != 'undefined') {
-				// Player x, y, map
-				if (clientid == 0) {
-					player2Action = users[1][0];
-					playerX = users[1][2];
-					playerY = users[1][3];
-					playerVelX = users[1][5];
-					playerVelY = users[1][6];
-					currentAnim = users[1][7] || 'stand';
+		// this.pos.x = playerX;
+		// this.pos.y = playerY;
+		// console.log(player2Action)
 
-				}
-				if (clientid == 1) {
-					player2Action = users[0][0];
-					playerX = users[0][2];
-					playerY = users[0][3];
-					playerVelX = users[0][5];
-					playerVelY = users[0][6];
-					currentAnim = users[0][7] || 'stand';
-				}
-				users = users;
-			}
-		});
+		this.updateSocketObjectPlayer();
+		// check for collision with environment
+		this.updateMovement();
 
-		if (typeof player2Action != 'undefined') {
+		this.parent();
+		return true;
 
-			if (currentAnim != '') {
-				this.renderable.setCurrentAnimation(currentAnim);
-			}
+		// socket.on('updateclientpos', function (users) {
 
-			// if (playerX == this.pos.x && playerY == this.pos.y) this.renderable.setCurrentAnimation("stand");
-			// else this.renderable.setCurrentAnimation("walk");
+		// 	if (typeof users[1] != 'undefined') {
+		// 		// Player x, y, map
+		// 		if (clientid == 0) {
+		// 			player2Action = users[1][0];
+		// 			playerX = users[1][2];
+		// 			playerY = users[1][3];
+		// 			playerVelX = users[1][5];
+		// 			playerVelY = users[1][6];
+		// 			currentAnim = users[1][7] || 'stand';
 
-			if (player2Action == 'left') {
-				this.flipX(true);
-				this.updateColRect(130,60, 140,100);
-			}
-			if (player2Action == 'right') {
-				this.flipX(false);
-				this.updateColRect(50,60, 140,100);
-			}
-			// if (playerVelY < 0) this.renderable.setCurrentAnimation("jumpup");
-			// if (playerVelY > 0) this.renderable.setCurrentAnimation("jumpdown");
-		}
+		// 		}
+		// 		if (clientid == 1) {
+		// 			player2Action = users[0][0];
+		// 			playerX = users[0][2];
+		// 			playerY = users[0][3];
+		// 			playerVelX = users[0][5];
+		// 			playerVelY = users[0][6];
+		// 			currentAnim = users[0][7] || 'stand';
+		// 		}
+		// 		users = users;
+		// 	}
+		// });
+
+		// if (typeof player2Action != 'undefined') {
+
+		// 	if (currentAnim != '') {
+		// 		this.renderable.setCurrentAnimation(currentAnim);
+		// 	}
+
+		// 	// if (playerX == this.pos.x && playerY == this.pos.y) this.renderable.setCurrentAnimation("stand");
+		// 	// else this.renderable.setCurrentAnimation("walk");
+
+		// 	if (player2Action == 'left') {
+		// 		this.flipX(true);
+		// 		this.updateColRect(130,60, 140,100);
+		// 	}
+		// 	if (player2Action == 'right') {
+		// 		this.flipX(false);
+		// 		this.updateColRect(50,60, 140,100);
+		// 	}
+		// 	// if (playerVelY < 0) this.renderable.setCurrentAnimation("jumpup");
+		// 	// if (playerVelY > 0) this.renderable.setCurrentAnimation("jumpdown");
+		// }
 			// console.log(playerMap + ' | ' + me.levelDirector.getCurrentLevelId())
 
 			// if (playerMap != me.levelDirector.getCurrentLevelId()) {
@@ -224,17 +237,7 @@ var Player2Entity = me.ObjectEntity.extend({
 		// });
 
 		// this.visible = visiblePlayer;
-		this.visible = true;
 
-		this.pos.x = playerX;
-		this.pos.y = playerY;
-		// console.log(player2Action)
-
-		// check for collision with environment
-		this.updateMovement();
-
-		this.parent();
-		return true;
 	},
 
 

@@ -78,7 +78,7 @@ io.sockets.on('connection', function (socket) {
   socket.on('slaveupdateobjects', function (object) {
     // Update socketObject Keys
     var i = checkGUID(object);
-    if (i) {
+    if (i || i === 0) {
       updateSocketObjectKeys(object,i);
     }
     // Send updated object to host
@@ -87,16 +87,10 @@ io.sockets.on('connection', function (socket) {
 
   // Adds an object sent from a slave client
   socket.on('slaveaddobject', function (object) {
+    // if (object.player) {
+    //   object.GUID = object.GUID+clientid;
+    // }
     io.sockets.emit('addhostobject', object);
-    var i = checkGUID(object);
-    if (!i) {
-      if (typeof socketObjects === 'array') {
-        var tempSocketObjects = socketObjects;
-        tempSocketObjects.push(object);
-        socketObjects = JSON.stringify(tempSocketObjects);
-      }
-      // throw(console.log(tempSocketObjects));
-    }
   });
 
   // Checks for players on current map screen

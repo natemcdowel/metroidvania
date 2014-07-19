@@ -25,4 +25,8 @@ UPDATE loop of object
 
 
 PLAYER OBJECTS
----------------
+----------------
+
+- Each client (host and slave) sends player position at game loop interval
+- Server.js adds these to socketObjects array to be parsed into game like any other object
+  (Other than being tagged by clientid to know who to add as socketPlayerEntity)

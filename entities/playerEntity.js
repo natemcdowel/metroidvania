@@ -6,9 +6,12 @@
 /*																					*/
 /************************************************************************************/
 
-var PlayerEntity = me.ObjectEntity.extend({
+var PlayerEntity = me.socketObjectEntity.extend({
 	init: function(x, y, settings) {
 
+		// SOCKET
+		settings.sendSocket = true;
+		settings.entityName = 'Player2Entity';
 
 		// Set position from Tiled if first
 		if (levelDirection == '' && nextScreenY == '') y = settings.startX;
@@ -149,6 +152,8 @@ var PlayerEntity = me.ObjectEntity.extend({
 		if (typeof settings.velY != 'undefined') this.vel.y = settings.velY;
 		if (typeof nextScreenVelX != '') this.vel.x = nextScreenVelX;
 
+		// SOCKET
+		this.socketInit(true);
 	},
 
 
@@ -353,15 +358,15 @@ var PlayerEntity = me.ObjectEntity.extend({
 	},
 
 	socket : function () {
-
+		this.socketPrepSendPlayer();
 		// Sending information to SOCKET.io
-		clientData[1] = clientid;
-		clientData[2] = this.pos.x;
-		clientData[3] = this.pos.y;
-		clientData[5] = this.vel.x;
-		clientData[6] = this.vel.y;
-		clientData[7] = this.renderable.current.name;
-		socketResponse('keypress',clientData);
+		// clientData[1] = clientid;
+		// clientData[2] = this.pos.x;
+		// clientData[3] = this.pos.y;
+		// clientData[5] = this.vel.x;
+		// clientData[6] = this.vel.y;
+		// clientData[7] = this.renderable.current.name;
+		// socketResponse('keypress',clientData);
 
 	},
 
