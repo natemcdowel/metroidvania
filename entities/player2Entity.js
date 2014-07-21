@@ -51,9 +51,7 @@ var Player2Entity = me.socketObjectEntity.extend({
 		this.renderable.setCurrentAnimation("walk");
 
 		// set the renderable position to bottom center
-		this.anchorPoint.set(0.5, 1.0);
-
-	},
+		this.anchorPoint.set(0.5, 1.0);	},
 
 
 	/* -----
@@ -71,7 +69,7 @@ var Player2Entity = me.socketObjectEntity.extend({
 
 		this.updateSocketObjectPlayer();
 		// check for collision with environment
-		this.updateMovement();
+		// this.updateMovement();
 
 		this.parent();
 		return true;

@@ -42,7 +42,6 @@ socket.on('updateobjects', function (objects) {
 			tickedSocketObjects.push(socketObjects);
 			tickedSocketObjects.splice(0,1);
 		}
-
 	}
 });
 
@@ -52,14 +51,20 @@ socket.on('updatehostobject', function (serverObject) {
 		// !!! Game Engine Logic !!! //
 		// console.log(serverObject);
 		if (serverObject.clientid != clientid  || !serverObject.clientid && serverObject.clientid !== 0) {
-			console.log(serverObject);
-			var hostObject = me.game.editEntityByGUID(serverObject.GUID, serverObject);
+			if (serverObject.player) {
+				var i = checkGUID(serverObject);
+				if (i || i === 0) {
+					socketObjects[i] = serverObject;
+				}
+			}
+			else {
+				var hostObject = me.game.editEntityByGUID(serverObject.GUID, serverObject);
+			}
 		}
 	}
 });
 
 socket.on('addhostobject', function(serverObject) {
-	console.log(serverObject);
 	if (clientid == host) {
 		// Is the object already in the game?
 		var foundHostObj = false;
@@ -69,9 +74,10 @@ socket.on('addhostobject', function(serverObject) {
 
 		// If the object has not been added to non-host client
 		if (foundHostObj == false && serverObject.settings.entityName) {
+			console.log(serverObject);
 			if (serverObject.clientid && serverObject.clientid != clientid) {
-				console.log(serverObject);
 				addObjectToClient(serverObject);
+				socketObjects.push(serverObject);
 			}
 		}
 	}
@@ -107,6 +113,15 @@ var updateHostEntityKeys = function(serverObject) {
     }
   }
   return true;
+};
+
+var checkGUID = function(thisEntity) {
+	for(var i = 0; i < socketObjects.length; i++) {
+ 		if (socketObjects[i].GUID == thisEntity.GUID) {
+ 			return i;
+ 		}
+ 	}
+ 	return false;
 };
 
 var addObjectToClient = function(serverObject) {

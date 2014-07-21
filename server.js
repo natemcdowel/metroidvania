@@ -57,16 +57,16 @@ io.sockets.on('connection', function (socket) {
   i++
 
   // Player data stored in server
-  socket.on('keypress', function (data) {
-    // Storing users current map screen
-    users[data[1]][0]=data[0];
-    users[data[1]][1]=data[1];
-    users[data[1]][2]=data[2];
-    users[data[1]][3]=data[3];
-    users[data[1]][5]=data[5];
-    users[data[1]][6]=data[6];
-    users[data[1]][7]=data[7];
-  });
+  // socket.on('keypress', function (data) {
+  //   // Storing users current map screen
+  //   users[data[1]][0]=data[0];
+  //   users[data[1]][1]=data[1];
+  //   users[data[1]][2]=data[2];
+  //   users[data[1]][3]=data[3];
+  //   users[data[1]][5]=data[5];
+  //   users[data[1]][6]=data[6];
+  //   users[data[1]][7]=data[7];
+  // });
 
   // Enemy Data stored in server from Host client
   socket.on('updateobjects', function (objects) {
@@ -121,7 +121,7 @@ io.sockets.on('connection', function (socket) {
   // Updates player positions to client every so often
   // MAIN LOOP
   setInterval(function(){
-    io.sockets.emit('updateclientpos',users);
+    // io.sockets.emit('updateclientpos',users);
     io.sockets.emit('updateobjects',socketObjects);
   }, serverLoopMilliseconds);
 });
