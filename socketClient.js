@@ -25,13 +25,6 @@ socket.on('assignid', function (id) {
 	clientid = id;
 });
 
-// socket.on('removeplayer', function (clientid) {
-// 	playerX.splice(clientid, 1);
-// 	playerY.splice(clientid, 1);
-// });
-
-
-
 // Updates ALL socketObjects with each server loop iteration
 socket.on('updateobjects', function (objects) {
 	if (objects.length > 0 && clientid != host) {
@@ -58,17 +51,7 @@ socket.on('updateplayerobjects', function (objects) {
 socket.on('updatehostobject', function (serverObject) {
 	if (clientid == host) {
 		// !!! Game Engine Logic !!! //
-		if (serverObject.clientid != clientid  || !serverObject.clientid && serverObject.clientid !== 0) {
-			if (serverObject.player) {
-				var i = checkGUID(serverObject);
-				if (i || i === 0) {
-					socketObjects[i] = serverObject;
-				}
-			}
-			else {
-				var hostObject = me.game.editEntityByGUID(serverObject.GUID, serverObject);
-			}
-		}
+		var hostObject = me.game.editEntityByGUID(serverObject.GUID, serverObject);
 	}
 });
 
@@ -82,10 +65,7 @@ socket.on('addhostobject', function(serverObject) {
 
 		// If the object has not been added to non-host client
 		if (foundHostObj == false && serverObject.settings.entityName) {
-			if (serverObject.clientid && serverObject.clientid != clientid) {
-				addObjectToClient(serverObject);
-				socketObjects.push(serverObject);
-			}
+			addObjectToClient(serverObject);
 		}
 	}
 });
@@ -144,7 +124,9 @@ var addObjectToClient = function(serverObject) {
 	);
  	me.game.add(hostedEntity, enemyZ++);
 	me.game.sort();
-}
+};
+
+// var addO
 
 /**
  * Main client loop for updating engine objects from array of 'socketObjects'
@@ -170,9 +152,7 @@ var initClientLoop = function(){
 
 				if (foundPlayerObj[i] == false && playerObjects[i].settings.entityName && !playerObjects[i].dead) {
 					// !!! Game Engine Logic !!! //
-					var playerEntity = new window[playerObjects[i].settings.entityName]( playerObjects[i].pos.x, playerObjects[i].pos.y, { image: playerObjects[i].settings.image, spritewidth: playerObjects[i].settings.spritewidth, spriteheight: playerObjects[i].settings.spriteheight, GUID: playerObjects[i].GUID});
-		 			me.game.add(playerEntity, enemyZ++);
-					me.game.sort();
+					addObjectToClient(playerObjects[i]);
 				}
 			}
 		}
@@ -204,10 +184,7 @@ var initClientLoop = function(){
 
 				// If the object has not been added to non-host client
 				if (foundGameObj[i] == false && socketObjects[i].settings.entityName && !socketObjects[i].dead) {
-					// !!! Game Engine Logic !!! //
-					var hostedEntity = new window[socketObjects[i].settings.entityName]( socketObjects[i].pos.x, socketObjects[i].pos.y, { image: socketObjects[i].settings.image, spritewidth: socketObjects[i].settings.spritewidth, spriteheight: socketObjects[i].settings.spriteheight, GUID: socketObjects[i].GUID});
-		 			me.game.add(hostedEntity, enemyZ++);
-					me.game.sort();
+					addObjectToClient(socketObjects[i]);
 				}
 			}
 	  }

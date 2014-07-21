@@ -154,6 +154,7 @@ var PlayerEntity = me.socketObjectEntity.extend({
 		if (typeof nextScreenVelX != '') this.vel.x = nextScreenVelX;
 
 		// SOCKET
+		this.currentAnim = this.renderable.current.name;
 		this.socketPlayerInit();
 	},
 
@@ -219,7 +220,7 @@ var PlayerEntity = me.socketObjectEntity.extend({
 
 		this.menu(self);
 
-		this.move(self)
+		this.move(self);
 
 		this.socket(self)
 

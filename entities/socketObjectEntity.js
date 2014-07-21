@@ -5,6 +5,115 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 	 *
 	 */
 
+	defineSocketObjectStructure : function () {
+	 	this.socketObjectStructure =
+		{
+			GUID: 'GUID',
+			pos: true,
+			vel: true,
+			settings: true,
+			facing: true,
+			currentAnim: true
+		}
+	},
+
+	socketPlayerInit: function() {
+		var playerObject = {};
+		this.defineSocketObjectStructure();
+	 	playerObject.GUID = this[this.socketObjectStructure.GUID]+'-'+clientid+enemyZ;
+	 	this.GUID = playerObject.GUID;
+
+	 	if (this.checkAbstractObjectGUID(this, playerObjects) === false && !this.dead) {
+	 		for(var key in this.socketObjectStructure) {
+	 			if (this[key] && key != 'GUID') {
+	 				if (this.socketObjectStructure[key] === true) {
+	 					playerObject[key] = this[key];
+	 				}
+	 				else {
+	 					playerObject[key] = this[this.socketObjectStructure[key]];
+	 				}
+	 			}
+	 		}
+		 	socketResponse('playersaddobject',playerObject);
+ 		}
+	},
+
+	updateSocketObjectPlayer : function() {
+		var i = this.checkAbstractObjectGUID(this, playerObjects)
+
+		//  If the object has already been created from host
+ 		if (i >= 0 && playerObjects[i] && playerObjects[i].clientid != clientid) {
+ 			if (playerObjects[i].dead) {
+				playerObjects.splice(i,1);
+ 				this.remove();
+ 				return;
+ 			}
+
+ 			for(var key in playerObjects[i]) {
+ 				if (this[key] && key != 'GUID') {
+ 					this[key] = playerObjects[i][key];
+ 				}
+ 			}
+ 			// if (this.pos) {
+	 		// 	this.pos.x = playerObjects[i].pos.x;
+	 		// 	this.pos.y = playerObjects[i].pos.y;
+	 		// 	this.vel = playerObjects[i].vel;
+	 		// 	this.facing = playerObjects[i].facing;
+	 		// 	return;
+ 			// }
+ 		}
+ 		// else if (!i && i !== 0) {
+ 		// 	console.log('asdfasdf');
+ 		// 	this.remove();
+ 		// }
+	},
+
+	/**
+	 * Socket function - Initializes this object information to socketObjects <br>
+	 * Only used for host (clientid == 0)
+	 *
+	 */
+	socketInit: function(player) {
+		this.interpolatedFrame = false;
+	 	var socketObject = {};
+			 	socketObject.GUID = this.GUID;
+
+	 	// If this GUID is not in socketObjects yet (From any other clients)
+	 	if (this.checkGUID(socketObject) === false && !this.dead) {
+
+	 		socketObject.clientid = clientid;
+
+	 		if (player) {
+	 			socketObject.player = true;
+	 			socketObject.GUID += '-'+clientid+enemyZ;
+	 			this.GUID = socketObject.GUID;
+	 			// this.uniqueGUID = socketObject.GUID;
+	 		}
+
+	 		if (this.pos && this.pos) {
+		 		socketObject.pos = this.pos;
+		 	}
+		 	if (this.vel) {
+		 		socketObject.vel = this.vel;
+		 	}
+		 	if (this.settings) {
+		 		socketObject.settings = this.settings;
+		 	}
+		 	if (this.renderable.current.name) {
+		 		socketObject.currentAnim = this.renderable.current.name;
+		 	}
+
+		 	// If host, object will be passed by Interval Loop
+		 	if (clientid == host) {
+		 		socketObjects.push(socketObject);
+		 	}
+		 	// If client, object will be added immediately
+		 	else {
+		 		socketResponse('slaveaddobject',socketObject);
+		 	}
+ 		}
+	},
+
 	interpolateSocketObject : function () {
 
 		// Even Frame
@@ -82,31 +191,6 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 		this.socketPrepSend();
 	},
 
-	updateSocketObjectPlayer : function() {
-		var i = this.checkAbstractObjectGUID(this, playerObjects)
-
-		//  If the object has already been created from host
- 		if (i >= 0 && playerObjects[i] && playerObjects[i].clientid != clientid) {
- 			if (playerObjects[i].dead) {
-				playerObjects.splice(i,1);
- 				this.remove();
- 				return;
- 			}
- 			if (this.pos) {
-	 			this.pos.x = playerObjects[i].pos.x;
-	 			this.pos.y = playerObjects[i].pos.y;
-	 			this.vel = playerObjects[i].vel;
-	 			this.facing = playerObjects[i].facing;
-	 			this.renderable.setCurrentAnimation(playerObjects[i].currentAnim);
-	 			return;
- 			}
- 		}
- 		// else if (!i && i !== 0) {
- 		// 	console.log('asdfasdf');
- 		// 	this.remove();
- 		// }
-	},
-
 	/**
 	 * Socket function - Updates this object information to socketObjects <br>
 	 * socketObjects is sent i
@@ -157,83 +241,6 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 		 	}
 		 	socketResponse('playersupdatedobject',playerObjects[i]);
 		}
-	},
-
-	socketPlayerInit: function() {
-	 	var playerObject = {};
-	 	playerObject.GUID = this.GUID;
-
-	 	if (this.checkAbstractObjectGUID(this, playerObjects) === false && !this.dead) {
-
-	 		playerObject.clientid = clientid;
-
-	 		playerObject.GUID += '-'+clientid+enemyZ;
-	 		this.GUID = playerObject.GUID;
-
-	 		if (this.pos && this.pos) {
-		 		playerObject.pos = this.pos;
-		 	}
-		 	if (this.vel) {
-		 		playerObject.vel = this.vel;
-		 	}
-		 	if (this.settings) {
-		 		playerObject.settings = this.settings;
-		 	}
-		  if (this.facing) {
-		 		playerObject.facing = this.facing;
-		 	}
-		 	if (this.renderable.current.name) {
-		 		playerObject.currentAnim = this.renderable.current.name;
-		 	}
-
-		 	socketResponse('playersaddobject',playerObject);
- 		}
-	},
-
-	/**
-	 * Socket function - Initializes this object information to socketObjects <br>
-	 * Only used for host (clientid == 0)
-	 *
-	 */
-	socketInit: function(player) {
-		this.interpolatedFrame = false;
-	 	var socketObject = {};
-			 	socketObject.GUID = this.GUID;
-
-	 	// If this GUID is not in socketObjects yet (From any other clients)
-	 	if (this.checkGUID(socketObject) === false && !this.dead) {
-
-	 		socketObject.clientid = clientid;
-
-	 		if (player) {
-	 			socketObject.player = true;
-	 			socketObject.GUID += '-'+clientid+enemyZ;
-	 			this.GUID = socketObject.GUID;
-	 			// this.uniqueGUID = socketObject.GUID;
-	 		}
-
-	 		if (this.pos && this.pos) {
-		 		socketObject.pos = this.pos;
-		 	}
-		 	if (this.vel) {
-		 		socketObject.vel = this.vel;
-		 	}
-		 	if (this.settings) {
-		 		socketObject.settings = this.settings;
-		 	}
-		 	if (this.renderable.current.name) {
-		 		socketObject.currentAnim = this.renderable.current.name;
-		 	}
-
-		 	// If host, object will be passed by Interval Loop
-		 	if (clientid == host) {
-		 		socketObjects.push(socketObject);
-		 	}
-		 	// If client, object will be added immediately
-		 	else {
-		 		socketResponse('slaveaddobject',socketObject);
-		 	}
- 		}
 	},
 
 	socketRemoveObject: function() {

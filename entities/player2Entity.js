@@ -51,7 +51,9 @@ var Player2Entity = me.socketObjectEntity.extend({
 		this.renderable.setCurrentAnimation("walk");
 
 		// set the renderable position to bottom center
-		this.anchorPoint.set(0.5, 1.0);	},
+		this.anchorPoint.set(0.5, 1.0);
+		this.currentAnim = this.renderable.current.name;
+	},
 
 
 	/* -----
@@ -66,9 +68,8 @@ var Player2Entity = me.socketObjectEntity.extend({
 		// this.pos.x = playerX;
 		// this.pos.y = playerY;
 		// console.log(player2Action)
-
 		this.updateSocketObjectPlayer();
-
+		this.renderable.setCurrentAnimation(this.currentAnim);
 		if (this.facing == 'left') {
 			this.flipX(true);
 			this.updateColRect(130,60, 140,100);
