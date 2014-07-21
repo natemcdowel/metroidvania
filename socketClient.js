@@ -8,6 +8,7 @@ var socketHost = location.href
 		, socket = io.connect(socketHost)
 		, clientLoopMilliseconds = 50
 		, socketObjects = []
+		, playerObjects = []
 		, tickedSocketObjects = []
 		, numberOfSavedTicks = 6
 		, enemyZ = 100
@@ -29,6 +30,8 @@ socket.on('assignid', function (id) {
 // 	playerY.splice(clientid, 1);
 // });
 
+
+
 // Updates ALL socketObjects with each server loop iteration
 socket.on('updateobjects', function (objects) {
 	if (objects.length > 0 && clientid != host) {
@@ -45,11 +48,16 @@ socket.on('updateobjects', function (objects) {
 	}
 });
 
+socket.on('updateplayerobjects', function (objects) {
+	if (objects.length > 0) {
+		playerObjects = objects;
+	}
+});
+
 // Updates Host object directly
 socket.on('updatehostobject', function (serverObject) {
 	if (clientid == host) {
 		// !!! Game Engine Logic !!! //
-		// console.log(serverObject);
 		if (serverObject.clientid != clientid  || !serverObject.clientid && serverObject.clientid !== 0) {
 			if (serverObject.player) {
 				var i = checkGUID(serverObject);
@@ -74,7 +82,6 @@ socket.on('addhostobject', function(serverObject) {
 
 		// If the object has not been added to non-host client
 		if (foundHostObj == false && serverObject.settings.entityName) {
-			console.log(serverObject);
 			if (serverObject.clientid && serverObject.clientid != clientid) {
 				addObjectToClient(serverObject);
 				socketObjects.push(serverObject);
@@ -146,12 +153,33 @@ var addObjectToClient = function(serverObject) {
  */
 var initClientLoop = function(){
 	// setInterval(function(){
-	// 	console.log(socketObjects);
+	// 	console.log(playerObjects);
 	// },2500);
 
 	setInterval(function(){
-		var foundGameObj = [];
+
+		// Player Loop for all clients
+		var foundPlayerObj = [];
+
+		if (playerObjects.length > 0) {
+			for(var i = 0; i < playerObjects.length; i++) {
+				foundPlayerObj[i] = false;
+				if (me.game.getEntityByGUID(playerObjects[i].GUID) !== null) {
+					foundPlayerObj[i] = true;
+				}
+
+				if (foundPlayerObj[i] == false && playerObjects[i].settings.entityName && !playerObjects[i].dead) {
+					// !!! Game Engine Logic !!! //
+					var playerEntity = new window[playerObjects[i].settings.entityName]( playerObjects[i].pos.x, playerObjects[i].pos.y, { image: playerObjects[i].settings.image, spritewidth: playerObjects[i].settings.spritewidth, spriteheight: playerObjects[i].settings.spriteheight, GUID: playerObjects[i].GUID});
+		 			me.game.add(playerEntity, enemyZ++);
+					me.game.sort();
+				}
+			}
+		}
+
 		// If Host, update all socketObjects to server
+		var foundGameObj = [];
+
 		if (socketObjects.length > 0 && clientid == host) {
 			socketResponse('updateobjects', socketObjects);
 

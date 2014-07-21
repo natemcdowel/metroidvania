@@ -68,6 +68,16 @@ var Player2Entity = me.socketObjectEntity.extend({
 		// console.log(player2Action)
 
 		this.updateSocketObjectPlayer();
+
+		if (this.facing == 'left') {
+			this.flipX(true);
+			this.updateColRect(130,60, 140,100);
+		}
+		if (this.facing == 'right') {
+			this.flipX(false);
+			this.updateColRect(50,60, 140,100);
+		}
+
 		// check for collision with environment
 		// this.updateMovement();
 

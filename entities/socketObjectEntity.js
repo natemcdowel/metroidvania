@@ -83,20 +83,21 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 	},
 
 	updateSocketObjectPlayer : function() {
-		i = this.checkGUID(this);
+		var i = this.checkAbstractObjectGUID(this, playerObjects)
+
 		//  If the object has already been created from host
- 		if (i >= 0 && socketObjects[i] && socketObjects[i].clientid != clientid) {
- 			if (socketObjects[i].dead) {
-				socketObjects.splice(i,1);
+ 		if (i >= 0 && playerObjects[i] && playerObjects[i].clientid != clientid) {
+ 			if (playerObjects[i].dead) {
+				playerObjects.splice(i,1);
  				this.remove();
  				return;
  			}
  			if (this.pos) {
- 				// console.log(socketObjects[i].GUID);
-	 			this.pos.x = socketObjects[i].pos.x;
-	 			this.pos.y = socketObjects[i].pos.y;
-	 			this.vel = socketObjects[i].vel;
-	 			// this.renderable.setCurrentAnimation(socketObjects[i].currentAnim);
+	 			this.pos.x = playerObjects[i].pos.x;
+	 			this.pos.y = playerObjects[i].pos.y;
+	 			this.vel = playerObjects[i].vel;
+	 			this.facing = playerObjects[i].facing;
+	 			this.renderable.setCurrentAnimation(playerObjects[i].currentAnim);
 	 			return;
  			}
  		}
@@ -136,27 +137,57 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 	},
 
 	socketPrepSendPlayer: function() {
-		var i = this.checkGUID(this);
+		var i = this.checkAbstractObjectGUID(this, playerObjects)
 
 	 	if (i || i === 0) {
 	 		if (this.dead) {
-	 			socketObjects[i].dead = this.dead;
+	 			playerObjects[i].dead = this.dead;
 	 		}
 		 	if (this.pos) {
-		 		socketObjects[i].pos = this.pos;
+		 		playerObjects[i].pos = this.pos;
 		 	}
 		 	if (this.vel) {
-		 		socketObjects[i].vel = this.vel;
+		 		playerObjects[i].vel = this.vel;
 		 	}
-		 	// console.log(socketObjects[i].GUID);
-		 	if (!this.interpolatedFrame) {
-		 		this.interpolatedFrame = true;
-				socketResponse('slaveupdateobjects',socketObjects[i]);
-			}
-			else {
-				this.interpolatedFrame = false;
-			}
+		 	if (this.facing) {
+		 		playerObjects[i].facing = this.facing;
+		 	}
+		 	if (this.renderable.current.name) {
+		 		playerObjects[i].currentAnim = this.renderable.current.name;
+		 	}
+		 	socketResponse('playersupdatedobject',playerObjects[i]);
 		}
+	},
+
+	socketPlayerInit: function() {
+	 	var playerObject = {};
+	 	playerObject.GUID = this.GUID;
+
+	 	if (this.checkAbstractObjectGUID(this, playerObjects) === false && !this.dead) {
+
+	 		playerObject.clientid = clientid;
+
+	 		playerObject.GUID += '-'+clientid+enemyZ;
+	 		this.GUID = playerObject.GUID;
+
+	 		if (this.pos && this.pos) {
+		 		playerObject.pos = this.pos;
+		 	}
+		 	if (this.vel) {
+		 		playerObject.vel = this.vel;
+		 	}
+		 	if (this.settings) {
+		 		playerObject.settings = this.settings;
+		 	}
+		  if (this.facing) {
+		 		playerObject.facing = this.facing;
+		 	}
+		 	if (this.renderable.current.name) {
+		 		playerObject.currentAnim = this.renderable.current.name;
+		 	}
+
+		 	socketResponse('playersaddobject',playerObject);
+ 		}
 	},
 
 	/**
@@ -238,9 +269,9 @@ me.socketObjectEntity = me.ObjectEntity.extend({
 	 	return false;
 	},
 
-	checkUniqueGUID: function(thisEntity) {
- 		for(var i = 0; i < socketObjects.length; i++) {
-	 		if (socketObjects[i].GUID == thisEntity.uniqueGUID) {
+	checkAbstractObjectGUID: function(thisEntity, objectName) {
+ 		for(var i = 0; i < objectName.length; i++) {
+	 		if (objectName[i].GUID == thisEntity.GUID) {
 	 			return i;
 	 		}
 	 	}

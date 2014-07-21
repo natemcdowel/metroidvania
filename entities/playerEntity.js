@@ -147,13 +147,14 @@ var PlayerEntity = me.socketObjectEntity.extend({
 		this.renderable.setCurrentAnimation("walk");
 		this.anchorPoint.set(0.5, 1.0);
 		this.updateColRect(110,60, 130,100);
+		this.facing = 'left';
 
 
 		if (typeof settings.velY != 'undefined') this.vel.y = settings.velY;
 		if (typeof nextScreenVelX != '') this.vel.x = nextScreenVelX;
 
 		// SOCKET
-		this.socketInit(true);
+		this.socketPlayerInit();
 	},
 
 
@@ -174,7 +175,7 @@ var PlayerEntity = me.socketObjectEntity.extend({
     changeimage : function() {
 
     	if (this.mainweapon == 'twohandedsword') {
-	    	this.renderable.image = me.loader.getImage('simontwohandedsword');
+	    this.renderable.image = me.loader.getImage('simontwohandedsword');
 			this.renderable.addAnimation ("walk",  [0,1,2,3,4,2], 2);
 			this.renderable.addAnimation ("stand",  [5]);
 			this.renderable.addAnimation ("crouch",  [6]);
@@ -189,7 +190,7 @@ var PlayerEntity = me.socketObjectEntity.extend({
 			this.renderable.addAnimation ("hurt",  [17]);
     	}
     	else if (this.mainweapon == 'whip' || !this.mainweapon) {
-    		this.renderable.image = me.loader.getImage('simon');
+    	this.renderable.image = me.loader.getImage('simon');
 			this.renderable.addAnimation ("walk",  [0,1,2,3,4,2], 2);
 			this.renderable.addAnimation ("stand",  [5]);
 			this.renderable.addAnimation ("crouch",  [6]);
@@ -247,12 +248,12 @@ var PlayerEntity = me.socketObjectEntity.extend({
 		nextScreenVelX = this.vel.x;
 
 		//  Updating Hit Box
-		if (clientData[0] == 'left') {
+		if (this.facing == 'left') {
 			// Smaller box for crouching
 			if (this.renderable.isCurrentAnimation('crouchattack') || this.renderable.isCurrentAnimation('crouch')) this.updateColRect(130,60, 170,70);
 			else this.updateColRect(130,60, 140,100);
 		}
-		else if (clientData[0] == 'right') {
+		else if (this.facing == 'right') {
 			if (this.renderable.isCurrentAnimation('crouchattack') || this.renderable.isCurrentAnimation('crouch')) this.updateColRect(50,60, 170,70);
 		    else this.updateColRect(50,60, 140,100);
 		}
@@ -409,10 +410,10 @@ var PlayerEntity = me.socketObjectEntity.extend({
 				this.vel.x -= this.accel.x * me.timer.tick;
 				this.flipX(true);
 				// Offset for flipping character
-				if (clientData[0] == 'right') {
+				if (this.facing == 'right') {
 					this.pos.x -= 70;
 				}
-				clientData[0] = 'left';
+				this.facing = 'left';
 			}
 
 			// If pressing right and not attacking
@@ -422,10 +423,10 @@ var PlayerEntity = me.socketObjectEntity.extend({
 				this.vel.x += this.accel.x * me.timer.tick;
 				this.flipX(false);
 				// Offset for flipping character
-				if (clientData[0] == 'left') {
+				if (this.facing == 'left') {
 					this.pos.x += 70;
 				}
-				clientData[0] = 'right';
+				this.facing = 'right';
 			}
 
 			// // If pressed jump
@@ -492,7 +493,7 @@ var PlayerEntity = me.socketObjectEntity.extend({
 				else if (me.input.isKeyPressed('up') && this.weaponDelay == false && playerInfo.hearts > 0) {
 
 					self.weaponDelay = true;
-					var secondWeapon = new secondWeaponEntity( self.pos.x, self.pos.y+120, { image: "throwingweapons", spritewidth: 120, spriteheight: 120 }, clientData[0]);
+					var secondWeapon = new secondWeaponEntity( self.pos.x, self.pos.y+120, { image: "throwingweapons", spritewidth: 120, spriteheight: 120 }, this.facing);
 				    me.game.add(secondWeapon, self.z);
 				    me.game.sort();
 				    this.renderable.setCurrentAnimation("secondattack","stand");

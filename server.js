@@ -12,6 +12,7 @@ var serverLoopMilliseconds = 50
   , clientid = ''
   , users = Array()
   , socketObjects = []
+  , playerObjects = []
   , i = 0;
 
 
@@ -23,6 +24,15 @@ var serverLoopMilliseconds = 50
 var checkGUID = function(object, destroy) {
   for(var i = 0; i < socketObjects.length; i++) {
     if (socketObjects[i].GUID == object.GUID) {
+      return i;
+    }
+  }
+  return false;
+};
+
+var checkAbstractObjectGUID = function(thisEntity, objectName) {
+  for(var i = 0; i < objectName.length; i++) {
+    if (objectName[i].GUID == thisEntity.GUID) {
       return i;
     }
   }
@@ -44,6 +54,14 @@ var updateSocketObjectKeys = function(object, i) {
   return true;
 };
 
+var updatePlayerObjectKeys = function(object, i) {
+  for (key in object) {
+    if (playerObjects[i]) {
+       playerObjects[i][key] = object[key];
+    }
+  }
+  return true;
+};
 io.sockets.on('connection', function (socket) {
 
   // Creating player array
@@ -93,6 +111,19 @@ io.sockets.on('connection', function (socket) {
     io.sockets.emit('addhostobject', object);
   });
 
+
+  // playerObject socket functions
+  socket.on('playersaddobject', function (object) {
+    playerObjects.push(object);
+  });
+
+  socket.on('playersupdatedobject', function (object) {
+    var i = checkAbstractObjectGUID(object, playerObjects);
+    if (i || i === 0) {
+      updatePlayerObjectKeys(object,i);
+    }
+  });
+
   // Checks for players on current map screen
   socket.on('checkmapserver', function (clientid) {
     socket.emit('checkmapclient', users);
@@ -122,6 +153,7 @@ io.sockets.on('connection', function (socket) {
   // MAIN LOOP
   setInterval(function(){
     // io.sockets.emit('updateclientpos',users);
+    io.sockets.emit('updateplayerobjects',playerObjects);
     io.sockets.emit('updateobjects',socketObjects);
   }, serverLoopMilliseconds);
 });
